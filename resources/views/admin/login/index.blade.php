@@ -26,7 +26,9 @@
                 <tr>
                     <td width="65" style="font-size:14px;"></td>
                     <td width="200" style="font-size:12px;color:red"  colspan="2">
+                        @if (Session::get('error'))
                         {{session('error')}}
+                        @endif
                     </td>
                 </tr>
                 <tr>
