@@ -11,6 +11,7 @@ class CaptchaController extends Controller
 {
     public function captcha($tmp)
     {
+//        ob_clean();
         $phrase=new PhraseBuilder;
         // 设置验证码位数
         $code =$phrase->build(4);

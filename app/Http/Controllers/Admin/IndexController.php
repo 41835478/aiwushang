@@ -20,6 +20,6 @@ class IndexController extends Controller
         $res = $this->adminService->getUserInfo(session('info'));
         $result=Admin::find($res[1]);
         $time=getTime();
-        return view('admin.Lndex.index',compact('time','result'));
+        return view('admin.index.index',compact('time','result'));
     }
 }
