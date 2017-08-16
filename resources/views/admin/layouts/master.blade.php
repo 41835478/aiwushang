@@ -58,8 +58,18 @@
                 <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
                     <span class="ng-scope">分类</span>
                 </li>
+
+                    <li>
+                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">首页轮播图</span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem" href="{{url('banner/index')}}">手机端轮播图列表</a>
+                        </li>
+                        
+                    </ul>
+                </li>
+
                 <li>
-                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">信箱 </span><span class="label label-warning pull-right">16</span></a>
+                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">信箱 </span><span class="label label-warning pull-right">0</span></a>
                     <ul class="nav nav-second-level">
                         <li><a class="J_menuItem" href="mailbox.html">收件箱</a>
                         </li>
