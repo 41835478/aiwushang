@@ -49,10 +49,10 @@ class LoginController extends Controller
                     return back()->with('error','验证码输入有误');
                 }
             }else{
-                return back()->with('error','管理员登录密码错误');
+                return back()->with('error','管理员登录账号或密码错误');
             }
         }else{
-            return back()->with('error','管理员账号不存在');
+            return back()->with('error','管理员登录账号或密码错误');
         }
     }
 
