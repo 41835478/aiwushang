@@ -6,6 +6,7 @@ use App\Http\Model\Admin\Admin;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Services\AdminService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Hash;
 use Session;
@@ -25,19 +26,31 @@ class LoginController extends Controller
         return view('admin.login.index');
     }
 
+
+
+ 
+
     public function login(LoginRequest $request)//后台登录处理
     {
         $date=$request->all();
-        $first=Admin::select(['pwd','id','pic'])->where(['mobile'=>$date['mobile']])->first();
+        //var_dump($date['mobile']);die;
+        $first=Admin::select(['pwd','id','pic','mobile'])->where(['mobile'=>$date['mobile']])->first();
+
+     //  $first= DB::table('admin')->where('mobile', $date['mobile'])->first();
+       // var_dump($first);die;
         if($first){
             if(Hash::check($date['pwd'],$first->pwd)){
+
                 if(Session::get('code')===$date['captcha']){
+                     
                     $res=$this->admin->updateAdmin($request->ip(),$first->id);
                     if($res){
+                        
                         $str=$date['mobile'].'-'.$first->id.'-'.$_SERVER['HTTP_USER_AGENT'].'-'.uniqid().time();
                         $info=$this->admin->getEncrypt($str);
                         session(['pic'=>$res['pic']]);
                         session(['info'=>$info]);
+                       
                         return redirect()->route('admin.index');
                     }else{
                         return back()->with('error','登录失败');

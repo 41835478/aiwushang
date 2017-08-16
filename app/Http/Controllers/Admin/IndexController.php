@@ -14,11 +14,12 @@ class IndexController extends Controller
     {
         $this->adminService = $adminService;
     }
+
     public function index()
     {
         $res = $this->adminService->getUserInfo(session('info'));
         $result=Admin::find($res[1]);
         $time=getTime();
-        return view('admin.index.index',compact('time','result'));
+        return view('admin.Lndex.index',compact('time','result'));
     }
 }
