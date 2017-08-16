@@ -13,7 +13,7 @@ class Goodsclass extends Model
 
     protected $fillable=['name','path','pid','pic'];//设置允许批量赋值的字段
 
-    protected $guarded=[];//设置不允许批量复制的字段可以为空
+    protected $guarded=[];//设置不允许批量赋值的字段可以为空
 
     public $timestamps=true;//自动维护时间戳
 
