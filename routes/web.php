@@ -19,7 +19,7 @@ Route::get('captcha/{tmp}','Admin\CaptchaController@captcha');//验证码
 Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
     //后台首页开始
     Route::get('admin/index', 'BaseController@index')->name('admin.index');
-    Route::get('index', 'IndexController@index');
+    Route::get('index/index', 'IndexController@index');
     //后台首页结束
 });
 require base_path('routes/admin/user.php');
