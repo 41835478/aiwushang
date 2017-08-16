@@ -15,7 +15,7 @@
        }
    </script>
 
-<div style="margin-bottom:10px;border-bottom:1px solid #eee;padding: 0 0 6px;"><a  href="{:url('Banner/app')}"  >管理轮播图</a><span style="margin-left: 10px;margin-right: 10px;">|</span> <a  href="{:url('Banner/editapp')}" class="btn btn-info"  style="height:22px;line-height:14px;" >修改轮播图</a> <span style="margin-left: 10px;margin-right: 10px;">
+<div style="margin-bottom:10px;border-bottom:1px solid #eee;padding: 0 0 6px;"><a  href="{{url('Banner/index')}}"  >管理轮播图</a><span style="margin-left: 10px;margin-right: 10px;"> </span>  <span style="margin-left: 10px;margin-right: 10px;">
 </div>
 
 <div class="col-sm-12">
@@ -30,16 +30,16 @@
       <div id="tab-1"  class="tab-pane active ">
         <div class="panel-body">
           <div class="ibox-content">
-            <form method="post" class="form-horizontal" action="{:url('Banner/edit')}" enctype="multipart/form-data" onSubmit="return check();">                     
+            <form method="post" class="form-horizontal" action="{{url('banner/editinfo')}}" enctype="multipart/form-data">
              <div class="form-group">
-                <label class="col-sm-2 control-label">轮播图类别</label>
+              <!--   <label class="col-sm-2 control-label">轮播图类别</label>
                 <div class="col-sm-5">
                   <select class="form-control" name="type" type="text" id="type" style="padding: 2px 12px;">
                     <option value="0">请选择轮播图类别</option>
                     
                     <option value="2">手机端</option> 
                   </select>
-                </div>
+                </div> -->
               </div>
             <div class="hr-line-dashed"></div>
             <div class="form-group">
@@ -69,18 +69,37 @@
                 <input name="image" type="file" id="up_img" >
                 <img  id="imgShow" src="{{$banner->pic}}" style="width:80px;height:80px;margin-bottom:10px;"  >
             </div>
-           </div>        
+           </div>  
+     <!--    <div class="hr-line-dashed"></div>
+              <div class="form-group">
+                   <label class="col-sm-2 control-label">内容</label>
+                    <div class="col-sm-10">
+                        <textarea  id="content" name="content" style="width:100%;height:300px;"></textarea>
+                        
+                    </div>
+              </div>  -->
+             <div class="hr-line-dashed"></div>
+            <div class="form-group">
+            <label class="col-sm-2 control-label">内容</label>
+            <div class="col-sm-10" id="desc">
+
+            <textarea name="content" style="width:300px;height:100px;margin-bottom:5px;" >
+              
+            </textarea>
+               
+            </div>
+           </div>       
              <div class="hr-line-dashed"></div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">启用或禁用</label>
                 <div class="col-sm-10">
                   <label class="checkbox-inline">
-                    <input value="0" name="status"  type="radio" @if ($banner->status == 0) 'checked'
+                    <input value="0" name="status"  type="radio" @if ($banner->status == 0) checked
                                                                   @else
                                                                    
                                                                  @endif >是</label>
                   <label class="checkbox-inline">
-                    <input value="1" name="status"  type="radio"  @if ($banner->status == 0) 'checked'
+                    <input value="1" name="status"  type="radio"  @if ($banner->status == 1) checked
                                                                   @else
                                                                    
                                                                  @endif >否</label></div>
@@ -88,6 +107,7 @@
               <div class="hr-line-dashed"></div>
               <div class="form-group">
                 <div class="col-sm-4 col-sm-offset-2">
+                {{ csrf_field() }}
                   <input type="hidden" name='id' value="{{$banner->id}}">
                   <input class="btn btn-primary" type="submit" value="提交" name="dosubmit"><span style="margin-left: 10px;color:red" id="er"></span>
                  </div>

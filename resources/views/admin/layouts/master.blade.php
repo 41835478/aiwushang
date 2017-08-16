@@ -60,9 +60,15 @@
                 </li>
 
                     <li>
-                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">首页轮播图</span></a>
+                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">首页配置</span></a>
                     <ul class="nav nav-second-level">
                         <li><a class="J_menuItem" href="{{url('banner/index')}}">手机端轮播图列表</a>
+                        </li>
+                        <li><a class="J_menuItem" href="{{url('banner/index')}}">网站简介列表</a>
+                        </li>
+                        <li><a class="J_menuItem" href="{{url('banner/index')}}">新手必看</a>
+                        </li>
+                         <li><a class="J_menuItem" href="{{url('banner/index')}}">系统公告</a>
                         </li>
                         
                     </ul>
