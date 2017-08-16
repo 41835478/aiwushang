@@ -21,36 +21,26 @@ class LoginController extends Controller
         $this->admin = $admin;
         $this->adminService=$adminService;
     }
+    
     public function index()//加载登录视图
     {
         return view('admin.login.index');
     }
 
-
-
- 
-
     public function login(LoginRequest $request)//后台登录处理
     {
         $date=$request->all();
-        //var_dump($date['mobile']);die;
         $first=Admin::select(['pwd','id','pic','mobile'])->where(['mobile'=>$date['mobile']])->first();
-
-     //  $first= DB::table('admin')->where('mobile', $date['mobile'])->first();
-       // var_dump($first);die;
         if($first){
             if(Hash::check($date['pwd'],$first->pwd)){
-
                 if(Session::get('code')===$date['captcha']){
-                     
+
                     $res=$this->admin->updateAdmin($request->ip(),$first->id);
                     if($res){
-                        
                         $str=$date['mobile'].'-'.$first->id.'-'.$_SERVER['HTTP_USER_AGENT'].'-'.uniqid().time();
                         $info=$this->admin->getEncrypt($str);
-                        session(['pic'=>$res['pic']]);
+                        session(['pic'=>$first->pic]);
                         session(['info'=>$info]);
-                       
                         return redirect()->route('admin.index');
                     }else{
                         return back()->with('error','登录失败');
@@ -59,10 +49,10 @@ class LoginController extends Controller
                     return back()->with('error','验证码输入有误');
                 }
             }else{
-                return back()->with('error','管理员登录密码错误');
+                return back()->with('error','管理员登录账号或密码错误');
             }
         }else{
-            return back()->with('error','管理员账号不存在');
+            return back()->with('error','管理员登录账号或密码错误');
         }
     }
 

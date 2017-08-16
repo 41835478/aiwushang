@@ -21,6 +21,7 @@ Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
     Route::get('admin/index', 'BaseController@index')->name('admin.index');
     Route::get('index/index', 'IndexController@index');
     //后台首页结束
+    require_once base_path('routes/admin/goodsClass.php');
 });
 require base_path('routes/admin/user.php');
 require_once base_path('routes/admin/login.php');
