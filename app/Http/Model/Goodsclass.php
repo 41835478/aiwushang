@@ -11,7 +11,7 @@ class Goodsclass extends Model
 
     protected $table='goodsclass';
 
-    protected $fillable=['name','path','pid','pic'];//设置允许批量复制的字段
+    protected $fillable=['name','path','pid','pic'];//设置允许批量赋值的字段
 
     protected $guarded=[];//设置不允许批量复制的字段可以为空
 
