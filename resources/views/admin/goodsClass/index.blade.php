@@ -38,6 +38,18 @@
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">请选择分类类型</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="type" type="text">
+                            <option value="">--请选择--</option>
+                            @foreach(config('admin.goodsClassType') as $k=>$v)
+                                <option value="{{$k+1}}">{{$v}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
                     <label class="col-sm-2 control-label">分类图片</label>
                     <div class="col-sm-10">
                         <input type="file" name="pic" value="" id="picFile">

@@ -20,7 +20,7 @@
                     <label class="col-sm-2 control-label">上级分类</label>
                     <div class="col-sm-10">
                         <select class="form-control" name="top" type="text">
-                            <option value="">--请选择--</option>
+                            {{--<option value="">--请选择--</option>--}}
                             @foreach ($data as $v)
                                 @if ($v['id']==$res['pid'])
                                     <option value="{{$v['id']}}" style="color:red" selected>{{$v['name']}}</option>
@@ -36,6 +36,22 @@
                     <label class="col-sm-2 control-label">修改分类名称</label>
                     <div class="col-sm-10">
                         <input class="form-control" name="name" type="text" value="{{$res->name}}">
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">请选择分类类型</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="type" type="text">
+                            <option value="">--请选择--</option>
+                            @foreach (config('admin.goodsClassType') as $k=>$v)
+                                @if ($k+1==$res->type)
+                                    <option value="{{$k+1}}" style="color:red" selected>{{$v}}</option>
+                                @else
+                                    <option value="{{$k+1}}">{{$v}}</option>
+                                @endif
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>

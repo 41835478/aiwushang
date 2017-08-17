@@ -26,9 +26,11 @@ class GoodsClassController extends Controller
     public function addClass(Request $request)//添加商品分类
     {
         $this->validate($request, [
-            'name' => 'required'
+            'name' => 'required',
+            'type'=>'required'
         ], [
-            'name.required' => '商品分类名称不能为空'
+            'name.required' => '商品分类名称不能为空',
+            'type.required'=>'分类类型为必选项'
         ]);
         $date = $request->input();
         $pic = '';
@@ -41,6 +43,7 @@ class GoodsClassController extends Controller
             }
         }
         $data = $this->judgeTopClass($date['top']);
+        $data['type']=$date['type'];
         $data['pic'] = $pic ? $pic : '';
         $data['name'] = trim($date['name']);
         $res = Goodsclass::create($data);
@@ -83,14 +86,17 @@ class GoodsClassController extends Controller
 
     public function goodsList(Request $request)//商品分类列表视图
     {
-        $input=$request->only(['topName','secondName']);
+        $input=$request->only(['topName','secondName','type']);
         $query = $this->goodsClass->newQuery();
+        if($request->has('type')){
+            $query->where('type',$input['type']);
+        }
         if($request->has('secondName'))
             $query->where('id',$input['secondName'])->orWhere('pid',$input['secondName']);
         if($request->has('topName'))
             $query->where('id',$input['topName'])->orWhere('pid',$input['topName']);
         $goodsClass = $query->select(DB::raw('*,concat(path,",",id) as paths'))
-            ->orderBy('paths')->paginate(3);
+            ->orderBy('paths')->paginate(config('admin.pages'));
         foreach ($goodsClass as $k => $v) {
             $count = (count(explode(',', $v->paths)) - 2) * 2;
             if ($v->pid == 0) {
@@ -102,6 +108,7 @@ class GoodsClassController extends Controller
             $data[$k]['sort'] = $v->sort;
             $data[$k]['id'] = $v->id;
             $data[$k]['pic'] = $v->pic;
+            $data[$k]['type'] = $v->type;
             $data[$k]['status'] = $v->status;
             $data[$k]['create_at'] = date('Y-m-d H:i',$v->create_at);
             $data[$k]['update_at'] = date('Y-m-d H:i',$v->update_at);
@@ -145,6 +152,7 @@ class GoodsClassController extends Controller
                 return back()->withErrors('上传分类图片失败');
             }
         }
+        $data['type']=$date['type'];
         $data['name']=$date['name'];
         $data['update_at']=time();
         $res=$mod->where(['id'=>$date['id']])->update($data);
