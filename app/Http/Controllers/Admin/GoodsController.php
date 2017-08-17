@@ -9,7 +9,7 @@ class GoodsController extends Controller
 {
     public function index()//加载添加商品视图
     {
-        echo 11;
+        return view();
     }
 
     public function goodsList()//加载商品列表视图
