@@ -16,7 +16,15 @@
                 <div class="ibox-content">
                     <form action="{{url('goodsClass/list')}}" method="get">
                         <div class="input-group">
-                            <span  style="float: right;">二级分类：
+                            <span  style="float: right;margin-left: 15px;margin-right: 5px">分类类型：
+                                <select id="types" name="type" class="input-sm">
+                                    <option value="">--请选择--</option>
+                                    @foreach(config('admin.goodsClassType') as $k=>$v)
+                                        <option value="{{$k+1}}">{{$v}}</option>
+                                    @endforeach
+                                </select>
+                            </span>
+                            <span  style="float: right;margin-left: 15px">二级分类：
                                 <select id="select_opts" name="secondName" class="input-sm">
                                     <option value="">--请选择--</option>
                                 </select>
@@ -41,6 +49,7 @@
                         <tr>
                             <th>ID</th>
                             <th>分类名称</th>
+                            <th>分类类型</th>
                             <th>排序</th>
                             <th>是否显示</th>
                             <th>分类图片</th>
@@ -54,6 +63,11 @@
                             <tr class="gradeX">
                                 <td class="did">{{$v['id']}}</td>
                                 <td>{{$v['name']}}</td>
+                                @foreach(config('admin.goodsClassType') as $k=>$val)
+                                    @if($k+1==$v['type'])
+                                    <td>{{$val}}</td>
+                                    @endif
+                                @endforeach
                                 <td><input type="text" class="sort" style="background: #c0c0c0;width:100px;height:30px" value="{{$v['sort']}}"></td>
                                 <td>
                                     @if ($v['status']==1)
