@@ -14,9 +14,9 @@
           new uploadPreview({ UpBtn: "up_img", DivShow: "imgdiv", ImgShow: "imgShow" });
        }
    </script>
-
+<!-- 
 <div style="margin-bottom:10px;border-bottom:1px solid #eee;padding: 0 0 6px;"><a  href="{{url('Banner/index')}}"  >管理轮播图</a><span style="margin-left: 10px;margin-right: 10px;"> </span>  <span style="margin-left: 10px;margin-right: 10px;">
-</div>
+</div> -->
 
 <div class="col-sm-12">
   <div class="tabs-container">
@@ -55,18 +55,12 @@
                   <input class="form-control" name="url" id="url" type="text" value="{{$banner->url}}">
               </div>
              </div> 
-            <div class="hr-line-dashed"></div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label">排序</label>
-              <div class="col-sm-5">
-                  <input class="form-control" name="sort" id="sort" type="text" value="{{$banner->sort}}">
-              </div>
-             </div> 
+        
             <div class="hr-line-dashed"></div>
             <div class="form-group">
             <label class="col-sm-2 control-label">轮播图</label>
             <div class="col-sm-10" id="imgdiv">
-                <input name="image" type="file" id="up_img" >
+                <input name="pic" type="file" id="up_img" >
                 <img  id="imgShow" src="{{$banner->pic}}" style="width:80px;height:80px;margin-bottom:10px;"  >
             </div>
            </div>  
@@ -78,7 +72,7 @@
                         
                     </div>
               </div>  -->
-             <div class="hr-line-dashed"></div>
+           <!--   <div class="hr-line-dashed"></div>
             <div class="form-group">
             <label class="col-sm-2 control-label">内容</label>
             <div class="col-sm-10" id="desc">
@@ -87,7 +81,7 @@
               
             </textarea>
                
-            </div>
+            </div> -->
            </div>       
              <div class="hr-line-dashed"></div>
               <div class="form-group">
@@ -108,6 +102,7 @@
               <div class="form-group">
                 <div class="col-sm-4 col-sm-offset-2">
                 {{ csrf_field() }}
+                   <input type="hidden" name="yin" value="2">
                   <input type="hidden" name='id' value="{{$banner->id}}">
                   <input class="btn btn-primary" type="submit" value="提交" name="dosubmit"><span style="margin-left: 10px;color:red" id="er"></span>
                  </div>

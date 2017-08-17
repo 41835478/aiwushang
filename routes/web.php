@@ -23,7 +23,8 @@ Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
     //后台首页结束
     require_once base_path('routes/admin/goodsClass.php');
     require_once base_path('routes/admin/goods.php');
+    require_once base_path('routes/admin/banner.php');
 });
 require base_path('routes/admin/user.php');
 require_once base_path('routes/admin/login.php');
-require_once base_path('routes/admin/banner.php');
+

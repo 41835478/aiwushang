@@ -14,14 +14,13 @@
           new uploadPreview({ UpBtn: "up_img", DivShow: "imgdiv", ImgShow: "imgShow" });
        }
    </script>
-<div style="margin-bottom:10px;border-bottom:1px solid #eee;padding: 0 0 6px;"></span> <a  href="{{url('banner/add')}}" class="btn btn-info"  style="height:22px;line-height:14px;" >添加广告</a> <span style="margin-left: 10px;margin-right: 10px;">
-</div>
+
 
 <div class="col-sm-12">
   <div class="tabs-container">
     <ul class="nav nav-tabs">
       <li class="active">
-        <a data-toggle="tab" href="#tab-1" aria-expanded="true">添加轮播图</a>
+        <a data-toggle="tab" href="#tab-1" aria-expanded="true">添加公告</a>
       </li>
     
      </ul>
@@ -53,6 +52,15 @@
             </div>
            </div> 
 
+             <div class="hr-line-dashed"></div>
+              <div class="form-group">
+                   <label class="col-sm-2 control-label">内容</label>
+                    <div class="col-sm-10">
+                        <textarea  id="content" name="content" style="width:100%;height:300px;"></textarea>
+                          
+                    </div>
+              </div>  
+
            
              <div class="hr-line-dashed"></div>
               <div class="form-group">
@@ -66,8 +74,8 @@
               <div class="hr-line-dashed"></div>
               <div class="form-group">
                 <div class="col-sm-4 col-sm-offset-2">
-                      <input type="hidden" name="yin" value="1">
-                      <input type="hidden" name="type" value="1">
+                <input type="hidden" name="yin" value="1">
+                <input type="hidden" name="type" value="2">
                   <input class="btn btn-primary" type="submit" value="提交" name="dosubmit"><span style="margin-left: 10px;color:red" id="er"></span>
                  </div>
               </div>

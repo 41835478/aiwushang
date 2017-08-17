@@ -14,7 +14,7 @@
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>轮播图列表 <span style="margin-left: 10px;margin-right: 10px;">|</span> <a  href="{{url('banner/add')}}" class="diva"  style="height:22px;line-height:14px;" >添加轮播图</a> </h5>
+                    <h5>新手必看列表 <span style="margin-left: 10px;margin-right: 10px;">|</span> <a  href="{{url('banner/novvveadd')}}" class="diva"  style="height:22px;line-height:14px;" >添加新手公告</a> </h5>
                 </div>
 
 
@@ -59,6 +59,7 @@
                             <th>图片</th>
                             <th>链接</th>
                             <th>状态</th>
+                            <th>内容</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -79,16 +80,17 @@
                                       @elseif($v->status == 1)
                                         禁用
                                      @endif</td>
+                                <td class="center">{{$v->content}}</td>
                               
                             
                                 <td class="center">
-                                    <a href="{{url('banner/edit',array('id'=>$v->id))}}">修改</a> |
+                                    <a href="{{url('banner/novvveedit',array('id'=>$v->id))}}">修改</a> |
                                     <a href="javascript:;" class="goodsClassDel">删除</a>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
-                  
+                 
                     </table>
                 </div>
             </div>
