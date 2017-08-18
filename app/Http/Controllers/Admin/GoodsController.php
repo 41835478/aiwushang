@@ -138,15 +138,14 @@ class GoodsController extends Controller
             if($request->has('nextName'))
                 $query->orWhere(['class_id'=>Input::get('nextName')]);
         })->paginate(config('admin.pages'));
+        dd($date);
         foreach($date->items() as $k=>$v){
             $date->items()[$k]['class_name']=$this->getClass($v['class_id']);
             $date->items()[$k]['small_pic']=json_decode($v['small_pic'],true);
         }
         $goodsClass=Goodsclass::select(['id','name'])->where(['pid'=>0])->get();
-        $total=$date->total();//总条数
-        $page=ceil($total/$date->count());//共几页
-        $currentPage=$date->currentPage();//当前页
-        return view('admin.goods.goodsList',compact('date','total','page','currentPage','goodsClass'));
+        $res=$this->paging($date);//分页信息
+        return view('admin.goods.goodsList',compact('date','res','goodsClass'));
     }
 
     public function getClass($id)
@@ -157,7 +156,10 @@ class GoodsController extends Controller
 
     public function goodsAreaList()//加载专区商品列表
     {
-
+        $date=$this->goods
+            ->select(['id','name','pic','small_pic','title','money','price','storage','sale','status'])
+            ->whereIn('type',[4,5,6])->paginate(config('admin.pages'));
+        
     }
 
     public function getInputForm(Request $request)//获取input表单

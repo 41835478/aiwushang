@@ -39,6 +39,18 @@ class PublicController extends Controller
         return false;
     }
 
+    /**
+     * @param $object  当前查询数据对象
+     * @return mixed  返回分页的信息
+     */
+    public function paging($object)
+    {
+        $res['total']=$object->total();//总条数
+        $res['page']=ceil($res['total']/config('admin.pages'));//共几页
+        $res['currentPage']=$object->currentPage();//当前页
+        return $res;
+    }
+
     public function goodsClass($data)//得到商品分类（如一级，二级，三级等）
     {
         if(isset($data['type'])){

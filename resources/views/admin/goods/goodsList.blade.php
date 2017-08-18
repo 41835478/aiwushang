@@ -116,7 +116,7 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="4">共{{$total}}条数据 当前第{{$currentPage}}/{{$page}}页</td>
+                            <td colspan="4">共{{$res['total']}}条数据 当前第{{$res['currentPage']}}/{{$res['page']}}页</td>
                             <td colspan="8">
                                 {!! $date->links() !!}
                             </td>

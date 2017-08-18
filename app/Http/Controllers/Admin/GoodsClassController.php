@@ -115,7 +115,7 @@ class GoodsClassController extends Controller
         }
         $date=$this->goodsClass->select(['id','name'])->where(['pid'=>0])->get();
         $total=$goodsClass->total();//总条数
-        $page=ceil($total/$goodsClass->count());//共几页
+        $page=ceil($total/config('admin.pages'));//共几页
         $currentPage=$goodsClass->currentPage();//当前页
         return view('admin.goodsClass.goodsList',compact('date','goodsClass','data','total','page','currentPage'));
     }
