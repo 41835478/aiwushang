@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Model\Goods;
+use App\Http\Model\Goodsclass;
 use App\Http\Requests\Admin\GoodsAreaRequest;
 use App\Http\Requests\Admin\GoodsRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PublicController as Controller;
+use Illuminate\Support\Facades\Input;
 
 class GoodsController extends Controller
 {
@@ -118,9 +120,44 @@ class GoodsController extends Controller
         return false;
     }
 
-    public function goodsList()//加载商品列表视图
+    public function goodsList(Request $request)//加载商品列表视图
     {
-//        $date=$this->goods->
+        $date=$this->goods->whereIn('type',[1,2,3])->where(function($query) use ($request){
+            if($request->has('name'))
+                $query->orWhere('name','like','%'.$request->input('name').'%');
+            if($request->has('goodsType')){
+                $goodsType=Input::get('goodsType');
+                if($goodsType==1){//说明是热门推荐
+                    $query->orWhere(['hots'=>$goodsType]);
+                }else{
+                    $query->orWhere(['sales_push'=>$goodsType]);
+                }
+            }
+            if($request->has('classType'))
+                $query->orWhere(['type'=>$request->input('classType')]);
+            if($request->has('nextName'))
+                $query->orWhere(['class_id'=>Input::get('nextName')]);
+        })->paginate(config('admin.pages'));
+        foreach($date->items() as $k=>$v){
+            $date->items()[$k]['class_name']=$this->getClass($v['class_id']);
+            $date->items()[$k]['small_pic']=json_decode($v['small_pic'],true);
+        }
+        $goodsClass=Goodsclass::select(['id','name'])->where(['pid'=>0])->get();
+        $total=$date->total();//总条数
+        $page=ceil($total/$date->count());//共几页
+        $currentPage=$date->currentPage();//当前页
+        return view('admin.goods.goodsList',compact('date','total','page','currentPage','goodsClass'));
+    }
+
+    public function getClass($id)
+    {
+        $find=Goodsclass::find($id);
+        return $find->name;
+    }
+
+    public function goodsAreaList()//加载专区商品列表
+    {
+
     }
 
     public function getInputForm(Request $request)//获取input表单
