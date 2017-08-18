@@ -253,13 +253,9 @@
                     <span class="ng-scope">分类</span>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">相册</span><span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">提现管理</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem" href="basic_gallery.html">基本图库</a>
-                        </li>
-                        <li><a class="J_menuItem" href="carousel.html">图片切换</a>
-                        </li>
-                        <li><a class="J_menuItem" href="blueimp.html">Blueimp相册</a>
+                        <li><a class="J_menuItem" href="{{url('withdraw/cashList')}}">提现列表</a>
                         </li>
                     </ul>
                 </li>

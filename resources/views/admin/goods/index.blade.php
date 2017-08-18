@@ -71,6 +71,13 @@
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">厂家编号</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" name="factory_code" value="">
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">商品主图</label>
                                 <div class="col-sm-10">
                                     <input type="file" name="pic" value="" id="singleFile">
@@ -159,6 +166,13 @@
                                 <label class="col-sm-2 control-label">商品描述</label>
                                 <div class="col-sm-10">
                                     <input class="form-control" type="text" name="title" value="">
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">厂家编号</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" name="factory_code" value="">
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>

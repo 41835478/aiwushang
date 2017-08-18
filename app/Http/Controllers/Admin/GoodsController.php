@@ -161,7 +161,7 @@ class GoodsController extends Controller
             $query->where(['type'=>$request->input('areaType')]);
         if($request->has('name'))
             $query->where('name','like','%'.$request->input('name').'%');
-        $date=$query->select(['id','name','pic','small_pic','title','money','price','storage','sale','status','content'])
+        $date=$query->select(['id','name','pic','small_pic','title','money','price','storage','sale','status','content','factory_code'])
             ->whereIn('type',[4,5,6])->paginate(config('admin.pages'));
         foreach($date->items() as $k=>$v){
             $date->items()[$k]['small_pic']=json_decode($v['small_pic'],true);
@@ -172,7 +172,7 @@ class GoodsController extends Controller
 
     public function goodsEdit($id)//加载商城商品修改视图
     {
-        $res=Goods::select(['id','name','class_id','title','pic','price','money','integral','storage','sale','type'])
+        $res=Goods::select(['id','name','class_id','title','pic','price','money','integral','storage','sale','type','factory_code'])
             ->where(['id'=>$id])->first();
         if($res->type!=3)
             $res->class_name=$this->getClassName($res->class_id);
@@ -200,7 +200,7 @@ class GoodsController extends Controller
 
     public function goodsAreaEdit($id)//加载专区商品修改视图
     {
-        $res=Goods::select(['id','name','title','pic','storage','sale','type'])
+        $res=Goods::select(['id','name','title','pic','storage','sale','type','factory_code'])
             ->where(['id'=>$id])->first();
         return view('admin.goods.goodsAreaEdit',['res'=>$res,'id'=>$id]);
     }

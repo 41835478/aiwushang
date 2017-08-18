@@ -41,6 +41,7 @@
                         <tr>
                             <th>ID</th>
                             <th>商品名称</th>
+                            <th>厂家编号</th>
                             <th>商品主图</th>
                             <th>商品轮播图</th>
                             <th>价格</th>
@@ -57,6 +58,7 @@
                             <tr class="gradeX">
                                 <td class="did">{{$v->id}}</td>
                                 <td>{{$v->name}}</td>
+                                <td>{{$v->factory_code}}</td>
                                 <td><img src="{{asset($v->pic)}}" width="50px" height="50px"></td>
                                 <td>
                                     @foreach($v->small_pic as $val)
@@ -89,8 +91,8 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="4">共{{$res['total']}}条数据 当前第{{$res['currentPage']}}/{{$res['page']}}页</td>
-                            <td colspan="6">
+                            <td colspan="5">共{{$res['total']}}条数据 当前第{{$res['currentPage']}}/{{$res['page']}}页</td>
+                            <td colspan="7">
                                 {!! $date->links() !!}
                             </td>
                         </tr>
