@@ -54,6 +54,19 @@
                         </li>
                     </ul>
                 </li>
+                 <li>
+                    <a href="#">
+                        <i class="fa fa-user"></i>
+                        <span class="nav-label">会员管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="{{url('member/index')}}">会员列表</a>
+                        </li>
+                        
+                    </ul>
+                </li>
                 <li class="line dk"></li>
                 <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
                     <span class="ng-scope">分类</span>

@@ -24,6 +24,7 @@ Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
     require_once base_path('routes/admin/goodsClass.php');
     require_once base_path('routes/admin/goods.php');
     require_once base_path('routes/admin/banner.php');
+    require_once base_path('routes/admin/member.php');
 });
 require base_path('routes/admin/user.php');
 require_once base_path('routes/admin/login.php');
