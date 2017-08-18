@@ -15,18 +15,19 @@
             </div>
         </div>
         <div class="ibox-content">
-            <form method="post" class="form-horizontal" action="{{url('memner/editinfo')}}" enctype="multipart/form-data">
+            <form method="post" class="form-horizontal" action="{{url('member/editinfo')}}" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">用户名称</label>
                     <div class="col-sm-10">
-                        <input class="form-control" name="name" type="text" value="{{$res->name}}">
+                        <input class="form-control" name="name" type="text" value="{{$res->name}}" readonly>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">用户余额</label>
                     <div class="col-sm-10">
-                        <input class="form-control" name="name" type="text" value="{{$res->name}}">
+
+                        <input class="form-control" name="account" type="text" value="{{$res->account}}">
  
                     </div>
                 </div>
@@ -34,25 +35,30 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">用户推荐人手机号</label>
                     <div class="col-sm-10">
-                     <input class="form-control" name="name" type="text" value="{{$res->name}}">
+                      @if($ress == null)
+                        <input class="form-control" name="phone" type="text" value="">
+                       @else
+                         <input class="form-control" name="phone" type="text" value="{{$ress->phone}}">                                          
+                       @endif 
+                     
                 </div>
-                <div class="hr-line-dashed"></div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">用户余额</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" name="name" type="text" value="{{$res->name}}">
-                            <label class="checkbox-inline">
-                            <input value="0" name="status"  type="radio" @if ($banner->status == 0) checked
+               
+           
+              <div class="hr-line-dashed"></div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">启用或禁用</label>
+                <div class="col-sm-10">
+                  <label class="checkbox-inline">
+                    <input value="1" name="locking"  type="radio" @if ($res->locking == 1) checked
                                                                   @else
                                                                    
                                                                  @endif >是</label>
-                            <label class="checkbox-inline">
-                            <input value="1" name="status"  type="radio"  @if ($banner->status == 1) checked
+                  <label class="checkbox-inline">
+                    <input value="0" name="locking"  type="radio"  @if ($res->locking == 0) checked
                                                                   @else
                                                                    
-                                                                 @endif >否</label>
-                    </div>
-                </div>
+                                                                 @endif >否</label></div>
+              </div>               
                <!--  <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">分类图片</label>
@@ -70,6 +76,7 @@
                 <input type="hidden" name="id" value="{{$res->id}}">
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
+                    <input type="hidden" name="id" value="{{$res->id}}">
                         <button class="btn btn-primary" type="submit">修改</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <button class="btn btn-white" type="reset">重置</button>
                     </div>

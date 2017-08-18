@@ -32,15 +32,15 @@ class MemberController extends Controller
             }
             if($request->has('start')){
                 $start=strtotime($input['start']);
-                $query->where('create_at','>=',$input['phone']);
+                $query->where('create_at','>=',$start);
             }
                 
             if($request->has('end')){
-                 $start=strtotime($input['end']);
-                $query->where('create_at','<=',$input['phone']);
+                 $end=strtotime($input['end']);
+                $query->where('create_at','<=',$end);
             }
              if($request->has('level')){
-                 $start=strtotime($input['level']);
+                
                 $query->where('level',$input['level']);
             }
             
@@ -55,7 +55,9 @@ class MemberController extends Controller
             }
 
         $total=$memberclass->total();//总条数
-        $page=ceil($total / $memberclass->count());//共几页
+
+        $page=ceil($total / config('admin.pages'));//共几页
+       
         $currentPage=$memberclass->currentPage();//当前页
 
         return view('admin.member.index',compact('memberclass','total','page','currentPage'));
@@ -64,13 +66,46 @@ class MemberController extends Controller
 
 
     public function edit(Request $request ,$id){
-
-
-        return view('admin.member.edit'); 
+        $res=$this->memberclass->where('id',$id)->first();
+       
+           $ress=DB::table('user')->where('id',$res['pid'])->select('phone')->first();
+       
+        return view('admin.member.edit',compact('res','ress')); 
     }
-    public function editinfo(){
+    #修改
+    public function editinfo(Request $request){
+        $post=$request->input();
+        $data=[];
+        if($post['phone']){
+            $puser=DB::table('user')->where('phone',$post['phone'])->first();
+             $data['pid']= $puser->id;
+                    if($puser== null){
+                         return back()->withErrors('该用户不存在'); 
+                    }
+        }       
+        $data['account']= $post['account'];
+        $data['locking']=$post['locking'];
+        $data['update_at']=time();
+        $banner=DB::table('user')->where('id',$post['id'])->update($data);
+    
+        if($banner){
+           return back()->with('success','请求成功');  
+        }else{
+            return back()->withErrors('请求失败'); 
+        }
 
-        
+    }
+    #删除
+    public function del(Request $request){
+
+        $id = $request->only('id')['id'];
+        $banner=DB::table('user')->where('id',$id)->delete();
+        if ($banner) {
+            return $this->ajaxMessage(true,'删除成功');
+        }else{
+            return $this->ajaxMessage(false,'删除失败');
+             }
+
     }
 
 }

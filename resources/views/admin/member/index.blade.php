@@ -17,7 +17,7 @@
 
 
 
-                  <form action="{{url('member/index')}}" method="get">
+         <form action="{{url('member/index')}}" method="get">
        <div class="explain-col" style="margin-bottom: 10px;background: #fffced;border: 1px solid #ffbe7a;padding: 8px 10px;">
     <div class="input-group">
         <span  style="float: left;margin-left: 25px">
@@ -146,36 +146,36 @@
 </html>
 <script type="text/javascript">
     $(function(){
-        $('.sort').blur(function(){
-            var id=$(this).parent().parent().find('.did').html();
-            var sort=$(this).val();
-            if(sort!=''&&sort!=null){
-                $.ajaxSetup({
-                    headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
-                });
-                $.ajax({
-                    'url':'{{url("goodsClass/sort")}}',
-                    'data':{'id':id,'sort':sort},
-                    'async':true,
-                    'type':'post',
-                    'dataType':'json',
-                    success:function(data){
-                        if(data.status){
-                            parent.layer.alert(data.message, {
-                                icon: 1,
-                                skin: 'layer-ext-moon'
-                            })
-                        }else{
-                            alert(data.message);
-                        }
-                        window.location.reload();
-                    },
-                    error:function(){
-                        alert('Ajax响应失败');
-                    }
-                })
-            }
-        })
+        // $('.sort').blur(function(){
+        //     var id=$(this).parent().parent().find('.did').html();
+        //     var sort=$(this).val();
+        //     if(sort!=''&&sort!=null){
+        //         $.ajaxSetup({
+        //             headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
+        //         });
+        //         $.ajax({
+        //             'url':'{{url("goodsClass/sort")}}',
+        //             'data':{'id':id,'sort':sort},
+        //             'async':true,
+        //             'type':'post',
+        //             'dataType':'json',
+        //             success:function(data){
+        //                 if(data.status){
+        //                     parent.layer.alert(data.message, {
+        //                         icon: 1,
+        //                         skin: 'layer-ext-moon'
+        //                     })
+        //                 }else{
+        //                     alert(data.message);
+        //                 }
+        //                 window.location.reload();
+        //             },
+        //             error:function(){
+        //                 alert('Ajax响应失败');
+        //             }
+        //         })
+        //     }
+        // })
         $('.goodsClassDel').click(function(){
             var id=$(this).parent().parent().find('.did').html();
             var sure=confirm("你确信要删除该条数据吗？删除将无法找回")
@@ -184,7 +184,7 @@
                     headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
                 });
                 $.ajax({
-                    'url':'{{url("goodsClass/goodsClassDel")}}',
+                    'url':'{{url("member/del")}}',
                     'data':{'id':id},
                     'async':true,
                     'type':'post',
