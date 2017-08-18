@@ -121,8 +121,8 @@
                                     </button>
                                 </td>
                                 <td class="center">
-                                    <a href="{{url('goods/goodsInfoList',['id'=>$v->id])}}">修改</a> |
-                                    <a href="{{url('goods/goodsInfoList',['id'=>$v->id])}}">修改商品轮播图</a> |
+                                    <a href="{{url('goods/goodsEdit',['id'=>$v->id])}}">修改</a> |
+                                    <a href="{{url('goods/smallPicEdit',['id'=>$v->id,'flag'=>1])}}">修改商品轮播图</a> |
                                     <a href="javascript:;" class="mallGoodsDel">删除</a>
                                 </td>
                             </tr>

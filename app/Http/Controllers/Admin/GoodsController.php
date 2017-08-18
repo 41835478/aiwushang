@@ -161,13 +161,99 @@ class GoodsController extends Controller
             $query->where(['type'=>$request->input('areaType')]);
         if($request->has('name'))
             $query->where('name','like','%'.$request->input('name').'%');
-        $date=$query->select(['id','name','pic','small_pic','title','money','price','storage','sale','status'])
+        $date=$query->select(['id','name','pic','small_pic','title','money','price','storage','sale','status','content'])
             ->whereIn('type',[4,5,6])->paginate(config('admin.pages'));
         foreach($date->items() as $k=>$v){
             $date->items()[$k]['small_pic']=json_decode($v['small_pic'],true);
         }
         $res=$this->paging($date);
         return view('admin.goods.goodsAreaList',compact('date','res'));
+    }
+
+    public function goodsEdit($id)//加载商城商品修改视图
+    {
+        $res=Goods::select(['id','name','class_id','title','pic','price','money','integral','storage','sale','type'])
+            ->where(['id'=>$id])->first();
+        if($res->type!=3)
+            $res->class_name=$this->getClassName($res->class_id);
+        $goodsClass=Goodsclass::where(['id'=>$res->class_id])->first(['pid','id','name']);
+        if($goodsClass->pid){
+            $class=$this->getOneGoodsClass($goodsClass->pid);
+            $data['id']=$class->id;
+            $data['name']=$class->name;
+        }else{
+            $data['id']=$goodsClass->id;
+            $data['name']=$goodsClass->name;
+        }
+        return view('admin.goods.goodsEdit',compact('id','res','data'));
+    }
+
+    public function actEditGoods(GoodsRequest $request)//执行商城商品的修改操作
+    {
+        $date = $request->except(['_token','pic']);
+        $res=$this->goodsEditCommon($date,$request,1);
+        if($res){
+            return back()->with('success','修改商品成功');
+        }
+        return back()->withErrors('修改商品失败');
+    }
+
+    public function goodsAreaEdit($id)//加载专区商品修改视图
+    {
+        $res=Goods::select(['id','name','title','pic','storage','sale','type'])
+            ->where(['id'=>$id])->first();
+        return view('admin.goods.goodsAreaEdit',['res'=>$res,'id'=>$id]);
+    }
+
+    public function actEditAreaGoods(GoodsAreaRequest $request)
+    {
+        $date = $request->except(['_token','pic']);
+        $res=$this->goodsEditCommon($date,$request,2);
+        if($res){
+            return back()->with('success','修改商品成功');
+        }
+        return back()->withErrors('修改商品失败');
+    }
+
+    public function goodsEditCommon($date,$request,$mark)
+    {
+        $mod = $this->goods;
+        $flag=1;
+        if($mark==2){
+            $data['type']=$date['goodsArea'];
+            unset($date['goodsArea']);
+        }
+        if($request->hasFile('pic')){
+            $path = $this->uploadsFile($request, 'uploads/goods/main_pic', 'pic');
+            $img=$mod->where(['id'=>$date['id']])->value('pic');
+            if ($path) {
+                $flag=2;
+                $data['pic'] = $path;
+            } else {
+                return back()->withErrors('上传商品主图失败');
+            }
+        }
+        foreach($date as $k=>$v){
+            $data[$k]=$v;
+        }
+        $data['update_at']=time();
+        $res = $mod->where(['id'=>$date['id']])->update($data);
+        if ($res) {
+            if($flag==2){
+                unlink('./'.$img);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function getClassName($id)//获取分类的名称
+    {
+        $res = Goodsclass::where(['id' => $id])->value('name');
+        if ($res) {
+            return $res;
+        }
+        return '';
     }
 
     public function editGoodsInfo(Request $request)//修改商品列表中的商品详情
@@ -181,6 +267,71 @@ class GoodsController extends Controller
             return back()->withErrors('修改失败');
         }
         return back()->withErrors('修改商品详情的信息为空');
+    }
+
+    public function smallPicEdit($id,$flag)//加载修改商品轮播图的视图
+    {
+        $res=Goods::where(['id'=>$id])->value('small_pic');
+        $data=json_decode($res,true);
+        return view('admin.goods.smallPicEdit',compact('id','data','flag'));
+    }
+
+    public function editSmallPic(Request $request)//执行修改商品列表中的修改轮播图操作
+    {
+        $this->validate($request,[
+            'small_pic'=>'required',
+        ],[
+            'small_pic.required'=>'上传文件不能为空',
+        ]);
+        $mod=$this->goods;
+        $pic=$mod->where(['id'=>$request->input('id')])->value('small_pic');
+        $path = $this->uploadsFile($request, 'uploads/goods/small_pic', 'small_pic');
+        if ($path) {
+            if(!empty($pic)){
+                $img=json_decode($pic,true);
+                array_push($img,$path);
+                $data['small_pic']=json_encode($img);
+            }else{
+                $imgs[]=$path;
+                $data['small_pic']=json_encode($imgs);
+            }
+        } else {
+            return back()->withErrors('上传商品轮播图失败');
+        }
+        $data['update_at']=time();
+        $res=$mod->where(['id'=>$request->input('id')])->update($data);
+        if($res){
+            return back()->with('success','添加商品轮播图成功');
+        }else{
+            return back()->withErrors('添加商品轮播图失败');
+        }
+    }
+
+    public function delSmallPic(Request $request)//执行修改商品轮播图的删除操作
+    {
+        $date=$request->only(['id','pic']);
+        $mod=$this->goods;
+        $small_pic=$mod->where(['id'=>$date['id']])->value('small_pic');
+        $pic=json_decode($small_pic,true);
+        foreach($pic as $k=>$v){
+            if($v==$date['pic']){
+                array_splice($pic,$k,1);
+            }
+        }
+        if(count($pic)>0){
+            sort($pic);
+            $attr['small_pic']=json_encode($pic);
+        }else{
+            $attr['small_pic']='';
+        }
+        $attr['update_at']=time();
+        $res=$mod->where(['id'=>$date['id']])->update($attr);
+        if($res){
+            unlink('./'.$date['pic']);
+            return $this->ajaxMessage(true,'删除成功');
+        }else{
+            return $this->ajaxMessage(true,'删除失败');
+        }
     }
 
     public function goodsDel(Request $request)//商城商品列表中的删除操作

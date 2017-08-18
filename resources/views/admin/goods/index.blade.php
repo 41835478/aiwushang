@@ -231,6 +231,9 @@
     var ue2 =UE.getEditor('editor2');
 </script>
 <script type="text/javascript">
+    $('.close').click(function(){
+        $(this).parent().parent().remove();
+    })
     $('#goodsClassType').change(function(){
         var type=$(this).val();
         $(".oneClass").remove();

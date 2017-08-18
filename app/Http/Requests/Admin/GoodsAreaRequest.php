@@ -29,7 +29,6 @@ class GoodsAreaRequest extends FormRequest
             'title'=>'required',
             'sale'=>'required|integer',
             'storage'=>'required|integer',
-            'content'=>'required',
         ];
     }
 
@@ -43,7 +42,6 @@ class GoodsAreaRequest extends FormRequest
             'sale.integer'=>'商品销量必须为正整数',
             'storage.required'=>'商品库存不能为空',
             'storage.integer'=>'商品库存必须为正整数',
-            'content.required'=>'商品详情不能为空',
         ];
     }
 }
