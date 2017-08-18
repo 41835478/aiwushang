@@ -242,9 +242,9 @@
                     <ul class="nav nav-second-level">
                         <li><a class="J_menuItem" href="{{url('goods/index')}}">添加商品</a>
                         </li>
-                        <li><a class="J_menuItem" href="{{url('goods/goodsList')}}">商品列表</a>
+                        <li><a class="J_menuItem" href="{{url('goods/goodsList')}}">商城商品列表</a>
                         </li>
-                        <li><a class="J_menuItem" href="table_jqgrid.html">jqGrid</a>
+                        <li><a class="J_menuItem" href="{{url('goods/goodsAreaList')}}">专区商品列表</a>
                         </li>
                         <li><a class="J_menuItem" href="table_foo_table.html">Foo Tables</a>
                         </li>
