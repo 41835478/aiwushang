@@ -246,11 +246,6 @@
                         </li>
                         <li><a class="J_menuItem" href="{{url('goods/goodsAreaList')}}">专区商品列表</a>
                         </li>
-                        <li><a class="J_menuItem" href="table_foo_table.html">Foo Tables</a>
-                        </li>
-                        <li><a class="J_menuItem" href="table_bootstrap.html">Bootstrap Table
-                                <span class="label label-danger pull-right">推荐</span></a>
-                        </li>
                     </ul>
                 </li>
                 <li class="line dk"></li>
