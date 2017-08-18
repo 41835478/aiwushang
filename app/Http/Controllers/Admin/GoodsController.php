@@ -138,7 +138,7 @@ class GoodsController extends Controller
             if($request->has('nextName'))
                 $query->orWhere(['class_id'=>Input::get('nextName')]);
         })->paginate(config('admin.pages'));
-        dd($date);
+
         foreach($date->items() as $k=>$v){
             $date->items()[$k]['class_name']=$this->getClass($v['class_id']);
             $date->items()[$k]['small_pic']=json_decode($v['small_pic'],true);
@@ -154,12 +154,75 @@ class GoodsController extends Controller
         return $find->name;
     }
 
-    public function goodsAreaList()//加载专区商品列表
+    public function goodsAreaList(Request $request)//加载专区商品列表
     {
-        $date=$this->goods
-            ->select(['id','name','pic','small_pic','title','money','price','storage','sale','status'])
+        $query=$this->goods->newQuery();
+        if($request->has('areaType'))
+            $query->where(['type'=>$request->input('areaType')]);
+        if($request->has('name'))
+            $query->where('name','like','%'.$request->input('name').'%');
+        $date=$query->select(['id','name','pic','small_pic','title','money','price','storage','sale','status'])
             ->whereIn('type',[4,5,6])->paginate(config('admin.pages'));
-        
+        foreach($date->items() as $k=>$v){
+            $date->items()[$k]['small_pic']=json_decode($v['small_pic'],true);
+        }
+        $res=$this->paging($date);
+        return view('admin.goods.goodsAreaList',compact('date','res'));
+    }
+
+    public function editGoodsInfo(Request $request)//修改商品列表中的商品详情
+    {
+        if($request->has('content')){
+            $goods=Goods::find($request->input('id'));
+            $goods->content=$request->input('content');
+            if($goods->save()){
+                return back()->with('success','修改商品详情成功');
+            }
+            return back()->withErrors('修改失败');
+        }
+        return back()->withErrors('修改商品详情的信息为空');
+    }
+
+    public function goodsDel(Request $request)//商城商品列表中的删除操作
+    {
+        $id=$request->only('id')['id'];
+        $res=Goods::where(['id'=>$id])->delete();
+        if($res){
+            return $this->ajaxMessage(true,'删除成功');
+        }
+        return $this->ajaxMessage(true,'删除失败');
+    }
+
+    public function commonSet(Request $request)//商品列表中的公共设置
+    {
+        $date=$request->only(['id','flag','mark']);
+        $mod=$this->goods->find($date['id']);
+        if($date['mark']==1){//说明是设置上架下架
+            if($date['flag']==1){//说明是
+                $mod->status=1;
+            }else{
+                $mod->status=2;
+            }
+        }
+        if($date['mark']==2){//说明是热门推荐
+            if($date['flag']==1){//说明是
+                $mod->hots=1;
+            }else{
+                $mod->hots=2;
+            }
+        }
+        if($date['mark']==3){//说明是促销活动
+            if($date['flag']==1){//说明是
+                $mod->sales_push=1;
+            }else{
+                $mod->sales_push=2;
+            }
+        }
+        $res=$mod->save();
+        if($res){
+            return $this->ajaxMessage(true,'设置成功');
+        }
+        return $this->ajaxMessage(false,'设置失败');
     }
 
     public function getInputForm(Request $request)//获取input表单

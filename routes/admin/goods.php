@@ -6,4 +6,7 @@ Route::get('goods/getGoodsClass','GoodsController@getGoodsClass');//获取商品
 Route::get('goods/getInputForm','GoodsController@getInputForm');//获取添加商品中的input的表单
 Route::post('goods/addGoods','GoodsController@addGoods');//执行添加商城商品操作
 Route::post('goods/actGoodsArea','GoodsController@actGoodsArea');//执行添加商品专区操作
+Route::get('goods/commonSet','GoodsController@commonSet');//执行商品列表中的公共设置
+Route::post('goods/editGoodsInfo','GoodsController@editGoodsInfo');//修改商品列表中的商品详情
+Route::get('goods/goodsDel','GoodsController@goodsDel');//商城商品列表中的删除操作
 ?>

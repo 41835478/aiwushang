@@ -47,10 +47,10 @@
                     </a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a class="J_menuItem" href="{{url('user/index')}}">修改用户密码</a>
+                            <a class="J_menuItem" href="{{url('user/index')}}">修改管理员密码</a>
                         </li>
                         <li>
-                            <a class="J_menuItem" href="{{url('user/editInfo')}}">修改用户信息</a>
+                            <a class="J_menuItem" href="{{url('user/editInfo')}}">修改管理员信息</a>
                         </li>
                     </ul>
                 </li>
