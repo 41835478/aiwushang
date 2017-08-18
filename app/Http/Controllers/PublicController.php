@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Model\Goodsclass;
 use Illuminate\Http\Request;
 
 class PublicController extends Controller
@@ -36,5 +37,28 @@ class PublicController extends Controller
             }
         }
         return false;
+    }
+
+    public function goodsClass($data)//得到商品分类（如一级，二级，三级等）
+    {
+        if(isset($data['type'])){
+            return Goodsclass::select(['id','pid','name'])->where(['pid'=>0,'type'=>$data['type']])->get();
+        }else{
+            return $this->common($data['id']);
+        }
+    }
+
+    public function common($pid = 0, &$result = array())//用于处理分类的公共方法
+    {
+        $res = Goodsclass::select(['name', 'id', 'pid', 'path'])->where(['pid' => $pid])->get();
+        foreach ($res as $v) {
+            $count = (count(explode(',', $v['path'])) - 2) * 2;
+            $name = str_repeat('&nbsp;&nbsp;&nbsp;', $count) . $v['name'];
+            $data['name'] = $name;
+            $data['id'] = $v['id'];
+            $result[] = $data;
+            $this->common($v['id'], $result);
+        }
+        return $result;
     }
 }
