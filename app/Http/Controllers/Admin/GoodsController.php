@@ -120,7 +120,7 @@ class GoodsController extends Controller
 
     public function goodsList()//加载商品列表视图
     {
-
+//        $date=$this->goods->
     }
 
     public function getInputForm(Request $request)//获取input表单
