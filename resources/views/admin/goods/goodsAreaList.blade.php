@@ -10,43 +10,22 @@
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>商城商品列表</h5>
+                    <h5>专区商品列表</h5>
                 </div>
 
                 <div class="ibox-content">
-                    <form action="{{url('goods/goodsList')}}" method="get">
+                    <form action="{{url('goods/goodsAreaList')}}" method="get">
                         <div class="input-group">
-                            <span  style="float: right;margin-left: 10px">商品类型：
-                                <select name="goodsType" class="input-sm">
+                            <span  style="float: right;margin-left: 10px">专区分类：
+                                <select name="areaType" class="input-sm">
                                     <option value="">--请选择--</option>
-                                    @foreach(config('admin.goodsType') as $k=>$v)
-                                        <option value="{{$k+1}}">{{$v}}</option>
+                                    @foreach(config('admin.specialArea') as $k=>$v)
+                                        <option value="{{$k}}">{{$v}} 元专区</option>
                                     @endforeach
                                 </select>
                             </span>
                             <span  style="float: right;margin-left: 10px">商品名称：
                                 <input name="name" type="text" class="input-sm" placeholder="请输入商品名称"/>
-                            </span>
-                            <span  style="float: right;margin-left: 10px">分类类型：
-                                <select id="threeLevel" name="classType" class="input-sm">
-                                    <option value="">--请选择--</option>
-                                    @foreach(config('admin.goodsClassType') as $k=>$v)
-                                        <option value="{{$k+1}}">{{$v}}</option>
-                                    @endforeach
-                                </select>
-                            </span>
-                            <span  style="float: right;margin-left: 10px">下级分类：
-                                <select id="select_opts" name="nextName" class="input-sm">
-                                    <option value="">--请选择--</option>
-                                </select>
-                            </span>
-                            <span  style="float: right;">一级分类：
-                                <select name="topName" class="input-sm" id="topLevel">
-                                    <option value="">--请选择--</option>
-                                    @foreach($goodsClass as $v)
-                                    <option value="{{$v->id}}">{{$v->name}}</option>
-                                    @endforeach
-                                </select>
                             </span>
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-sm btn-primary">
@@ -61,19 +40,15 @@
                         <thead>
                         <tr>
                             <th>ID</th>
-                            <th>分类名称</th>
                             <th>商品名称</th>
                             <th>厂家编号</th>
                             <th>商品主图</th>
-                            <th>商品轮播主图</th>
+                            <th>商品轮播图</th>
                             <th>价格</th>
                             <th>市场价</th>
-                            <th>消费积分</th>
                             <th>库存</th>
                             <th>销量</th>
                             <th>状态</th>
-                            <th>热门推荐</th>
-                            <th>促销活动</th>
                             <th>详情</th>
                             <th>操作</th>
                         </tr>
@@ -82,39 +57,23 @@
                         @foreach($date as $v)
                             <tr class="gradeX">
                                 <td class="did">{{$v->id}}</td>
-                                <td>{{$v->class_name}}</td>
                                 <td>{{$v->name}}</td>
                                 <td>{{$v->factory_code}}</td>
                                 <td><img src="{{asset($v->pic)}}" width="50px" height="50px"></td>
                                 <td>
                                     @foreach($v->small_pic as $val)
-                                        <img src="{{asset($val)}}" width="50px" height="50px">
+                                    <img src="{{asset($val)}}" width="50px" height="50px">
                                     @endforeach
                                 </td>
                                 <td>{{$v->price}} 元</td>
                                 <td>{{$v->money}} 元</td>
-                                <td>{{$v->integral}}</td>
                                 <td>{{$v->storage}}</td>
                                 <td>{{$v->sale}}</td>
                                 <td>
                                     @if($v->status==1)
                                         <b style="color:green">上线</b> | <b style="color:#ccc;cursor:pointer" class="down">下线</b>
-                                        @else
+                                    @else
                                         <b style="color:#ccc;cursor:pointer" class="upPut">上线</b> | <b style="color:green">下线</b>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($v->hots==1)
-                                        <b style="color:green">是</b> | <b style="color:#ccc;cursor:pointer" class="unHot">否</b>
-                                        @else
-                                        <b style="color:#ccc;cursor:pointer" class="hot">是</b> | <b style="color:green">否</b>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($v->sales_push==1)
-                                        <b style="color:green">是</b> | <b style="color:#ccc;cursor:pointer" class="un_sales_push">否</b>
-                                        @else
-                                        <b style="color:#ccc;cursor:pointer" class="sales_push">是</b> | <b style="color:green">否</b>
                                     @endif
                                 </td>
                                 <td>
@@ -123,9 +82,9 @@
                                     </button>
                                 </td>
                                 <td class="center">
-                                    <a href="{{url('goods/goodsEdit',['id'=>$v->id])}}">修改</a> |
-                                    <a href="{{url('goods/smallPicEdit',['id'=>$v->id,'flag'=>1])}}">修改商品轮播图</a> |
-                                    <a href="javascript:;" class="mallGoodsDel">删除</a>
+                                    <a href="{{url('goods/goodsAreaEdit',['id'=>$v->id])}}">修改</a> |
+                                    <a href="{{url('goods/smallPicEdit',['id'=>$v->id,'flag'=>2])}}">修改商品轮播图</a> |
+                                    <a href="javascript:;" class="areaGoodsDel">删除</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -133,7 +92,7 @@
                         <tfoot>
                         <tr>
                             <td colspan="5">共{{$res['total']}}条数据 当前第{{$res['currentPage']}}/{{$res['page']}}页</td>
-                            <td colspan="11">
+                            <td colspan="7">
                                 {!! $date->links() !!}
                             </td>
                         </tr>
@@ -147,36 +106,33 @@
 <div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <form action="{{url('goods/editGoodsInfo')}}" method="post">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">商品详情</h4>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">商品详情</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <script id="editor" name="content" type="text/plain" style="width:100%;height:300px;"></script>
+                    </p>
+                </div>
+                <input id="getid" type="hidden" name="id" value="">
+                {{csrf_field()}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <p>
-                    <script id="editor" name="content" type="text/plain" style="width:100%;height:300px;"></script>
-                </p>
-            </div>
-            <input id="getid" type="hidden" name="id" value="">
-            {{csrf_field()}}
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                <button type="submit" class="btn btn-primary">保存</button>
-            </div>
-        </div>
         </form>
     </div>
 </div>
 <!-- 全局js -->
-
 <script type="text/javascript" charset="utf-8" src="{{asset('ueditor/ueditor.config.js')}}"></script>
 <script type="text/javascript" charset="utf-8" src="{{asset('ueditor/ueditor.all.js')}}"> </script>
 <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
 <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
 <script type="text/javascript" charset="utf-8" src="{{asset('ueditor/lang/zh-cn/zh-cn.js')}}"></script>
-<script src="{{asset('admin/js/jquery.min.js?v=2.1.4')}}"></script>
-<script src="{{asset('admin/js/bootstrap.min.js?v=3.3.6')}}"></script>
-{{--@include('admin.layouts.fooler')--}}
+@include('admin.layouts.fooler')
 <!-- 自定义js -->
 <script src="{{asset('admin/js/content.js?v=1.0.0')}}"></script>
 </body>
@@ -192,7 +148,7 @@
 </script>
 <script type="text/javascript">
     $(function(){
-        $('.mallGoodsDel').click(function(){
+        $('.areaGoodsDel').click(function(){
             var bool=confirm('你确定要删除该商品吗？删除将不可回复');
             if(bool){
                 var id=$(this).parent().parent().find('.did').html();
@@ -231,51 +187,6 @@
             }
             commonSet(data)
         })
-
-        $('.unHot').click(function(){
-            var id=$(this).parent().parent().find('.did').html();
-            var flag=2;
-            var mark=2;
-            var data={
-                'id':id,
-                'flag':flag,
-                'mark':mark
-            }
-            commonSet(data)
-        })
-        $('.hot').click(function(){
-            var id=$(this).parent().parent().find('.did').html();
-            var flag=1;
-            var mark=2;
-            var data={
-                'id':id,
-                'flag':flag,
-                'mark':mark
-            }
-            commonSet(data)
-        })
-        $('.un_sales_push').click(function(){
-            var id=$(this).parent().parent().find('.did').html();
-            var flag=2;
-            var mark=3;
-            var data={
-                'id':id,
-                'flag':flag,
-                'mark':mark
-            }
-            commonSet(data)
-        })
-        $('.sales_push').click(function(){
-            var id=$(this).parent().parent().find('.did').html();
-            var flag=1;
-            var mark=3;
-            var data={
-                'id':id,
-                'flag':flag,
-                'mark':mark
-            }
-            commonSet(data)
-        })
         function commonSet(data)
         {
             $.ajax({
@@ -300,32 +211,5 @@
                 }
             })
         }
-        $('#topLevel').change(function(){
-            $(".optionlist").remove();
-            var id=$(this).val();
-            if(id!=''){
-                $.ajax({
-                    'url':'{{url('goods/getGoodsClass')}}',
-                    'data':{'id':id},
-                    'async':true,
-                    'type':'get',
-                    'dataType':'json',
-                    success:function(data){
-                        if(data.status==true){
-                            $.each(data.data,function(index,value){
-                                var opt = '<option class="optionlist" value='+value.id+'>' + value.name + '</option>';
-                                $("#select_opts").append(opt);
-                            })
-
-                        }else{
-                            alert('获取数据失败');
-                        }
-                    },
-                    error:function(){
-                        alert('Ajax响应失败');
-                    }
-                })
-            }
-        })
     })
 </script>

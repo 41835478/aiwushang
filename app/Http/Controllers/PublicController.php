@@ -73,4 +73,17 @@ class PublicController extends Controller
         }
         return $result;
     }
+
+    /**
+     * @param $pid
+     * @return \Illuminate\Database\Eloquent\Model|null|static  返回对象
+     */
+    public function getOneGoodsClass($pid)//得到商品分类的顶级分类
+    {
+        $res=Goodsclass::where(['id'=>$pid])->first(['pid','id','name']);
+        if($res->pid){
+            return $this->getOneGoodsClass($res->pid);
+        }
+        return $res;
+    }
 }

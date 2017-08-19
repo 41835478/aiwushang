@@ -71,6 +71,13 @@
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">厂家编号</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" name="factory_code" value="">
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">商品主图</label>
                                 <div class="col-sm-10">
                                     <input type="file" name="pic" value="" id="singleFile">
@@ -163,6 +170,13 @@
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">厂家编号</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" name="factory_code" value="">
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">商品主图</label>
                                 <div class="col-sm-10">
                                     <input type="file" name="pic" value="" id="areaFile">
@@ -231,6 +245,9 @@
     var ue2 =UE.getEditor('editor2');
 </script>
 <script type="text/javascript">
+    $('.close').click(function(){
+        $(this).parent().parent().remove();
+    })
     $('#goodsClassType').change(function(){
         var type=$(this).val();
         $(".oneClass").remove();

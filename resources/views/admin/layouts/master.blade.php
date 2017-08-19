@@ -47,10 +47,10 @@
                     </a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a class="J_menuItem" href="{{url('user/index')}}">修改用户密码</a>
+                            <a class="J_menuItem" href="{{url('user/index')}}">修改管理员密码</a>
                         </li>
                         <li>
-                            <a class="J_menuItem" href="{{url('user/editInfo')}}">修改用户信息</a>
+                            <a class="J_menuItem" href="{{url('user/editInfo')}}">修改管理员信息</a>
                         </li>
                     </ul>
                 </li>
@@ -171,11 +171,6 @@
                         </li>
                         <li><a class="J_menuItem" href="{{url('goods/goodsAreaList')}}">专区商品列表</a>
                         </li>
-                        <li><a class="J_menuItem" href="table_foo_table.html">Foo Tables</a>
-                        </li>
-                        <li><a class="J_menuItem" href="table_bootstrap.html">Bootstrap Table
-                                <span class="label label-danger pull-right">推荐</span></a>
-                        </li>
                     </ul>
                 </li>
               <!--   <li class="line dk"></li>
@@ -183,9 +178,15 @@
                     <span class="ng-scope">分类</span>
                 </li>
                 <li>
+<<<<<<< HEAD
                     <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">订单管理</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li><a class="J_menuItem" href="{{url('order/index')}}">订单列表</a>
+=======
+                    <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">提现管理</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem" href="{{url('withdraw/cashList')}}">提现列表</a>
+>>>>>>> 6d778bbd3ed4e24b90a4f411ff50b434dac3d5a3
                         </li>
                        
                     </ul>
