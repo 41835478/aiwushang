@@ -22,11 +22,27 @@ class MemberController extends Controller
     public function index(Request $request){
            
            
-            $input=$request->only(['name','phone','start','end','level']);
+            $input=$request->only(['name','phone','start','end','level','pphone']);
+            if($mem=User::where('phone',$input['pphone'])->first()){
+                $mem =$mem->toArray();
+            } 
+
+
              $query = $this->memberclass->newQuery();
 
             if($request->has('name'))
                 $query->where('name',$input['name']);
+
+            if($request->has('pphone')){
+                //var_dump($mem);die;
+                $query->where('pid',$mem['id']);
+            }
+                
+
+             if($request->has('start')){
+                $start=strtotime($input['start']);
+                $query->where('create_at','>=',$start);
+            }
             if($request->has('phone')){
                 $query->where('phone',$input['phone']);
             }

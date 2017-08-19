@@ -12,12 +12,16 @@
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>会员列表</h5>
+                    <h5>订单列表</h5>
+                    <div class="ibox-tools">
+                        <a href="{{url('order/export')}}" class="btn btn-outline btn-success">导出用户数据</a>
+                    </div>
+
                 </div>
 
 
 
-         <form action="{{url('member/index')}}" method="get">
+         <form action="{{url('order/index')}}" method="get">
        <div class="explain-col" style="margin-bottom: 10px;background: #fffced;border: 1px solid #ffbe7a;padding: 8px 10px;">
     <div class="input-group">
         <span  style="float: left;margin-left: 25px">
@@ -25,16 +29,25 @@
         <input id="end" name="end" class="laydate-icon" placeholder="请选择结束时间"></span>
         <span  style="float: left;margin-left: 25px">
         <input id="start" name="start" class="form-control layer-date laydate-icon" placeholder="请选择开始时间"  onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></span>
-        <span  style="float: left;margin-left: 25px">用户类型：
-            <select style="border:1px solid #ccc;" name="level" class="input-sm">
-                <option value="">--请选择用户类型--</option>
-                <option value="0">游客</option>
-                <option value="1">零售商</option>
-                <option value="2">批发商</option>    
+        <span  style="float: left;margin-left: 25px">支付类型：
+            <select style="border:1px solid #ccc;" name="type" class="input-sm">
+                <option value="">--支付类型--</option>
+                <option value="1">微信</option>
+                <option value="2">支付宝</option>
+                <option value="3">余额</option>    
+            </select>
+        </span>
+         <span  style="float: left;margin-left: 25px">订单状态：
+            <select style="border:1px solid #ccc;" name="status" class="input-sm">
+                <option value="">--订单状态--</option>
+                <option value="1">待付款</option>
+                <option value="2">待发货</option>
+                <option value="3">已发货</option>
+                <option value="4">已收货</option>
+                <option value="5">已完成</option>      
             </select>
         </span>
         <span  style="float: left;margin-left: 25px">手机号：<input style="border:1px solid #ccc;" name="phone" placeholder="请输入手机号" class="input-sm" type="text"></span>
-          <span  style="float: left;margin-left: 25px">推荐人手机号：<input style="border:1px solid #ccc;" name="pphone" placeholder="请输入推荐人手机号：" class="input-sm" type="text"></span>
          <span  style="float: left;margin-left: 25px">用户名：<input style="border:1px solid #ccc;" name="name" placeholder="请输入用户名" class="input-sm" type="text"></span>       
         <span class="input-group-btn" style="float: left;margin-left: 25px">
             <button type="submit" class="btn btn-sm btn-primary">
@@ -47,53 +60,65 @@
                     <table class="footable table table-stripped" data-page-size="10" data-filter=#filter>
                         <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>推荐人手机号</th>
-                            <th>会员昵称</th>
-                            <th>级别</th>
-                            <th>会员手机号</th>
-                            <th>会员注册时间</th>
-                            <th>会员余额</th>
+                            <th>订单编号</th>
+                            <th>用户名</th>
+                            <th>收货人手机号</th>
+                            <th>支付类型</th>
+                            <th>数量</th>
+                            <th>订单状态</th>
+                            <th>下单时间</th>
+                            <th>收货地址</th>
                          
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach ($memberclass as $v)
+                            @foreach ($orderclass as $v)
                             <tr class="gradeX">
-                                <td class="did">{{$v->id}}</td>
-                                <td>{{$v->pphone}}</td>
-                             
-                                  
+                                <td class="did">{{$v->order_code}}</td>
                                 <td>{{$v->name}}</td>
-                                
-                                <td>@if ($v->level == 0) 游客
-                                    @elseif($v->level == 1)
-                                        零售商
-                                    @elseif($v->level == 2)
-                                    批发商
+                                 <td>{{$v->phone}}</td>
+                                <td>@if ($v->type == 1) 微信
+                                    @elseif($v->type == 2)
+                                        支付宝
+                                    @elseif($v->type == 3)
+                                        余额
+                                    
+                                    @endif</td>
+                                  
+                               
+                                <td>{{$v->order_num}} </td>
+                                <td>@if ($v->status == 1) 待付款
+                                    @elseif($v->status == 2)
+                                        待发货
+                                    @elseif($v->status == 3)
+                                        已发货
+                                     @elseif($v->status == 4)
+                                     已收货
+                                      @elseif($v->status == 5)
+                                      交易完成
                                     @endif </td>
-                                <td>{{$v->phone}} </td>
+                                
                                 
                                 <td class="center">{{date('Y-m-d H:i:s',$v->create_at)}}</td>
                         
-                                <td class="center">{{$v->account}}</td>
-                              
+                                
+                                <td class="center">{{$v->address}}</td>
                                    
                                 
                                 <td class="center">
-                                    <a href="{{url('member/edit',['id'=>$v->id])}}">修改</a> |
-                                    <a href="javascript:;" class="goodsClassDel">删除</a>
+                                    <a href="{{url('order/edit',['id'=>$v->id])}}">发货</a> <!-- |
+                                    <a href="javascript:;" class="goodsClassDel">删除</a> -->
                                 </td>
                             </tr>
-                      @endforeach
+                         @endforeach
                         </tbody>
                         <tfoot>
                         <tr>
 
                             <td colspan="4">共{{$total}}条数据 当前第{{$currentPage}}/{{$page}}页</td>
                             <td colspan="8">
-                                {!! $memberclass->links() !!}
+                                {!! $orderclass->links() !!}
                             </td>
                                
                             </td>
@@ -185,7 +210,7 @@
                     headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
                 });
                 $.ajax({
-                    'url':'{{url("member/del")}}',
+                    'url':'{{url("order/del")}}',
                     'data':{'id':id},
                     'async':true,
                     'type':'post',
