@@ -11,6 +11,10 @@ class WithdrawController extends Controller
     public function cashList(Request $request)//提现列表
     {
         $query=Withdraw::query();
+        if($request->has('end'))
+            $query->where('create_at','<=',strtotime($request->input('end')));
+        if($request->has('start'))
+            $query->where('create_at','>=',strtotime($request->input('start')));
         if($request->has('mobile'))
             $query->where('mobile',$request->input('mobile'));
         if($request->has('name'))
