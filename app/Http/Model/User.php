@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-     const UPDATED_AT='update_at';
-     const CREATED_AT = 'create_at';
+    const UPDATED_AT = 'update_at';
+    const CREATED_AT = 'create_at';
 
-    protected $table='user';
-   public $timestamps = false;
+    protected $table = 'user';
+    public $timestamps = false;
 //    protected $fillable=['name','path','pid','pic','type'];//设置允许批量赋值的字段
 
 //    protected $guarded=[]; //设置不允许批量赋值的字段可以为空

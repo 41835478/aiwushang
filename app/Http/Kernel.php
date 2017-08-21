@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\Admin\LoginMiddleware;
+use App\Http\Middleware\Home\HomeMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -58,5 +59,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin'=>LoginMiddleware::class,
+        'home.auth'=>HomeMiddleware::class,
     ];
 }
