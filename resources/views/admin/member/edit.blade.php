@@ -22,6 +22,18 @@
                         <input class="form-control" name="name" type="text" value="{{$res->name}}" readonly>
                     </div>
                 </div>
+
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">用户手机号</label>
+                    <div class="col-sm-10">
+                      @if($res == null)
+                        <input class="form-control" name="phone" type="text" value="">
+                       @else
+                         <input class="form-control" name="phone" type="text" value="{{$res->phone}}">                                          
+                       @endif 
+                     
+                </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">用户余额</label>
@@ -36,9 +48,9 @@
                     <label class="col-sm-2 control-label">用户推荐人手机号</label>
                     <div class="col-sm-10">
                       @if($ress == null)
-                        <input class="form-control" name="phone" type="text" value="">
+                        <input class="form-control" name="pphone" type="text" value="">
                        @else
-                         <input class="form-control" name="phone" type="text" value="{{$ress->phone}}">                                          
+                         <input class="form-control" name="pphone" type="text" value="{{$ress->phone}}">                                          
                        @endif 
                      
                 </div>

@@ -29,8 +29,8 @@
             <select style="border:1px solid #ccc;" name="level" class="input-sm">
                 <option value="">--请选择用户类型--</option>
                 <option value="0">游客</option>
-                <option value="1">零售商</option>
-                <option value="2">批发商</option>    
+                
+                <option value="1">批发商</option>    
             </select>
         </span>
         <span  style="float: left;margin-left: 25px">手机号：<input style="border:1px solid #ccc;" name="phone" placeholder="请输入手机号" class="input-sm" type="text"></span>
@@ -69,9 +69,8 @@
                                 
                                 <td>@if ($v->level == 0) 游客
                                     @elseif($v->level == 1)
-                                        零售商
-                                    @elseif($v->level == 2)
-                                    批发商
+                                        批发商
+                                   
                                     @endif </td>
                                 <td>{{$v->phone}} </td>
                                 

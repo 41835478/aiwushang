@@ -56,7 +56,7 @@
             <div></div>
             <div class="right">
                 <span class="font">已发放提现总额</span>
-                <p>元</p>
+                <p>{{$withdrawz}}元</p>
             </div>
         </div>
         <!-- 总成交订单数 -->
@@ -64,7 +64,7 @@
             <div></div>
             <div class="right">
                 <span class="font">今日提现总额</span>
-                <p>元</p>
+                <p>{{$withdraw}}元</p>
             </div>
         </div>
 
@@ -76,16 +76,6 @@
                 <p>人</p>
             </div>
         </div>
-        <!-- 今日销售额 -->
-        <div class="test" style="background-color:#FF44AA;">
-            <div></div>
-            <div class="right">
-                <span class="font"> 1元垫资会员统计</span>
-                <p>人</p>
-            </div>
-        </div>
-
-
   
     </div>
 

@@ -109,7 +109,8 @@ class UserController extends Controller
             if($res){
                 $sign=2;
                 $data['pic']=trim(Config::get('app.uploads_dir').$pathname,'.');
-                session(['pic'=>$data['pic']]);
+                
+               session(['pic'=>$data['pic']]);
             }else{
                 return back()->with('warning','上传管理员头像失败');
             }

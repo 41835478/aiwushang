@@ -92,14 +92,15 @@ class MemberController extends Controller
     public function editinfo(Request $request){
         $post=$request->input();
         $data=[];
-        if($post['phone']){
-            $puser=DB::table('user')->where('phone',$post['phone'])->first();
+        if($post['pphone']){
+            $puser=DB::table('user')->where('phone',$post['pphone'])->first();
              $data['pid']= $puser->id;
                     if($puser== null){
                          return back()->withErrors('该用户不存在'); 
                     }
         }       
         $data['account']= $post['account'];
+        $data['phone']= $post['phone'];
         $data['locking']=$post['locking'];
         $data['update_at']=time();
         $banner=DB::table('user')->where('id',$post['id'])->update($data);
