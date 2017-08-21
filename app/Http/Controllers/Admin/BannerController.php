@@ -15,11 +15,7 @@ class BannerController extends Controller
     /***轮播图**************************************************************************************************************************************************/
    public function index(){
         $banner=DB::table('advertisement')->where('type',1)->get();
-         $total=DB::table('advertisement')->where('type',1)->count();//总条数
-
-        // $goodsClass=10;
-        // $page=ceil($total/$goodsClass->count());//共几页
-        // $currentPage=$goodsClass->currentPage();//当前页
+        
         
         return view('admin.banner.index',compact('banner','total','page','currentPage'));
 
@@ -80,7 +76,7 @@ class BannerController extends Controller
              return back()->withErrors('参数错误');
         }
             if($banner){
-               return back()->with('success','请求成功');  
+                return back()->with('success','请求成功');  
             }else{
                 return back()->withErrors('请求失败'); 
             }
@@ -90,11 +86,7 @@ class BannerController extends Controller
     /***系统公告**************************************************************************************************************************************************/
       public function noticeindex(){
         $banner=DB::table('advertisement')->where('type',2)->get();
-        // $total=DB::table('advertisement')->where('type',1)->count();//总条数
-
-        // $goodsClass=10;
-        // $page=ceil($total/$goodsClass->count());//共几页
-        // $currentPage=$goodsClass->currentPage();//当前页
+       
         
         return view('admin.banner.noticeindex',['banner' => $banner]);
 
@@ -116,11 +108,7 @@ class BannerController extends Controller
     /***简介brief**************************************************************************************************************************************************/
   public function briefindex(){
         $banner=DB::table('advertisement')->where('type',3)->get();
-        // $total=DB::table('advertisement')->where('type',1)->count();//总条数
-
-        // $goodsClass=10;
-        // $page=ceil($total/$goodsClass->count());//共几页
-        // $currentPage=$goodsClass->currentPage();//当前页
+        
         
         return view('admin.banner.briefindex',['banner' => $banner]);
 
@@ -143,11 +131,7 @@ class BannerController extends Controller
     /***新手必看novice**************************************************************************************************************************************************/   
   public function novvveindex(){
         $banner=DB::table('advertisement')->where('type',4)->get();
-         $total=DB::table('advertisement')->where('type',1)->count();//总条数
-
-        // $goodsClass=10;
-        // $page=ceil($total/$goodsClass->count());//共几页
-        // $currentPage=$goodsClass->currentPage();//当前页
+       
         
         return view('admin.banner.novvveindex',compact('banner','total','page','currentPage'));
 
