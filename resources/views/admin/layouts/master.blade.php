@@ -100,17 +100,7 @@
                     </ul>
                 </li>
 
-             <!--    <li>
-                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">信箱 </span><span class="label label-warning pull-right">0</span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem" href="mailbox.html">收件箱</a>
-                        </li>
-                        <li><a class="J_menuItem" href="mail_detail.html">查看邮件</a>
-                        </li>
-                        <li><a class="J_menuItem" href="mail_compose.html">写信</a>
-                        </li>
-                    </ul>
-                </li> -->
+
          <!--        <li>
                     <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">表单</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -173,35 +163,28 @@
                         </li>
                     </ul>
                 </li>
-              <!--   <li class="line dk"></li>
+                 <li class="line dk"></li>
                 <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
                     <span class="ng-scope">分类</span>
                 </li>
                 <li>
-<<<<<<< HEAD
                     <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">订单管理</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li><a class="J_menuItem" href="{{url('order/index')}}">订单列表</a>
-=======
-                    <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">提现管理</span><span class="fa arrow"></span></a>
+                    </ul>
+
+                </li>
+                <li>
+                    <a href="javascript:;"><i class="fa fa-envelope"></i> <span class="nav-label">提现管理 </span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li><a class="J_menuItem" href="{{url('withdraw/cashList')}}">提现列表</a>
->>>>>>> 6d778bbd3ed4e24b90a4f411ff50b434dac3d5a3
                         </li>
-                       
+                        {{--<li><a class="J_menuItem" href="mail_detail.html">查看邮件</a>--}}
+                        {{--</li>--}}
+                        {{--<li><a class="J_menuItem" href="mail_compose.html">写信</a>--}}
+                        {{--</li>--}}
                     </ul>
                 </li>
-                <li>
-                    <a class="J_menuItem" href="css_animation.html"><i class="fa fa-magic"></i> <span class="nav-label">CSS动画</span></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-cutlery"></i> <span class="nav-label">工具 </span><span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem" href="form_builder.html">表单构建器</a>
-                        </li>
-                    </ul>
-                </li>
- -->
             </ul>
         </div>
     </nav>
