@@ -4,7 +4,7 @@ class AuthService
 {
     private $pwdKey = 'jbs2017821,aiwushang';
 
-    private function userIdEncrypt($data)//用户id加密
+    public function userIdEncrypt($data)//用户id加密
     {
         $cryptText = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($this->pwdKey), $data, MCRYPT_MODE_CBC, md5(md5($this->pwdKey))));
         $encrypted = trim($this->safe_b64encode($cryptText));////对特殊字符进行处理

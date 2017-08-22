@@ -52,14 +52,14 @@
     <div class="login_bottom">
         <div class="list_div">
             <img class="iconfont icon-zhanghao" src="{{asset('home/images/login_icon01.png')}}" alt="">
-            <input class="input" type="text" placeholder="请输入手机号">
+            <input class="input login-phone" type="text" placeholder="请输入手机号">
         </div>
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon02.png')}}" alt="">
-            <input class="input" type="password" placeholder="请输入密码">
+            <input class="input login-pwd" type="password" placeholder="请输入密码">
         </div>
 
-        <button onclick="javascript:window.location.href='index.html'" class="login_btn" type="button">登录</button>
+        <button class="login_btn" type="button">登录</button>
         <div class="login_zh">
             <div class="zh_div rem_div">
                 <i class="iconfont icon-xuanzhong"></i>
@@ -73,7 +73,6 @@
 </div>
 
 <div class="btm_box register_box" style="display:none">
-    <form action="{{url('register/goRegister')}}" method="post">
     <div class="login_bottom">
         <div class="list_div">
             <img class="iconfont icon-zhanghao" src="{{asset('home/images/login_icon01.png')}}" alt="">
@@ -85,7 +84,7 @@
         </div>
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon02.png')}}" alt="">
-            <input class="input repwd" type="password" name="repwd" placeholder="请确认登录密码">
+            <input class="input pwd_confirmation" type="password" name="pwd_confirmation" placeholder="请确认登录密码">
         </div>
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon04.png')}}" alt="">
@@ -98,9 +97,8 @@
             <input class="register_yzBtn" type="button" value="获取验证码">
         </div>
 
-        <button onclick="javascript:window.location.href='login.html'" class="register_btn" type="button">注册</button>
+        <button class="register_btn" type="button">注册</button>
     </div>
-    </form>
     <div class="login_zh">
         <p>点击注册代表您已阅读并同意<a href="{{url('register/agreement')}}">《用户注册协议》</a></p>
     </div>
@@ -133,6 +131,29 @@
 </html>
 <script type="text/javascript">
     $(function(){
+        $('.login_btn').click(function(){
+            var phone=$('.login-phone').val();
+            var pwd=$('.login-pwd').val();
+            if(phone==""){
+                alert("请输入您的手机号码！");
+                return false;
+            }
+            if(!phone.match(/^1[34578]\d{9}$/)){
+                alert('手机号不符合规则！');
+                return false;
+            }
+            if(pwd==''){
+                alert("请输入您的登录密码！");
+                return false;
+            }
+            var data={
+                'phone':phone,
+                'pwd':pwd,
+            };
+            var url="{{url('login/login')}}";
+            sendAjax(data,url)
+        })
+
         $('.register_btn').click(function(){
             var phone=$('.phone').val();
             if(phone==""){
@@ -148,7 +169,7 @@
                 alert("请输入您的登录密码！");
                 return false;
             }
-            var repwd=$('.repwd').val();
+            var repwd=$('.pwd_confirmation').val();
             if(repwd==""){
                 alert("请输入确认登录密码！");
                 return false;
@@ -170,13 +191,50 @@
             var data={
                 'phone':phone,
                 'pwd':pwd,
-                'repwd':repwd,
+                'pwd_confirmation':repwd,
                 'paypwd':paypwd,
                 'code':code,
+                '_token':'{{csrf_token()}}',
             };
+            var url="{{url('register/goRegister')}}";
+            sendAjax(data,url)
         })
-        function sendAjax(data){
-
+        $('.register_yzBtn').click(function(){
+            var phone=$('.phone').val();
+            if(phone==""){
+                alert("请输入您的手机号码！");
+                return false;
+            }
+            if(!phone.match(/^1[34578]\d{9}$/)){
+                alert('手机号不符合规则！');
+                return false;
+            }
+            var data={
+                'phone':phone,
+                '_token':'{{csrf_token()}}',
+            }
+            var url="{{url('register/sendCode')}}";
+            sendAjax(data,url)
+        })
+        function sendAjax(data,url){
+            $.ajax({
+                'url':url,
+                'data':data,
+                'async':true,
+                'type':'post',
+                'dataType':'json',
+                success:function(data){
+                    if(data.status){
+                        alert(data.message);
+                    }else{
+                        alert(data.message);
+                    }
+                },
+                error:function(msg){
+                    var json=JSON.parse(msg.responseText);
+                    alert(Object.values(json)[0].toString());
+                }
+            })
         }
     })
 </script>
