@@ -29,7 +29,7 @@ class LoginController extends BaseController
                 $res=User::insertGetId($date);
                 if($res){
                     Cache::forget('registerCode');
-                    return $this->ajaxMessage(true,'注册成功');
+                    return $this->ajaxMessage(true,'注册成功',['flag'=>2]);
                 }
                 return $this->ajaxMessage(false,'注册失败');
             }
@@ -43,9 +43,9 @@ class LoginController extends BaseController
         if(!Cache::has('registerCode')){
             $res=$this->sendRegisterMsg($request->input('phone'));
             if($res){
-                return $this->ajaxMessage(true,'验证码已发送，请注意查收');
+                return $this->ajaxMessage(true,'验证码已发送，请注意查收',['flag'=>3]);
             }
-            return $this->ajaxMessage(true,'验证码发送失败');
+            return $this->ajaxMessage(false,'验证码发送失败');
         }
         return $this->ajaxMessage(false,'验证码尚未失效，可以继续使用');
     }
@@ -58,7 +58,8 @@ class LoginController extends BaseController
         if($res){
             $result=$this->encryptUser($res->id);
             if($result){
-
+                session(['home_user_id'=>$result]);
+                return $this->ajaxMessage(true,'登录成功',['flag'=>1]);
             }
         }
         return $this->ajaxMessage(false,'登录失败');
