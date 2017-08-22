@@ -226,6 +226,9 @@
                 success:function(data){
                     if(data.status){
                         alert(data.message);
+                        if(data.data.flag==1){
+                            window.location.href='/';
+                        }
                     }else{
                         alert(data.message);
                     }
