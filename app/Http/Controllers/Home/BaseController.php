@@ -23,10 +23,13 @@ class BaseController extends Controller
      */
     public function checkUser()//用于登录id解密
     {
-        $user_id=$this->auth->userIdDecrypt(\Session::get('home_user_id'));
-        return $user_id;
+        return $this->auth->userIdDecrypt(\Session::get('home_user_id'));
     }
 
+    /**
+     * @param $id
+     * @return string
+     */
     public function encryptUser($id)//用于登录id的加密
     {
         return $this->auth->userIdEncrypt($id);
