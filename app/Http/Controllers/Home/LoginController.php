@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Model\User;
+use App\Http\Requests\Home\EditPwdRequest;
 use App\Http\Requests\Home\RegisterRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -47,7 +48,7 @@ class LoginController extends BaseController
             }
             return $this->ajaxMessage(false,'验证码发送失败');
         }
-        return $this->ajaxMessage(false,'验证码尚未失效，可以继续使用');
+        return $this->ajaxMessage(false,'验证码1分钟后失效');
     }
 
     public function login(Request $request)//执行登录操作
@@ -63,5 +64,30 @@ class LoginController extends BaseController
             }
         }
         return $this->ajaxMessage(false,'登录失败');
+    }
+
+    public function forgetPwd()//加载忘记密码操作
+    {
+        return view('home.register.forgetPwd');
+    }
+
+    public function editPwd(EditPwdRequest $request)//执行忘记密码操作
+    {
+        $date=$request->except(['_token','newpwd_confirmation','code']);
+        $code=$request->only('code')['code'];
+        if($code==Cache::get('registerCode')){
+            $user=User::where(['phone'=>$date['phone']])->first();
+            if($user){
+                $user->pwd=md5($date['newpwd']);
+                $user->update_at=time();
+                $res=$user->save();
+                if($res){
+                    return $this->ajaxMessage(true,'修改密码成功',['flag'=>1]);
+                }
+                return $this->ajaxMessage(false,'修改密码失败');
+            }
+            return $this->ajaxMessage(false,'该用户不存在');
+        }
+        return $this->ajaxMessage(false,'验证码不正确');
     }
 }
