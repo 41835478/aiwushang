@@ -41,7 +41,7 @@ require_once base_path('routes/admin/login.php');//后台登录退出
 //前台路由
 
 
-
+//Route::group(['namespace'=>'Home'],function(){
 Route::group(['namespace'=>'Home','middleware'=>'home.auth'],function(){
 
     require_once base_path('routes/home/user.php'); 
