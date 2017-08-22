@@ -89,7 +89,7 @@
         $('.register_btn').click(function(){
             var phone=$('.phone').val();
             var newpwd=$('.newpwd').val();
-            var newpwd_confirmation=$('.newpwd_confirmation');
+            var newpwd_confirmation=$('.newpwd_confirmation').val();
             var code=$('.code').val();
             if(phone==""){
                 alert("请输入您的手机号码！");
@@ -137,7 +137,7 @@
                     if(data.status){
                         alert(data.message);
                         if(data.data.flag==1){
-                            window.location.href='/';
+                            window.location.href="{{url('register/index')}}";
                         }
                     }else{
                         alert(data.message);

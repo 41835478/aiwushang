@@ -76,7 +76,17 @@ class LoginController extends BaseController
         $date=$request->except(['_token','newpwd_confirmation','code']);
         $code=$request->only('code')['code'];
         if($code==Cache::get('registerCode')){
-
+            $user=User::where(['phone'=>$date['phone']])->first();
+            if($user){
+                $user->pwd=md5($date['newpwd']);
+                $user->update_at=time();
+                $res=$user->save();
+                if($res){
+                    return $this->ajaxMessage(true,'修改密码成功',['flag'=>1]);
+                }
+                return $this->ajaxMessage(false,'修改密码失败');
+            }
+            return $this->ajaxMessage(false,'该用户不存在');
         }
         return $this->ajaxMessage(false,'验证码不正确');
     }

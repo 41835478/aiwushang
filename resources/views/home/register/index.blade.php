@@ -66,7 +66,7 @@
                 <span>记住账号</span>
             </div>
             <div class="zh_div fget_div">
-                <a href="findPwd.html">忘记密码？</a>
+                <a href="{{url('forget/forgetPwd')}}">忘记密码？</a>
             </div>
         </div>
     </div>
