@@ -43,3 +43,4 @@ Route::group(['namespace'=>'Home','middleware'=>'home'],function(){
     require_once base_path('routes/home/user.php'); 
 });
 require_once base_path('routes/home/login.php');//前台注册、登录
+require_once base_path('routes/home/index.php');//前台首页
