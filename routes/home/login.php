@@ -6,5 +6,6 @@ Route::group(['namespace'=>'Home'],function(){
     Route::post('register/sendCode','LoginController@sendCode');//加载登录页面
     Route::post('login/login','LoginController@login');//执行登录操作
     Route::get('forget/forgetPwd','LoginController@forgetPwd');//加载忘记密码操作
+    Route::post('forget/editPwd','LoginController@editPwd');//执行忘记密码操作
 });
 ?>
