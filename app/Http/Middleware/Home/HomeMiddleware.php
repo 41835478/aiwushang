@@ -32,6 +32,6 @@ class HomeMiddleware
                 return $next($request);
             }
         }
-        return redirect('home/login');
+        return redirect(url('login/login'));
     }
 }

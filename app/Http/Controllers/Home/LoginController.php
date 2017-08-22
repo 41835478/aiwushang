@@ -16,4 +16,14 @@ class LoginController extends Controller
     {
         return view('home.register.agreement');
     }
+
+    public function goRegister()//添加去注册
+    {
+
+    }
+
+    public function login()//加载登录页面
+    {
+        dd('我是登录页面');
+    }
 }

@@ -73,35 +73,36 @@
 </div>
 
 <div class="btm_box register_box" style="display:none">
+    <form action="{{url('register/goRegister')}}" method="post">
     <div class="login_bottom">
         <div class="list_div">
             <img class="iconfont icon-zhanghao" src="{{asset('home/images/login_icon01.png')}}" alt="">
-            <input class="input" type="text" placeholder="请输入手机号">
+            <input class="input phone" type="text" name="phone" placeholder="请输入手机号">
         </div>
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon02.png')}}" alt="">
-            <input class="input" type="password" placeholder="请输入登录密码">
+            <input class="input pwd" type="password" name="pwd" placeholder="请输入登录密码">
         </div>
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon02.png')}}" alt="">
-            <input class="input" type="password" placeholder="请确认登录密码">
+            <input class="input repwd" type="password" name="repwd" placeholder="请确认登录密码">
         </div>
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon04.png')}}" alt="">
-            <input class="input" type="password" placeholder="请设置支付密码">
+            <input class="input paypwd" type="password" name="paypwd" placeholder="请设置支付密码">
         </div>
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon03.png')}}" alt="">
-            <input class="yz_input input" type="text" placeholder="输入验证码">
+            <input class="yz_input input code" type="text" name="code" placeholder="输入验证码">
 
             <input class="register_yzBtn" type="button" value="获取验证码">
         </div>
 
         <button onclick="javascript:window.location.href='login.html'" class="register_btn" type="button">注册</button>
     </div>
-
+    </form>
     <div class="login_zh">
-        <p>点击注册代表您已阅读并同意<a href="userAgreement.html">《用户注册协议》</a></p>
+        <p>点击注册代表您已阅读并同意<a href="{{url('register/agreement')}}">《用户注册协议》</a></p>
     </div>
 </div>
 <script>
@@ -130,3 +131,52 @@
 </script>
 </body>
 </html>
+<script type="text/javascript">
+    $(function(){
+        $('.register_btn').click(function(){
+            var phone=$('.phone').val();
+            if(phone==""){
+                alert("请输入您的手机号码！");
+                return false;
+            }
+            if(!phone.match(/^1[34578]\d{9}$/)){
+                alert('手机号不符合规则！');
+                return false;
+            }
+            var pwd=$('.pwd').val();
+            if(pwd==''){
+                alert("请输入您的登录密码！");
+                return false;
+            }
+            var repwd=$('.repwd').val();
+            if(repwd==""){
+                alert("请输入确认登录密码！");
+                return false;
+            }
+            if(pwd!=repwd){
+                alert('两次密码输入不一致');
+                return false;
+            }
+            var paypwd=$('.paypwd').val();
+            if(paypwd==''){
+                alert('支付密码不能为空');
+                return false;
+            }
+            var code=$('.code').val();
+            if(code==''){
+                alert('验证码不能为空');
+                return false;
+            }
+            var data={
+                'phone':phone,
+                'pwd':pwd,
+                'repwd':repwd,
+                'paypwd':paypwd,
+                'code':code,
+            };
+        })
+        function sendAjax(data){
+
+        }
+    })
+</script>
