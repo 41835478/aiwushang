@@ -11,7 +11,7 @@ class User extends Model
 
     protected $table = 'user';
     public $timestamps = false;
-//    protected $fillable=['name','path','pid','pic','type'];//设置允许批量赋值的字段
+//    protected $fillable=['phone','pwd','paypwd'];//设置允许批量赋值的字段
 
 //    protected $guarded=[]; //设置不允许批量赋值的字段可以为空
 
