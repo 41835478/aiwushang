@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//后台路由
 Route::get('captcha/{tmp}','Admin\CaptchaController@captcha');//验证码
 Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
     //后台首页开始
@@ -35,3 +36,7 @@ Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
 require base_path('routes/admin/user.php');//后台管理员管理
 require_once base_path('routes/admin/login.php');//后台登录退出
 
+//前台路由
+Route::group(['namespace'=>'Home','middleware'=>'home'],function(){
+    
+});
