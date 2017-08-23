@@ -14,13 +14,13 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta name="description" content="" />
 <meta name="Keywords" content="" />
-<link rel="stylesheet" href="css/swiper.min.css"/>
-<link rel="stylesheet" type="text/css" href="font/iconfont.css"/>
-<link rel="stylesheet" href="css/common.css"/>
+<link rel="stylesheet" href="{{asset('/home/css/swiper.min.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{asset('/home/font/iconfont.css')}}"/>
+<link rel="stylesheet" href="{{asset('/home/css/common.css')}}"/>
 
-<link rel="stylesheet" href="css/main.css">
-<script type="text/javascript" src="js/swiper.min.js"></script>
-<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/home/css/main.css">
+<script type="text/javascript" src="/home/js/swiper.min.js"></script>
+<script type="text/javascript" src="/home/js/jquery-3.1.1.min.js"></script>
 <style>
 	body{
 		background-color:#fff;
@@ -29,12 +29,13 @@
 </head>
 <body>
 <div class="public_head">
-	<h3>项目简介</h3>
+	<h3>{{$return->title}}</h3>
 	<a href="javascript:history.go(-1);" class="iconfont icon-fanhui"></a>
 </div>
 <!-- 内容区 -->
 <div class="content pjt_content">
-	<div class="fenge"></div>
+	{!! $return->content !!}
+	{{--<div class="fenge"></div>
 	<div class="project_body">
 		<img class="pjt_img" src="images/project01.png" alt="">
 
@@ -52,7 +53,7 @@
 
 		<h2 class="pjt_tit">三</h2>
 		<p>【爱无尚】正式启动项目的时候前期垫资《A盘》200万人，公司拿出上亿资金来让大家秒提现，无论你是自己投资还申请平台垫支，只要有三个以上直推正式会员就可以提现，让你拿着手机轻轻松松挣钱，只要你加入让你从贫穷走向致富！因为公司发展前景广阔，团队合作共赢模式，让我们无压力赚大钱！真正的以小博大，促进互帮互助，营造深入人心，气氛浓厚的众扶文化！</p>
-	</div>
+	</div>--}}
 </div>
 </body>
 </html>

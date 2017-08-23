@@ -14,13 +14,13 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta name="description" content="" />
 <meta name="Keywords" content="" />
-<link rel="stylesheet" href="css/swiper.min.css"/>
-<link rel="stylesheet" type="text/css" href="font/iconfont.css"/>
-<link rel="stylesheet" href="css/common.css"/>
+<link rel="stylesheet" href="/home/css/swiper.min.css"/>
+<link rel="stylesheet" type="text/css" href="/home/font/iconfont.css"/>
+<link rel="stylesheet" href="/home/css/common.css"/>
 
-<link rel="stylesheet" href="css/main.css">
-<script type="text/javascript" src="js/swiper.min.js"></script>
-<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/home/css/main.css">
+<script type="text/javascript" src="/home/js/swiper.min.js"></script>
+<script type="text/javascript" src="/home/js/jquery-3.1.1.min.js"></script>
 <style>
 	body{
 		background-color:#f5f5f5;
@@ -34,17 +34,31 @@
 </div>
 <!-- 内容区 -->
 <div class="content">
+	@if ($return == null)
+		暂无公告
+	@else
 	<ul class="Beginguide_ul">
-		<!-- <li class="BG_li">
+		@foreach ($return as $v)
+			<li class="BG_li">
+				<a href="/info/newInfo?id={{$v->id}}">
+					<span>{{$v->title}}</span>
+					<i class="iconfont icon-you"></i>
+				</a>
+			</li>
+		@endforeach
+
+
+					<!-- <li class="BG_li">
 			<a href="javascript:void(0);">
 				<span>注册规则</span>
 				<i class="iconfont icon-you"></i>
 			</a>
 		</li> -->
 	</ul>
+	@endif
 </div>
 
-<script>
+{{--<script>
 	for(var i=0; i<3; i++){
 		var _li =   '<li class="BG_li">'
 				+		'<a href="registerRule.html">'
@@ -54,6 +68,6 @@
 				+	'</li>';
 		$(".Beginguide_ul").append(_li);
 	}
-</script>
+</script>--}}
 </body>
 </html>
