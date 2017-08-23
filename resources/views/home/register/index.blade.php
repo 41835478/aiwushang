@@ -228,6 +228,8 @@
                         alert(data.message);
                         if(data.data.flag==1){
                             window.location.href='/';
+                        }else if(data.data.flag==2){
+                            window.location.reload();
                         }
                     }else{
                         alert(data.message);

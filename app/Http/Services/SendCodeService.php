@@ -10,7 +10,7 @@ class SendCodeService
         $pwd = "qR6vQ9fH";
         $password = md5($username.md5($pwd));
         $code=self::greatRand();
-        $content = "您的注册验证码是：667788，请在十分钟内填写，切勿将验证码泄露于他人。【爱无尚】";
+        $content = "您的注册验证码是：".$code."，请在十分钟内填写，切勿将验证码泄露于他人。【爱无尚】";
         $url = "http://120.55.248.18/smsSend.do?";
         $data=array('username'=>$username,'password'=>$password,'mobile'=>$mobile,'content'=>urlencode($content));
         $param=self::getSign($data);
