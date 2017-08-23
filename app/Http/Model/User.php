@@ -11,6 +11,28 @@ class User extends Model
 
     protected $table = 'user';
     public $timestamps = false;
+
+
+    /**
+     * @return string 根据id获取用户信息
+     */
+
+    public function getuserinfo($uid)
+    {
+       	$users=User::where('id',$uid)->first();
+       		
+        return $users;
+    }
+
+
+
+
+
+
+
+
+
+
 //    protected $fillable=['phone','pwd','paypwd'];//设置允许批量赋值的字段
 
 //    protected $guarded=[]; //设置不允许批量赋值的字段可以为空

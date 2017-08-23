@@ -227,7 +227,7 @@
                     if(data.status){
                         alert(data.message);
                         if(data.data.flag==1){
-                            window.location.href='/';
+                            window.location.href='/users/index';
                         }
                     }else{
                         alert(data.message);

@@ -17,16 +17,19 @@
 		<img src="{{asset('home/images/portrait.png')}}" alt=""/>
 		<div class="center_edit">
 			<div class="div_clearFloat center_personalData">
-				<p>Asdes</p>
-				<span>[批发商]</span>
+				<p>{{$users['name']}} </p>
+				<span>@if($users['level'] ==1  ) 批发商
+						@elseif($users['level'] == 0) 游客
+						@endif
+				</span>
 				<i onclick="javascript:window.location.href='editData.html'" class="iconfont icon-shape"></i>
 			</div>
-			<p>推荐人：随风  123****1236</p>
+			<p>推荐人：{{$pusers['name']}}  {{$pusers['phone']}}</p>
 		</div>
 	</div>
 	<div class="div_clearFloat center_bot">
 		<div class="center_money">
-			<p>￥800.00</p>
+			<p>￥{{$users['account']}}</p>
 			<span>账户余额(元)</span>
 		</div>
 		<div class="center_money">
@@ -63,7 +66,7 @@
 		</div>
 		<ul class="centerList centerList3">
 			<li class="centerItem">
-				<a href="myAccount.html" class="a_jump">
+				<a href="{{url('users/myaccount')}}" class="a_jump">
 					<img src="{{asset('home/images/person01.png')}}" alt=""/>
 					<span>我的账户</span>
 					<i class="iconfont icon-you"></i>

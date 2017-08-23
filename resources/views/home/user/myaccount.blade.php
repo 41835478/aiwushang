@@ -43,121 +43,66 @@
 	<!-- income -->
 	<div class="account_body account_income">
 		<ul>
+
+		  @foreach ($saccount as $v)
 			<li class="act_list">
 				<img src="images/act_icon01.png" alt="">
 				<div class="act_class">
-					<p class="top_p">下层升级费</p>
-					<p class="time">2017-03-22 12:35</p>
-				</div>
-				<div class="act_money">
-					+¥<span>300.00</span>
-				</div>
-			</li>
-			<li class="act_list">
-				<img src="images/act_icon02.png" alt="">
-				<div class="act_class">
-					<p class="top_p">分销奖</p>
-					<p class="time">2017-03-22 12:35</p>
-				</div>
-				<div class="act_money">
-					+¥<span>88.00</span>
-				</div>
-			</li>
-			<li class="act_list">
-				<img src="images/act_icon05.png" alt="">
-				<div class="act_class">
-					<p class="top_p">波妞——转账</p>
-					<p class="time">2017-03-22 12:35</p>
+					<p class="top_p">
+					@if( $v['type'] ==1 ) 分销
+						@elseif($v['type'] ==2 ) 账户转账
+						@elseif($v['type']==3) 见点奖
+						@elseif($v['type']==4) 推荐奖
+						@elseif($v['type']==5) 升级奖
+						@endif
+					</p>
+					<p class="time">{dade('Y-m-d H:i:s',$v['update_at'])}</p>
 				</div>
 				<div class="act_state">
-					交易成功
-				</div>
-				<div class="act_money act_money1">
-					+¥<span>200.00</span>
-				</div>
-			</li>
-			<li class="act_list">
-				<img src="images/act_icon03.png" alt="">
-				<div class="act_class">
-					<p class="top_p">见点奖</p>
-					<p class="time">2017-03-22 12:35</p>
+					@if( $v['type'] ==2 && $v['status']==0)  处理中
+						@elseif( $v['type'] ==2 && $v['status']==1) 交易成功
+
+						@endif
 				</div>
 				<div class="act_money">
-					+¥<span>8.00</span>
+					+¥<span>{{$v['money']}}</span>
 				</div>
 			</li>
-			<li class="act_list">
-				<img src="images/act_icon04.png" alt="">
-				<div class="act_class">
-					<p class="top_p">大转盘</p>
-					<p class="time">2017-03-22 12:35</p>
-				</div>
-				<div class="act_money">
-					+¥<span>2.00</span>
-				</div>
-			</li>
+			@endforeach
+			
+		
+			
+		
 		</ul>
 	</div>
 
 	<!-- pay -->
 	<div class="account_body account_pay" style="display:none">
 		<ul>
+		  @foreach ($zaccount as $v)
 			<li class="act_list">
 				<img src="images/act_icon06.png" alt="">
 				<div class="act_class">
-					<p class="top_p">余额提现</p>
-					<p class="time">2017-03-22 12:35</p>
+					<p class="top_p">@if( $v['type'] ==1 ) 分销
+						@elseif($v['type'] ==2 ) 账户转账
+						@elseif($v['type']==3) 见点奖
+						@elseif($v['type']==4) 推荐奖
+						@elseif($v['type']==5) 升级奖
+						@endif</p>
+					<p class="time">{dade('Y-m-d H:i:s',$v['update_at'])}</p>
 				</div>
 				<div class="act_state">
-					交易成功
+					@if( $v['type'] ==2 && $v['status']==0)  处理中
+						@elseif( $v['type'] ==2 && $v['status']==1) 交易成功
+
+						@endif
 				</div>
 				<div class="act_money act_money1">
-					-¥<span>300.00</span>
+					-¥<span>{{$v['money']}}</span>
 				</div>
 			</li>
-			<li class="act_list">
-				<img src="images/act_icon07.png" alt="">
-				<div class="act_class">
-					<p class="top_p">购物消费</p>
-					<p class="time">2017-03-22 12:35</p>
-				</div>
-				<div class="act_money">
-					-¥<span>88.00</span>
-				</div>
-			</li>
-			<li class="act_list">
-				<img src="images/act_icon08.png" alt="">
-				<div class="act_class">
-					<p class="top_p">宗介——转账</p>
-					<p class="time">2017-03-22 12:35</p>
-				</div>
-				<div class="act_state">
-					交易成功
-				</div>
-				<div class="act_money act_money1">
-					-¥<span>200.00</span>
-				</div>
-			</li>
-			<li class="act_list">
-				<img src="images/act_icon09.png" alt="">
-				<div class="act_class">
-					<p class="top_p">点位升级</p>
-					<p class="time">2017-03-22 12:35</p>
-				</div>
-				<div class="act_money">
-					-¥<span>8.00</span>
-				</div>
-			</li>
-			<li class="act_list">
-				<img src="images/act_icon10.png" alt="">
-				<div class="act_class">
-					<p class="top_p">复投消费</p>
-					<p class="time">2017-03-22 12:35</p>
-				</div>
-				<div class="act_money">
-					-¥<span>2.00</span>
-				</div>
-			</li>
+			@endforeach
+			
 		</ul>
 	</div>
 </div>

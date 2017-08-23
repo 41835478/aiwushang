@@ -3,34 +3,57 @@
 namespace App\Http\Controllers\Home;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+
 use App\Http\Model\User;
+use App\Http\Controllers\Home\BaseController;
 use Storage;
 use DB;
 use Exception;
-class UserController  extends Controller
+class UserController  extends BaseController
 {
     public function index()//加载注册页面
     {
     	#查询用户信息 
-
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+   	
     	#查询上级
-
+    
+       	$pusers=$t->getuserinfo($users['pid']);
+       	
     	#查询团队
-
-
-
-    	//var_dump(11);die;,compact()
-        return view('home.user.index');
+    	$pp=$this->wuxian($uid);
+    	
+    	//var_dump($pp);die;//compact()
+        return view('home.user.index',compact('users','pusers'));
     }
+
+   #查询团队
+    	public function wuxian($id,$arr=array()){
+    		$count = count($arr);
+    		$a = User::where('id',$id)->first();
+    		$b = User::where('pid',$a['id'])->first();
+    		if($b){
+    			$arr[$count] = $b['id'];
+    			return $this->wuxian($b['id'],$arr);
+    		}
+    		return $arr;
+    	}
 /***
 *账户信息
 *
 ****/
     #我的账户
     public function myaccount(){
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
 
-    	return view('home.user.myaccount');
+    	$saccount=DB::table('incomerecode')->where('user_id',$uid)->where('flag',1)->get();
+    	$zaccount=DB::table('incomerecode')->where('user_id',$uid)->where('flag',2)->get();
+
+    	return view('home.user.myaccount',compact('users','saccount','zaccount'));
     }
 
 /***
