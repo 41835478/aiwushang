@@ -129,23 +129,20 @@
                 'type':'post',
                 'dataType':'json',
                 success:function(data){
-
-                	 if(data.data.flag==1){
-                        	alert(data.message);
-                            window.location.href='/users/index';
+                	 if(data.status){                    	
+                            window.location.href="{{url('users/index')}}";
                         }else{
                         	alert(data.message);
+                        	window.location.reload();
                         }
 
                   
                 },
-                // error:function(msg){
-                //     var json=JSON.parse(msg.responseText);
-                //     alert(Object.values(json)[0].toString());
-                // }
+             
             })
         }
 
+ 
 
 </script>
 </html>

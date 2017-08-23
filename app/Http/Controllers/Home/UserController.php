@@ -122,7 +122,15 @@ class UserController  extends BaseController
     public function turnmyintegral(Request $request,$id){
     	$id=$id;
     	$uid=$this->checkUser();
-    	$points=Pointsrecode::where('user_id',$uid)->sum('points');
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+
+    	if($id==1){
+    		$points=$users['repeat_points'];
+    	}elseif($id ==2){
+    		$points=$users['consume_points'];
+    	}
+    	
     	return view('home.user.turnmyintegral',compact('points','id'));
     }
     #积分转账提交
@@ -136,7 +144,6 @@ class UserController  extends BaseController
 		
     	if($post['id'] ==''){
     		 return $this->ajaxMessage(false,'参数错误');
-    		 // return $this->ajaxMessage(true,'注册成功',['flag'=>2]);
     	}
 		
 		
@@ -157,7 +164,7 @@ class UserController  extends BaseController
     	}elseif($post['id'] ==2){
     		$integralnum=$users['consume_points'];
     	}
-    	if($post['num'] < $integralnum){
+    	if($post['num'] > $integralnum){
     		return $this->ajaxMessage(false,'该用户积分不足');
     	}
     	#减少积分，给对方增加积分
@@ -172,8 +179,7 @@ class UserController  extends BaseController
     			$data['points']=$post['num'] * 0.95;
     			Pointsrecode::insert($data);
 
-	   				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
-
+	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
 
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
@@ -188,7 +194,7 @@ class UserController  extends BaseController
     			$data['sign']=1;
     			$data['points']=$post['num'] * 0.95;
     			Pointsrecode::insert($data);
-    				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+    				return $this->ajaxMessage(true,['message'=>'操作成功']);
 
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
@@ -264,10 +270,6 @@ class UserController  extends BaseController
 		return view('home.user.activememberorders');
 	}
 
-/**
-*账户绑定
-*/
-	#绑定支付宝
 
 
 
@@ -277,27 +279,6 @@ class UserController  extends BaseController
 
 
 
-
-/**
-*我的账户
-*/
-	#我的账户
-	public function accountsettings(){
-		return view('home.user.accountsettings');
-	}
-	#修改登录密码
-	public function modify_login(){
-		return view('home.user.modify_login');
-	}
-	#修改支付密码
-	public function modify_pay(){
-		return view('home.user.modify_pay');
-	}
-	#修改信息提交
-	public function userinfo(){
-
-		//return view('home.user.userinfo');
-	}
 
 
 
