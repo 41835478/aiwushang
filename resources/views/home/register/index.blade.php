@@ -227,13 +227,12 @@
                     if(data.status){
                         alert(data.message);
                         if(data.data.flag==1){
-<<<<<<< HEAD
-                            window.location.href='/users/index';
-=======
                             window.location.href='/';
                         }else if(data.data.flag==2){
                             window.location.reload();
->>>>>>> b0b5b242123d514107e4e2a3d8bd4442b69ad062
+                        }else if(data.data.flag==3){
+                            var wait=10;
+                            time(this,wait)
                         }
                     }else{
                         alert(data.message);
@@ -244,6 +243,18 @@
                     alert(Object.values(json)[0].toString());
                 }
             })
+        }
+        function time(o,wait) {
+            if (wait == 0) {
+                o.removeAttribute("disabled");
+                o.value="获取验证码";
+                wait = 120;
+            } else {
+                o.setAttribute("disabled", true);
+                o.value="重新发送(" + wait + ")";
+                wait--;
+                setTimeout(function() {time(o,wait)}, 1000)
+            }
         }
     })
 </script>

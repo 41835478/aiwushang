@@ -17,21 +17,28 @@ use Exception;
 
 class DirectService
 {
+    protected $row;
+
+    public function __construct(RowService $row)
+    {
+        $this->row=$row;
+    }
+
     //$order_id 订单id   $type 1、爱无尚商城 2、合作平台 3、100元专区 4、300元专区 5、2000元专区
     public function index($order_id,$type)
     {
         if($type==1||$type==2){//要进行分佣
             return $this->main($order_id);
         }elseif($type==3||$type==4||$type==5){//要进行排位
-
+            return $this->row->index($order_id,$type);
         }
     }
 
     public function main($order_id)//分佣主函数
     {
         $order=Order::find($order_id);
-        $pid=User::where(['id'=>$order->user_id])->first(['pid']);
-        return $this->goSale($order->user_id,$pid,$order->total_money);
+        $find=User::where(['id'=>$order->user_id])->first(['pid']);
+        $res=$this->goSale($order->user_id,$find->pid,$order->total_money);
     }
 
     public function goSale($user_id,$pid,$money,$rate1=0.1,$rate2=0.2,$num=1)//递归去分佣
@@ -46,7 +53,7 @@ class DirectService
                 if($num==2){
                     $bonus=$rate2*$money;
                 }
-                $res=$this->mainIncome($user_id,$pid,$bonus,$money);
+                $res=$this->mainIncome($user_id,$pid,$bonus);
                 if($res){
                     $num++;
                     return $this->goSale($user_id,$find->pid,$money,$rate1=0.1,$rate2=0.2,$num);
@@ -57,7 +64,7 @@ class DirectService
         return true;
     }
 
-    public function mainIncome($current_id,$prev_id,$bonus,$money)//分佣记录主函数
+    public function mainIncome($current_id,$prev_id,$bonus)//分佣记录主函数
     {
         DB::beginTransaction();
         try{
@@ -65,18 +72,13 @@ class DirectService
             if($res1){
                 $res2=User::where(['id'=>$prev_id])->increment('bonus',$bonus);
                 if($res2){
-                    $res3=User::where(['id'=>$prev_id])->increment('repeat_points',$money);
+                    $from_login_name=User::where(['id'=>$current_id])->value('login_name');
+                    $to_login_name=User::where(['id'=>$prev_id])->value('login_name');
+                    $info=$from_login_name.'向上级'.$to_login_name.'返分销额'.$bonus.'元';
+                    $res3=$this->recodeInfo($prev_id,$info,$bonus,1,1,$current_id);
                     if($res3){
-                        $from_login_name=User::where(['id'=>$current_id])->value('login_name');
-                        $to_login_name=User::where(['id'=>$prev_id])->value('login_name');
-                        $info=$from_login_name.'向上级'.$to_login_name.'返分销额'.$bonus.'元';
-                        $res4=$this->recodeInfo($prev_id,$info,$bonus,1,1,$current_id);
-                        if($res4){
-                            DB::commit();
-                            return true;
-                        }else{
-                            throw new Exception();
-                        }
+                        DB::commit();
+                        return true;
                     }else{
                         throw new Exception();
                     }
@@ -91,6 +93,8 @@ class DirectService
             return false;
         }
     }
+
+    public function repeatPoints(){}
 
     public function recodeInfo($to_user_id,$info,$money,$flag,$type,$from_user_id)//记录信息
     {
