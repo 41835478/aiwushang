@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>爱无尚</title>
- @include('home.public.header')
-<style>
-	body{
-		background-color:#f5f5f5;
-	}
-	.myBoxlist p{
-		padding-left:3px;
-		color:#666;
-		font-size: 16px
-	}
-	.myBoxlist span{
-		color:#a5a5a5;
-		font-size:16px;
-	}
-</style>
+	<title>爱无尚</title>
+	@include('home.public.header')
+	<style>
+		body{
+			background-color:#f5f5f5;
+		}
+		.myBoxlist p{
+			padding-left:3px;
+			color:#666;
+			font-size: 16px
+		}
+		.myBoxlist span{
+			color:#a5a5a5;
+			font-size:16px;
+		}
+	</style>
 </head>
 <body>
 <div class="public_head" style="background-color:#fff">
