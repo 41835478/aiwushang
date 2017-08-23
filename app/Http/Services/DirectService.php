@@ -11,6 +11,7 @@ namespace App\Http\Services;
 
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Order;
+use App\Http\Model\Pointsrecode;
 use App\Http\Model\User;
 use DB;
 use Exception;
@@ -39,6 +40,13 @@ class DirectService
         $order=Order::find($order_id);
         $find=User::where(['id'=>$order->user_id])->first(['pid']);
         $res=$this->goSale($order->user_id,$find->pid,$order->total_money);
+        if($res){
+            $res2=$this->repeatPoints($order->user_id,$order->total_money);
+            if($res2){
+                return true;
+            }
+        }
+        return false;
     }
 
     public function goSale($user_id,$pid,$money,$rate1=0.1,$rate2=0.2,$num=1)//递归去分佣
@@ -94,7 +102,24 @@ class DirectService
         }
     }
 
-    public function repeatPoints(){}
+    public function repeatPoints($user_id,$money)//购买正常商品得到复投积分
+    {
+        $login_name=User::where(['id'=>$user_id])->value('login_name');
+        $res=User::where(['id'=>$user_id])->increment('repeat_points',$money);
+        if($res){
+            $date['user_id']=$user_id;
+            $date['flag']=1;
+            $date['sign']=1;
+            $date['points']=$money;
+            $date['points_info']=$login_name.'购买了'.$money.'元钱商品奖励复投积分'.$money;
+            $date['create_at']=time();
+            $res=Pointsrecode::insert($date);
+            if($res){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function recodeInfo($to_user_id,$info,$money,$flag,$type,$from_user_id)//记录信息
     {

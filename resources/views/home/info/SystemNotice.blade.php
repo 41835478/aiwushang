@@ -14,13 +14,13 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta name="description" content="" />
 <meta name="Keywords" content="" />
-<link rel="stylesheet" href="css/swiper.min.css"/>
-<link rel="stylesheet" type="text/css" href="font/iconfont.css"/>
-<link rel="stylesheet" href="css/common.css"/>
+<link rel="stylesheet" href="/home/css/swiper.min.css"/>
+<link rel="stylesheet" type="text/css" href="/home/font/iconfont.css"/>
+<link rel="stylesheet" href="/home/css/common.css"/>
 
-<link rel="stylesheet" href="css/main.css">
-<script type="text/javascript" src="js/swiper.min.js"></script>
-<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/home/css/main.css">
+<script type="text/javascript" src="/home/js/swiper.min.js"></script>
+<script type="text/javascript" src="/home/js/jquery-3.1.1.min.js"></script>
 <style>
 	body{
 		background-color:#f5f5f5;
@@ -34,22 +34,29 @@
 </div>
 <!-- 内容区 -->
 <div class="content SystemNotice_content">
-	<ul class="Beginguide_ul SystemNotice_ul">
-		<!-- <li class="SN_li BG_li">
-			<a href="javascript:void(0);">
-				<span>爱无尚系统更新</span>
-				<i class="iconfont icon-you"></i>
-			</a>
-			<div class="SN_div">
-				<p class="p1">爱无尚系统更新更新更新，查看更新更新更新更新更新爱无尚系统更新更新更新，查看更新更新更新更新更新</p>
-				<p class="time">2017-06-21</p>
-			</div>
-		</li> -->
-	</ul>
-	<p class="font">已经到底了... ...</p>
+	@if ($return == null)
+		暂无公告
+	@else
+		<ul class="Beginguide_ul">
+			@foreach ($return as $v)
+
+				<li class="SN_li BG_li">
+					<a href="/info/sysInfo?id={{$v->id}}">
+						<span>{{$v->title}}</span>
+						<i class="iconfont icon-you"></i>
+					</a>
+					<div class="SN_div">
+						<p class="p1">{{str_replace(mb_substr($v->content,15),'...',$v->content)}}</p>
+						<p class="time">{{date('Y-m-d',$v->update_at)}}</p>
+					</div>
+				</li>
+				@endforeach
+		</ul>
+		 	<p class="font">已经到底了... ...</p>
+	@endif
 </div>
 
-<script>
+{{--<script>
 	for(var i=0; i<3; i++){
 		var _li =   '<li class="SN_li BG_li">'
 				+		'<a href="NoticeDetails.html">'
@@ -65,6 +72,6 @@
 	}
 
 	$(".SystemNotice_ul li:first").find('a').find('span').css('color','#ffb32a')
-</script>
+</script>    --}}
 </body>
 </html>

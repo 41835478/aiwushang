@@ -14,13 +14,13 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta name="description" content="" />
 <meta name="Keywords" content="" />
-<link rel="stylesheet" href="css/swiper.min.css"/>
-<link rel="stylesheet" type="text/css" href="font/iconfont.css"/>
-<link rel="stylesheet" href="css/common.css"/>
+<link rel="stylesheet" href="/home/css/swiper.min.css"/>
+<link rel="stylesheet" type="text/css" href="/home/font/iconfont.css"/>
+<link rel="stylesheet" href="/home/css/common.css"/>
 
-<link rel="stylesheet" href="css/main.css">
-<script type="text/javascript" src="js/swiper.min.js"></script>
-<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/home/css/main.css">
+<script type="text/javascript" src="/home/js/swiper.min.js"></script>
+<script type="text/javascript" src="/home/js/jquery-3.1.1.min.js"></script>
 <style>
 	body{
 		background-color:#fff;
@@ -36,11 +36,12 @@
 <div class="content pjt_content">
 	<div class="fenge"></div>
 	<div class="project_body NoticeDetails_body">
-		<h1 class="ND_tit">爱无尚平台更新公告</h1>
-		<p class="time">2017-06-21</p>
+		<h1 class="ND_tit">{{$return->title}}</h1>
+		<p class="time">{{date('Y-m-d',$return->update_at)}}</p>
+		{!! $return->content !!}
+		{{--<p>爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新。</p>
 		<p>爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新。</p>
-		<p>爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新爱无尚平台更新更新。</p>
-		<p>无尚平台更新更新爱无尚平台更新。</p>
+		<p>无尚平台更新更新爱无尚平台更新。</p>--}}
 	</div>
 </div>
 </body>
