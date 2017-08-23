@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Home;
 use Illuminate\Http\Request;
 
 use App\Http\Model\User;
+use App\Http\Model\Pointsrecode;
 use App\Http\Model\Incomerecode;
 use App\Http\Controllers\Home\BaseController;
 use Storage;
@@ -82,21 +83,121 @@ class UserController  extends BaseController
     }
     #复投积分
     public function recastIntegral(){
-    	return view('home.user.recastIntegral');
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	$points=$users['repeat_points'];
+    	$sintegral=Pointsrecode::where('user_id',$uid)->where('flag',1)->where('sign',1)->get();
+    	$zintegral=Pointsrecode::where('user_id',$uid)->where('flag',1)->where('sign',2)->get();
+
+    	//$points=Pointsrecode::where('user_id',$uid)->sum('points');
+    	return view('home.user.recastIntegral',compact('sintegral','zintegral','points'));
     }
     #消费积分
     public function consumption(){
-    	return view('home.user.consumption');
+     	$uid=$this->checkUser();
+     	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	$points=$users['consume_points'];
+    	$sintegral=Pointsrecode::where('user_id',$uid)->where('flag',2)->where('sign',1)->get();
+    	$zintegral=Pointsrecode::where('user_id',$uid)->where('flag',2)->where('sign',2)->get();
+
+    	//$points=Pointsrecode::where('user_id',$uid)->sum('points');   	
+    	return view('home.user.consumption',compact('sintegral','zintegral','points'));
     }
 	#循环积分
     public function looppoints(){
-    	return view('home.user.looppoints');
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	$points=$users['loop_points'];
+    	$sintegral=Pointsrecode::where('user_id',$uid)->where('flag',3)->where('sign',1)->get();
+    	$zintegral=Pointsrecode::where('user_id',$uid)->where('flag',3)->where('sign',2)->get();
+
+    	//$points=Pointsrecode::where('user_id',$uid)->sum('points');
+    	return view('home.user.looppoints',compact('sintegral','zintegral','points'));
     }
 
     #积分转账
-    public function turnmyintegral(){
-    	
+    public function turnmyintegral(Request $request,$id){
+    	$id=$id;
+    	$uid=$this->checkUser();
+    	$points=Pointsrecode::where('user_id',$uid)->sum('points');
+    	return view('home.user.turnmyintegral',compact('points','id'));
     }
+    #积分转账提交
+    public function editintegral(Request $request){
+   		
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+
+    	$post=$request->input();
+		
+    	if($post['id'] ==''){
+    		return back()->withErrors('参数错误');
+    	}
+		
+		
+		
+    	if($pusers=User::where('phone',$post['phone'])->first()){
+
+		}else{
+    		return back()->withErrors('该用户不存在');
+    	}
+
+    	#id 1 复投 2消费积分
+    	if($post['num'] < 50){
+    		return back()->withErrors('一次转出积分最少为50积分');
+    	}
+    	if($post['id']==1){
+    		$integralnum=$users['repeat_points'];
+    	}elseif($post['id'] ==2){
+    		$integralnum=$users['consume_points'];
+    	}
+    	if($post['num'] < $integralnum){
+    		return back()->withErrors('该用户积分不足');
+    	}
+    	#减少积分，给对方增加积分
+    	if($post['id'] == 1){
+    		if(	User::where('id',$uid)->decrement('repeat_points', $post['num'])  &&
+    			 User::where('phone',$post['phone'])->increment('repeat_points', $post['num'] * 0.95)){
+    			$data=[];
+    			$data['user_id']=$pusers['id'];
+    			$data['flag']=$post['id'];
+    			$data['points_info']='转账';
+    			$data['sign']=1;
+    			$data['points']=$post['num'] * 0.95;
+    			Pointsrecode::insert($data);
+
+
+    			 return back()->with('success','操作成功'); 
+
+
+				}else{
+					return back()->withErrors('参数错误');
+				}
+    	}elseif($post['id']==2){
+    		if(	User::where('id',$uid)->decrement('consume_points', $post['num'])  &&
+    			User::where('phone',$post['phone'])->increment('consume_points', $post['num'] * 0.95)){
+    			$data=[];
+    			$data['user_id']=$pusers['id'];
+    			$data['flag']=$post['id'];
+    			$data['points_info']='转账';
+    			$data['sign']=1;
+    			$data['points']=$post['num'] * 0.95;
+    			Pointsrecode::insert($data);
+    			 return back()->with('success','操作成功');   
+				}else{
+					return back()->withErrors('参数错误');
+				}
+    	}
+    	
+
+
+
+    }
+
  /**
  *奖金信息
  *
@@ -105,23 +206,37 @@ class UserController  extends BaseController
  	public function mybonus(){
  		return view('home.user.mybonus');
  	}
- 	#见点奖金
- 	public function bonus_jiandian(){
- 		return view('home.user.bonus_jiandian');
- 	}
- 	#分销奖金
- 	public function bonus_distribution(){
- 		return view('home.user.bonus_distribution');
+	#见点奖金
+ 	public function bonus_jiandian(Request $request ,$id){
+ 		$uid=$this->checkUser();
+ 		$t = new User;
+    	$users=$t->getuserinfo($uid);
+ 		# 1 见点 2分销 3推荐 4升级
+ 		
+ 		if($id ==''){
+			return back()->withErrors('参数错误');
+ 		}
+
+ 		if($id==1){
+ 			$type=3;
+ 		}elseif($id==2){
+ 			$type=1;
+ 		}elseif($id==3){
+ 			$type=4;
+ 		}elseif($id==4){
+ 			$type=5;
+ 		}
+		$bonus=Incomerecode::where('type',$type)->where('user_id',$uid)->get();
+		foreach ($bonus as $key => $value) {
+			$bonus[$key]['pic']=$users['pic'];
+			$bonus[$key]['name']=$users['name'];
+		}
+		$zbonus=Incomerecode::where('type',$type)->where('user_id',$uid)->sum('money'); 		
+		return view('home.user.bonus_jiandian',compact('bonus','id','zbonus'));
  	}
 
- 	#推荐奖金
- 	public function bonus_recommend(){
- 		
- 	}
- 	#升级奖金
- 	public function bonus_upgrade(){
- 		
- 	}
+
+ 	
 /**
 *排位订单
 */	

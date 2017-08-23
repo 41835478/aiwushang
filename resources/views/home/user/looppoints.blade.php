@@ -20,7 +20,7 @@
 		<div class="rci_msg">
 			<div class="rci_top">
 				<p class="act_p1">总积分</p>
-				<p class="act_p2">688673</p>
+				<p class="act_p2">{{$points}}</p>
 			</div>
 		</div>
 	</div>
@@ -43,16 +43,18 @@
 	<div class="account_body account_income">
 		<ul class="CP_income">
 
-			<li class="act_list">
+			 @foreach ($sintegral as $v)
+			 <li class="act_list">
 				<img src="images/act_icon12.png" alt="">
 				<div class="act_class">
-					<p class="top_p">提现获得</p>
-					<p class="time">2017-03-22 12:35</p>
+				<p class="top_p">{{$v['points_info']}}</p>
+					<p class="time">{{date('Y-m-d H:i:s',$v['update_at'])}}</p>
 				</div>
 				<div class="act_money">
-					+<span>30000</span>
+					+<span>{{$v['points']}}</span>
 				</div>
 			</li> 
+			@endforeach
 
 		</ul>
 	</div>
@@ -61,44 +63,25 @@
 	<div class="account_body account_pay" style="display:none">
 		<ul class="CP_pay">
 
+			 @foreach ($zintegral as $v)
 			 <li class="act_list">
 				<img src="images/act_icon10.png" alt="">
 				<div class="act_class">
-					<p class="top_p">兑换商品</p>
-					<p class="time">2017-03-22 12:35</p>
+					<p class="top_p">{{$v['points_info']}}</p>
+					<p class="time">{{date('Y-m-d H:i:s',$v['update_at'])}}</p>
 				</div>
 				<div class="act_money">
-					-<span>300</span>
+					-<span>{{$v['points']}}</span>
 				</div>
 			</li> 
+			@endforeach
 
 		</ul>
 	</div>
 </div>
 <p class="account_p">没有更多内容了... ...</p>
 <script>
-	// for(var i=0; i<4; i++){
-	// 	var _income =   '<li class="act_list">'
-	// 				+		'<img src="images/act_icon12.png" +alt="">'
-	// 				+		'<div class="act_class">'
-	// 				+			'<p class="top_p">下级升级费</p>'
-	// 				+			'<p class="time">2017-03-22 12:35</p>'
-	// 				+		'</div>'
-	// 				+		'<div class="act_money">+<span>30000</span></div>'
-	// 				+	'</li>';
-	// 	$(".CP_income").append(_income);
-	// }
-	// for(var m=0; m<6; m++){
-	// 	var _pay =   '<li class="act_list">'
-	// 			+		'<img src="images/act_icon10.png" alt="">'
-	// 			+		'<div class="act_class">'
-	// 			+			'<p class="top_p">投单消费</p>'
-	// 			+			'<p class="time">2017-03-22 12:35</p>'
-	// 			+		'</div>'
-	// 			+		'<div class="act_money">-<span>2400</span></div>'
-	// 			+	'</li>';
-	// 	$(".CP_pay").append(_pay);
-	// }
+
 
 	$(".account_nav li").click(function() {
 		var _index = $(this).index();
