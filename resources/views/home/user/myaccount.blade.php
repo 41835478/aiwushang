@@ -16,14 +16,14 @@
 <div class="myAccount_top">
 	<div class="header">
 		<h3>我的账户</h3>
-		<a href="personalCenter.html" class="iconfont icon-fanhui"></a>
+		<a href="javascript:" onclick="self.location=document.referrer;" class="iconfont icon-fanhui"></a>
 	</div>
 	<div class="account_msg">
 		<img class="account_star1" src="images/account01.png" alt="">
 		<img class="account_img" src="images/account02.png" alt="">
 		<img class="account_star2" src="images/account01.png" alt="">
 		<p class="act_p1">(总金额)</p>
-		<p class="act_p2">¥<span>6886.73</span></p>
+		<p class="act_p2">¥<span>{{$users['account']}}</span></p>
 	</div>
 </div>
 
@@ -56,7 +56,7 @@
 						@elseif($v['type']==5) 升级奖
 						@endif
 					</p>
-					<p class="time">{dade('Y-m-d H:i:s',$v['update_at'])}</p>
+					<p class="time">{{date('Y-m-d H:i:s',$v['update_at'])}}</p>
 				</div>
 				<div class="act_state">
 					@if( $v['type'] ==2 && $v['status']==0)  处理中
@@ -89,7 +89,7 @@
 						@elseif($v['type']==4) 推荐奖
 						@elseif($v['type']==5) 升级奖
 						@endif</p>
-					<p class="time">{dade('Y-m-d H:i:s',$v['update_at'])}</p>
+					<p class="time">{{date('Y-m-d H:i:s',$v['update_at'])}}</p>
 				</div>
 				<div class="act_state">
 					@if( $v['type'] ==2 && $v['status']==0)  处理中
@@ -139,11 +139,11 @@
 		console.log(val);
 		if(val == 1){
 			$('.tan_btn2').on("click",function(){
-				window.location.href = "cancellation_balance.html";
+				window.location.href = "/users/turnaccount";
 			})
 		}else if(val == 2){
 			$('.tan_btn2').on("click",function(){
-				window.location.href = "presentApplication.html";
+				window.location.href = "/users/withdrawals";
 			})
 		}
 

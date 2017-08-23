@@ -29,7 +29,7 @@
 <body>
 <div class="public_head">
 	<h3>我的积分</h3>
-	<a href="personalCenter.html" class="iconfont icon-fanhui"></a>
+	<a href="javascript:" onclick="self.location=document.referrer;" class="iconfont icon-fanhui"></a>
 </div>
 <!-- 内容区 -->
 <div class="content">
@@ -42,7 +42,7 @@
 			<p class="integral_po">复投积分</p>
 			<p class="integral_pt">可以转账,购买公排点位或激活直推会员</p>
 		</div>
-		<input onclick="javascript:window.location.href='reCastIntegral.html'" type="button" value="进入"/>
+		<input onclick="javascript:window.location.href='/users/recastIntegral'" type="button" value="进入"/>
 	</div>
 	<div class="integral_cont">
 		<div class="integral_imgbox integral_imgboxt">
@@ -52,7 +52,7 @@
 			<p class="integral_po">消费积分</p>
 			<p class="integral_pt">可在积分商城购买产品</p>
 		</div>
-		<input onclick="javascript:window.location.href='consumerPoints.html'" type="button" value="进入"/>
+		<input onclick="javascript:window.location.href='/users/consumption'" type="button" value="进入"/>
 	</div>
 	<div class="integral_cont">
 		<div class="integral_imgbox integral_imgboxf">
@@ -62,7 +62,7 @@
 			<p class="integral_po">循环积分</p>
 			<p class="integral_pt">每2400积分购买一次A盘、B盘、C盘点位</p>
 		</div>
-		<input onclick="javascript:window.location.href='loopPoints.html'" type="button" value="进入"/>
+		<input onclick="javascript:window.location.href='/users/looppoints'" type="button" value="进入"/>
 	</div>
 </div>
 </body>
