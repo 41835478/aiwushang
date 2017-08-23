@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Home;
 
-use App\Http\Model\Home\Direct;
+use App\Http\Services\DirectService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -10,7 +10,7 @@ class TestController extends Controller
 {
     protected $direct;
 
-    public function __construct(Direct $direct)
+    public function __construct(DirectService $direct)
     {
         $this->direct=$direct;
     }

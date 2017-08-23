@@ -1,11 +1,21 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2017/8/23
+ * Time: 11:28
+ */
 
-namespace App\Http\Model\Home;
+namespace App\Http\Services;
 
-use Illuminate\Database\Eloquent\Model;
+
+use App\Http\Model\Incomerecode;
+use App\Http\Model\Order;
+use App\Http\Model\User;
+use DB;
 use Exception;
 
-class Direct extends Model
+class DirectService
 {
     //$order_id 订单id   $type 1、爱无尚商城 2、合作平台 3、100元专区 4、300元专区 5、2000元专区
     public function index($order_id,$type)
