@@ -67,13 +67,13 @@
 	<div class="cancell_ban">
 		<div class="cancell_bano">
 			<p>好友手机号</p>
-			<input type="text" name="phone"  />
+			<input type="text" name="phone" class="phone" />
 		</div>
 	</div>
 	<div class="present_ban">
 		<em class="cancell_po">转账积分数量</em>
 	    <div class="present_bann">
-			<input type="number" name="num"/>
+			<input type="number" name="num" class="num" />
 		</div>
 	</div>
 	<div class="present_cont">
@@ -87,11 +87,65 @@
 		</div>
 	</div>
 	<div class="present_foot">
-		<input type="hidden" name="id" value="{{$id}}">
+		<input type="hidden" name="id" value="{{$id}}" class="id" >
 		
-		<input type="submit"   value="确认转账" class="present_btn">
+		<input type="submit"   value="确认转账" class="present_btn true"  >
 	</div>
 </div>
  </form>
 </body>
+
+<script type="text/javascript">
+	  $('.true').click(function(){
+            var phone=$('.phone').val();
+            var num=$('.num').val();
+            var id=$('.id').val();
+            if(phone==""){
+                alert("请输入您的手机号码！");
+                return false;
+            }
+            if(!phone.match(/^1[34578]\d{9}$/)){
+                alert('手机号不符合规则！');
+                return false;
+            }
+            if(num==""){
+            	alert('请输入数量');
+            	return false;
+            }
+            var data={
+                'phone':phone,
+                'num':num,
+                'id':id,
+               
+            }
+            var url="{{url('users/editintegral')}}";
+            sendAjax(data,url)
+        })
+        function sendAjax(data,url){
+            $.ajax({
+                'url':url,
+                'data':data,
+                'async':true,
+                'type':'post',
+                'dataType':'json',
+                success:function(data){
+
+                	 if(data.data.flag==1){
+                        	alert(data.message);
+                            window.location.href='/users/index';
+                        }else{
+                        	alert(data.message);
+                        }
+
+                  
+                },
+                // error:function(msg){
+                //     var json=JSON.parse(msg.responseText);
+                //     alert(Object.values(json)[0].toString());
+                // }
+            })
+        }
+
+
+</script>
 </html>

@@ -127,7 +127,7 @@ class UserController  extends BaseController
     }
     #积分转账提交
     public function editintegral(Request $request){
-   		
+		 	
     	$uid=$this->checkUser();
     	$t = new User;
     	$users=$t->getuserinfo($uid);
@@ -135,20 +135,22 @@ class UserController  extends BaseController
     	$post=$request->input();
 		
     	if($post['id'] ==''){
-    		return back()->withErrors('参数错误');
+    		 return $this->ajaxMessage(false,'参数错误');
+    		 // return $this->ajaxMessage(true,'注册成功',['flag'=>2]);
     	}
-		
 		
 		
     	if($pusers=User::where('phone',$post['phone'])->first()){
 
 		}else{
-    		return back()->withErrors('该用户不存在');
+			return $this->ajaxMessage(false,'该用户不存在');
+    	
     	}
 
     	#id 1 复投 2消费积分
     	if($post['num'] < 50){
-    		return back()->withErrors('一次转出积分最少为50积分');
+    		return $this->ajaxMessage(false,'一次转出积分最少为50积分');
+    		
     	}
     	if($post['id']==1){
     		$integralnum=$users['repeat_points'];
@@ -156,7 +158,7 @@ class UserController  extends BaseController
     		$integralnum=$users['consume_points'];
     	}
     	if($post['num'] < $integralnum){
-    		return back()->withErrors('该用户积分不足');
+    		return $this->ajaxMessage(false,'该用户积分不足');
     	}
     	#减少积分，给对方增加积分
     	if($post['id'] == 1){
@@ -170,12 +172,11 @@ class UserController  extends BaseController
     			$data['points']=$post['num'] * 0.95;
     			Pointsrecode::insert($data);
 
-
-    			 return back()->with('success','操作成功'); 
+	   				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
 
 
 				}else{
-					return back()->withErrors('参数错误');
+					return $this->ajaxMessage(false,'参数错误');
 				}
     	}elseif($post['id']==2){
     		if(	User::where('id',$uid)->decrement('consume_points', $post['num'])  &&
@@ -187,9 +188,10 @@ class UserController  extends BaseController
     			$data['sign']=1;
     			$data['points']=$post['num'] * 0.95;
     			Pointsrecode::insert($data);
-    			 return back()->with('success','操作成功');   
+    				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+
 				}else{
-					return back()->withErrors('参数错误');
+					return $this->ajaxMessage(false,'参数错误');
 				}
     	}
     	
