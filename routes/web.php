@@ -47,3 +47,4 @@ Route::group(['namespace'=>'Home','middleware'=>'home.auth'],function(){
 });
 require_once base_path('routes/home/login.php');//前台注册、登录
 require_once base_path('routes/home/shop.php');//商城首页路由
+require_once base_path('routes/home/info.php');//商城文章页路由
