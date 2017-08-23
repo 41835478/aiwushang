@@ -6,7 +6,7 @@ use App\Http\Model\User;
 use App\Http\Requests\Home\EditPwdRequest;
 use App\Http\Requests\Home\RegisterRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use Cache;
 
 class LoginController extends BaseController
 {
@@ -29,7 +29,7 @@ class LoginController extends BaseController
                 $date['pwd']=md5($date['pwd']);
                 $res=User::insertGetId($date);
                 if($res){
-                    Cache::forget('registerCode');
+                    Cache::pull('registerCode');
                     return $this->ajaxMessage(true,'注册成功',['flag'=>2]);
                 }
                 return $this->ajaxMessage(false,'注册失败');
