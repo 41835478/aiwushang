@@ -22,7 +22,7 @@ class RowService
     {
         $order=Order::find($order_id);
         if($type==3){//100元专区   说明是A盘
-            
+
             $this->mainRowA($order_id,$order->user_id);
         }
         if($type==4){//300元专区   说明是B盘
