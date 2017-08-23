@@ -22,7 +22,10 @@ class ShopController extends Controller{
     public function goodsDetail(){
         $id = $_REQUEST['id'];
         $goods = DB::table(self::GOODS)->where(['id'=>$id])->first();
-        dd($goods);
+        $return = [
+            'goods'=>$goods
+        ];
+        return view('home.shop.goodsDetail',$return);
     }
 }
 

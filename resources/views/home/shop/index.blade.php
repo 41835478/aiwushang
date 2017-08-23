@@ -56,11 +56,11 @@
     <!-- index-nav   -->  
     <div class="index_nav">
         <div class="div_displayFlex index_navWrapper">
-            <a href="BeginnerGuide.html" class="a_jump">
+            <a href="/info/newList" class="a_jump">
                 <img src="{{asset('home/images/indexNav10.png')}}" alt=""/>
                 <span>新手必看</span>
             </a>
-            <a href="SystemNotice.html" class="a_jump">
+            <a href="/info/sysList" class="a_jump">
                 <img src="{{asset('home/images/indexNav04.png')}}" alt=""/>
                 <span>系统公告</span>
             </a>
@@ -164,11 +164,11 @@
 </div>
 <footer class="footer">
     <div class="footerCon">
-        <a href="index.html" class="a_jump footerOn">
+        <a href="javascript:" class="a_jump footerOn">
             <img src="{{asset('home/images/icon-11.png')}}" alt=""/>
             <span class="footerlist-cn">首页</span>
         </a>
-        <a href="shop_Cart.html" class="a_jump">
+        <a href="/shop/cart" class="a_jump">
             <img src="{{asset('home/images/icon-2.png')}}" alt=""/>
             <span class="footerlist-cn">购物车</span>
         </a>
