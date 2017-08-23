@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Home;
 use Illuminate\Http\Request;
 
 use App\Http\Model\User;
+use App\Http\Model\Incomerecode;
 use App\Http\Controllers\Home\BaseController;
 use Storage;
 use DB;
@@ -50,12 +51,26 @@ class UserController  extends BaseController
     	$t = new User;
     	$users=$t->getuserinfo($uid);
 
-    	$saccount=DB::table('incomerecode')->where('user_id',$uid)->where('flag',1)->get();
-    	$zaccount=DB::table('incomerecode')->where('user_id',$uid)->where('flag',2)->get();
+    	$saccount=Incomerecode::where('user_id',$uid)->where('flag',1)->get();
+    	$zaccount=Incomerecode::where('user_id',$uid)->where('flag',2)->get();
 
     	return view('home.user.myaccount',compact('users','saccount','zaccount'));
     }
+     #余额转账
+    public function turnaccount(){
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
 
+    	return view('home.user.turnaccount',compact('users'));
+    }
+    #提现
+    public function withdrawals(){
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	return view('home.user.withdrawals',compact('users')); 	
+    }
 /***
 *积分信息
 *

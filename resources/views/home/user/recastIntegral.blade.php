@@ -14,7 +14,7 @@
 <div class="reCastIntegral_top">
 	<div class="public_head blue_head">
 		<h3>复投积分</h3>
-		<a href="myIntegral.html" class="iconfont icon-fanhui"></a>
+		<a href="javascript:" onclick="self.location=document.referrer;" class="iconfont icon-fanhui"></a>
 	</div>
 	<div class="rci_content">
 		<div class="rci_msg">

@@ -2,6 +2,9 @@
 
 	Route::get('users/index','UserController@index');//用户主页
 	Route::get('users/myaccount','UserController@myaccount');//账户信息
+	Route::get('users/turnaccount','UserController@turnaccount');//余额转账
+	Route::get('users/withdrawals','UserController@withdrawals');//账户体现
+	
 	Route::get('users/myintegral','UserController@myintegral');//积分主页
 	Route::get('users/recastIntegral','UserController@recastIntegral');//复投积分
 	Route::get('users/consumption','UserController@consumption');//消费积分

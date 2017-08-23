@@ -73,7 +73,7 @@
 				</a>
 			</li>
 			<li class="centerItem">
-				<a href="myIntegral.html" class="a_jump">
+				<a href="{{url('users/myintegral')}}" class="a_jump">
 					<img src="{{asset('home/images/person02.png')}}" alt=""/>
 					<span>我的积分</span>
 					<i class="iconfont icon-you"></i>
