@@ -77,7 +77,11 @@
 				time(o)
 			}, 1000)
 		}
-		var phone = {{$users->phone}};
+	}
+	$("#fetchCode").on("touchend",function(){
+		time(fetchCode);
+		var phone = "{{$users->phone}}";
+
 		if(phone==""){
 			alert("请输入您的手机号码！");
 			return false;
@@ -91,9 +95,6 @@
 		};
 		var url="{{url('register/sendCode')}}";
 		sendAjax(data,url)
-	}
-	$("#fetchCode").on("touchend",function(){
-		time(fetchCode);
 	})
 	function sendAjax(data,url){
 		$.ajax({

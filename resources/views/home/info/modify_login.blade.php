@@ -70,13 +70,17 @@
 			wait = 60;
 		} else {
 			o.setAttribute("disabled", true);
-			o.innerHTML="重新发送(" + wait + ")";
+			o.innerHTML = "重新发送(" + wait + ")";
 			wait--;
-			setTimeout(function() {
+			setTimeout(function () {
 				time(o)
 			}, 1000)
 		}
-		var phone = {{$user->phone}};
+	}
+	$("#fetchCode").on("touchend",function(){
+		time(fetchCode);
+		var phone = "{{$users->phone}}";
+		console.log(phone);
 		if(phone==""){
 			alert("请输入您的手机号码！");
 			return false;
@@ -90,9 +94,6 @@
 		};
 		var url="{{url('register/sendCode')}}";
 		sendAjax(data,url)
-	}
-	$("#fetchCode").on("touchend",function(){
-		time(fetchCode);
 	})
 	function sendAjax(data,url){
 		$.ajax({

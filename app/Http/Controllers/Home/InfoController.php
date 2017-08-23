@@ -51,7 +51,7 @@ class InfoController extends Controller{
      *我的账户
      */
     #我的账户
-    public function accountsettings(){
+    public function account_settings(){
         return view('home.info.accountsettings');
     }
     #修改登录密码
@@ -85,10 +85,10 @@ class InfoController extends Controller{
         $type = $request->input('type');
         if(Cache::has('registerCode')){
             if($code==Cache::get('registerCode')){
-                $pwd=md5($pwd);
                 if($pwd != $t_pwd){
                    exit("<script>alert('两次密码输入不一致');history.go(-1);</script>");
                 }
+                $pwd=md5($pwd);
                 if($type == 'pay'){
                     $res = DB::table(self::USER)->where(['id'=>$uid])->update(['paypwd'=>$pwd,'update_at'=>time()]);
                 }elseif($type == 'login'){
