@@ -136,8 +136,9 @@
     });
     //拍单商品vs普通商品
     $('#purchase').on('click',function(){
-        var _type = (window.location.href).split('=')[1];
-        window.location.href='submitOrders.html?type='+_type;
+        var goods_id = {{ $goods->id }}
+        var num = $('#goods_num').text();
+        window.location.href='/shop/submitOrders?goods_id='+goods_id+'&num='+num;
     })
 </script>
 </body>

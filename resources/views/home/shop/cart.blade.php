@@ -125,7 +125,7 @@
 		<div class="cart_foot cart_footo">
 			<i class="cart_all iconfont icon-weixuanzhong"></i>
 			<p>合计：<span><em>￥</em><i class="cart_mount">0.00</i></span></p>
-			<button type="button" onclick="javascript:window.location.href='submitOrders.html'">结算（<em class="cart_fom">0</em>）</button>
+			<button type="button" onclick="javascript:submitOrders();">结算（<em class="cart_fom">0</em>）</button>
 	    </div>
 	    <div class="cart_foot cart_foott" style="display: none">
 			<i class="cart_all iconfont icon-weixuanzhong"></i>
@@ -137,11 +137,11 @@
 
 <footer class="footer">
 	<div class="footerCon">
-		<a href="index.html" class="a_jump">
+		<a href="/shop" class="a_jump">
 			<img src="/home/images/icon-1.png" alt=""/>
 			<span class="footerlist-cn">首页</span>
 		</a>
-		<a href="shop_Cart.html" class="a_jump footerOn">
+		<a href="/shop/cart" class="a_jump footerOn">
 			<img src="/home/images/icon-22.png" alt=""/>
 			<span class="footerlist-cn">购物车</span>
 		</a>
@@ -231,6 +231,19 @@
         })
 
 	})
+
+	function submitOrders(){
+        var xz = $(".icon-selected:not(.cart_he)").parent();
+        if(xz.length <= 0){
+            return false;
+        }
+        var xz_arr = '';
+        for(var i = 0;i < xz.length;i++){
+            xz_arr += ','+xz[i].attributes[1].value;
+        }
+        xz_arr = xz_arr.substr(1);
+        location.href="/shop/submitOrders?cart_id="+xz_arr;
+	}
 	 //编辑
     $(".right").click(function(){ 
       	  $(".cart_i").removeClass("icon-selected");  
