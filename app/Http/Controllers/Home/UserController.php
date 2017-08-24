@@ -7,12 +7,25 @@ use Illuminate\Http\Request;
 use App\Http\Model\User;
 use App\Http\Model\Pointsrecode;
 use App\Http\Model\Incomerecode;
+use App\Http\Model\Withdraw;
+use App\Http\Model\Payment;
 use App\Http\Controllers\Home\BaseController;
+//use App\Http\Services\FunctionService;
 use Storage;
 use DB;
+use Cache;
 use Exception;
 class UserController  extends BaseController
 {
+
+	#二维码
+	public function qrcode(){
+
+		 return view('home.user.qrcode');
+	}
+
+
+
     public function index()//加载注册页面
     {
     	#查询用户信息 
@@ -25,10 +38,13 @@ class UserController  extends BaseController
        	$pusers=$t->getuserinfo($users['pid']);
        	
     	#查询团队
-    	$pp=$this->wuxian($uid);
-    	
-    	//var_dump($pp);die;//compact()
-        return view('home.user.index',compact('users','pusers'));
+    	$arr=User::get();
+     	$count=count($this->ifind($arr,$uid));
+  
+    
+    	//dd($pp);
+    	//dd(count($pp));die;
+        return view('home.user.index',compact('users','pusers','count'));
     }
 
    #查询团队
@@ -42,6 +58,24 @@ class UserController  extends BaseController
     		}
     		return $arr;
     	}
+ 
+		public function ifind($arr,$id){
+				
+				static $data=array();
+				foreach($arr as $k=>$v){
+					if($v['id']==$id){
+						$data[]=$v;
+						}
+					if($v['pid']==$id){
+						$data[]=$v;
+						}
+					}
+
+				return $data;
+			}
+
+
+
 /***
 *账户信息
 *
@@ -72,6 +106,86 @@ class UserController  extends BaseController
     	$users=$t->getuserinfo($uid);
     	return view('home.user.withdrawals',compact('users')); 	
     }
+    #转账提交
+    public function editaccount(Request $request){
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+
+    	$post=$request->input();
+    	if($post['id']=='' || $post['num']=='' ){
+    		return $this->ajaxMessage(false,'参数错误');
+    	}
+    	if($post['num'] < 50){
+    		return $this->ajaxMessage(false,'数量最低为50');
+    	}
+
+    	if($post['id'] ==1 ){
+    		#转账逻辑处理
+    		$puser=User::where('phone',$post['phone'])->first();
+    		if($puser){
+    			if($post['num'] > $users['account']){
+    				return $this->ajaxMessage(false,'账户余额不足');
+    			}
+
+    			if(	User::where('id',$uid)->decrement('account', $post['num'])  &&
+    			 User::where('phone',$post['phone'])->increment('account', $post['num'] * 0.95)){
+    			$data=[];
+    			$data['user_id']=$puser['id'];
+    			$data['type']=2;
+    			$data['flag']=2;
+    			$data['recode_info']='转账';
+    			$data['status']=2;
+    			$data['money']=$post['num'] * 0.95;
+    			$data['create_at']=time();
+    			$data['update_at']=time();
+    			Incomerecode::insert($data);
+
+	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+
+				}else{
+					return $this->ajaxMessage(false,'参数错误');
+				}
+
+
+    		}else{
+    			return $this->ajaxMessage(false,'该用户不存在');
+    		}
+    		
+
+
+    	}elseif ($post['id']==2) {
+    		#提现逻辑处理
+
+    		if($post['num'] > $users['account']){
+    				return $this->ajaxMessage(false,'账户余额不足');
+    			}
+
+    			if(	User::where('id',$uid)->decrement('account', $post['num']) ){
+    			$data=[];
+    			$data['user_id']=$users['id'];
+    			$data['mobile']=$users['phone'];
+    			$data['name']=$users['name'];
+    			$data['fee']=$post['num'] * 0.05;
+    			$data['arrival_money']=$post['num'] * 0.95;
+    			$data['cash_way']=$post['type'];
+    			$data['create_at']=time();
+    			$data['update_at']=time();
+    			Withdraw::insert($data);
+
+	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+
+				}else{
+					return $this->ajaxMessage(false,'参数错误');
+				}
+    	}
+
+
+    }
+
+
+
+
 /***
 *积分信息
 *
@@ -274,11 +388,104 @@ class UserController  extends BaseController
 
 
 
+/****
+**账户绑定
+*/
+	public function accountbinding(){
+		$uid=$this->checkUser();
+ 		$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	#查询支付宝
+    	$zhifu=Payment::where('user_id',$uid)->where('type',2)->first();
+    
+    		$zhifu= substr_replace($zhifu['number'],'****',3,4);
+    	
+    	#查询微信
+    	$weixin=Payment::where('user_id',$uid)->where('type',1)->first();
+    	#查询银行卡
+    	$yinhang=Payment::where('user_id',$uid)->where('type',3)->get();
+
+
+		return view('home.user.accountbinding',compact('zhifu','yinhang','weixin'));
+	}
+	#添加银行卡
+	public function addbank(){
+
+		return view('home.user.addbank');
+	}
+	#绑定支付宝
+	public function bindingaliplay(){
+		return view('home.user.bindingaliplay');
+	}
+
+	public function editbinding(Request $request){
+		$uid=$this->checkUser();
+ 		$t = new User;
+    	$users=$t->getuserinfo($uid);
+		$post=$request->input();
+
+		if($post['type']==1){
 
 
 
+		}elseif ($post['type']==2){
 
+			if($post['code']==Cache::get('registerCode')){
+				if($users['pwd']==md5($post['password'])){
+						$data=[];
+						$data['type']=2;
+						$data['user_id']=$users['id'];
+						$data['bankname']=$post['bankname'];
+						$data['number']=$post['number'];
+						$data['phone']=$post['phone'];
+						$data['create_at']=time();
+						$data['update_at']=$data['create_at'];
+						$res=Payment::insert($data);
+						if($res){
+							return $this->ajaxMessage(true,'绑定成功',['flag'=>1]);
+						}
 
+				}else{
+					return $this->ajaxMessage(false,'登录密码错误');
+				}	
+			}else{
+				return $this->ajaxMessage(false,'验证码错误');
+			}
+			#添加银行卡
+		}elseif($post['type']==3){
+			$count=Payment::where('user_id',$uid)->where('type',3)->count();
+			if($count >= 3){
+				return $this->ajaxMessage(false,'每人最多可以绑定三张银行卡');
+			}
+			$data=[];
+			$data['user_id']=$users['id'];
+			$data['type']=3;
+			$data['bankname']=$post['bankname'];
+			$data['bankusername']=$post['bankusername'];
+			$data['number']=$post['number'];
+			$data['bankaddress']=$post['bankaddress'];
+			$data['create_at']=time();
+			$data['update_at']=$data['create_at'];
+			$re=Payment::insert($data);
+			if($re){
+				return $this->ajaxMessage(true,'绑定成功');
+			}
+
+		}
+		
+
+	}
+		#删除解绑
+	public function bindingdel(Request $request){
+	
+ 		
+		$post=$request->input();
+		$res=Payment::where('id',$post['yinhang'])->delete();
+		if($res){
+			return $this->ajaxMessage(true,'绑定成功');
+		}
+
+	}
 
 
 

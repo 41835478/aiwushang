@@ -14,7 +14,7 @@
 <body>
 <div class="center_head">
 	<div class="div_clearFloat center_top">
-		<img src="{{asset('home/images/portrait.png')}}" alt=""/>
+		<img src="{{$users['pic']}}" alt=""/>
 		<div class="center_edit">
 			<div class="div_clearFloat center_personalData">
 				<p>{{$users['name']}} </p>
@@ -36,7 +36,7 @@
 			<span>账户余额(元)</span>
 		</div>
 		<div class="center_money">
-			<p>30</p>
+			<p>{{$count}}</p>
 			<span>我的团队(人)</span>
 		</div>
 	</div>
@@ -117,7 +117,7 @@
 		</ul>
 		<ul class="centerList centerList2">
 			<li class="centerItem">
-				<a href="{{url('users/ranking_orders')}}" class="a_jump">
+				<a href="{{url('users/accountbinding')}}" class="a_jump">
 					<img src="{{asset('home/images/person07.png')}}" alt=""/>
 					<span>账户绑定</span>
 					<i class="iconfont icon-you"></i>
@@ -166,7 +166,7 @@
 <script>
 	$(".person_b").on("click",function(){
         addBox("body");
-        outBox("需要消费成为会员才能查看二维码","QRcode.html");
+        outBox("需要消费成为会员才能查看二维码","{{url('users/qrcode')}}");
      })
 </script>
 </body>

@@ -44,6 +44,19 @@
 	.present_cont{
 		background: white;
 	}
+	.present_foot input[type=submit] {
+    width: 100%;
+    height: 50px;
+    border: 0;
+    background: none;
+    font-size: 17px;
+    text-align: center;
+    line-height: 50px;
+    color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
 </style>
 </head>
 <body>
@@ -56,14 +69,14 @@
 	<div class="cancell_ban">
 		<div class="cancell_bano">
 			<p>好友账号</p>
-			<input type="text" />
+			<input type="text" name="phone" class="phone" />
 		</div>
 	</div>
 	<div class="present_ban">
 		<em class="cancell_po">转账金额</em>
 	    <div class="present_bann">
 			<p>￥</p>
-			<input type="number"/>
+			<input type="number" name="num" class="num" />
 		</div>
 	</div>
 	<div class="present_cont">
@@ -77,8 +90,62 @@
 		</div>
 	</div>
 	<div class="present_foot">
-		<input type="button" onclick="window.location.href='myAccount.html'" value="确认转账" class="present_btn">
+	<input type="hidden" name="id" value="1" class="id" >
+		<input type="button"  value="确认转账"  onclick="javascript:{this.disabled=true;document.form1.submit();}" class="present_btn true">
 	</div>
 </div>
 </body>
+
+
+
+<script type="text/javascript">
+	  $('.true').click(function(){
+            var phone=$('.phone').val();
+            var num=$('.num').val();
+            var id=$('.id').val();
+            if(phone==""){
+                alert("请输入您的手机号码！");
+                return false;
+            }
+            if(!phone.match(/^1[34578]\d{9}$/)){
+                alert('手机号不符合规则！');
+                return false;
+            }
+            if(num==""){
+            	alert('请输入数量');
+            	return false;
+            }
+            var data={
+                'phone':phone,
+                'num':num,
+                'id':id,
+               
+            }
+            var url="{{url('users/editaccount')}}";
+            sendAjax(data,url)
+        })
+        function sendAjax(data,url){
+            $.ajax({
+                'url':url,
+                'data':data,
+                'async':true,
+                'type':'post',
+                'dataType':'json',
+                success:function(data){
+                	 if(data.status){                    	
+                            window.location.href="{{url('users/index')}}";
+                        }else{
+                        	alert(data.message);
+                        	window.location.reload();
+                        }
+
+                  
+                },
+             
+            })
+        }
+
+ 
+
+</script>
 </html>
