@@ -13,6 +13,8 @@ use App\Http\Model\Incomerecode;
 use App\Http\Model\Order;
 use App\Http\Model\Orderinfo;
 use App\Http\Model\Rowa;
+use App\Http\Model\Rowb;
+use App\Http\Model\Rowc;
 use App\Http\Model\Roworder;
 use App\Http\Model\User;
 use DB;
@@ -20,44 +22,67 @@ use Exception;
 
 class RowService
 {
-    protected $rowA;
+    protected $rowAService;
+    protected $rowBService;
+    protected $rowCService;
 
-    public function __construct(RowAService $rowA)
+    protected $rowA;
+    protected $rowB;
+    protected $rowC;
+    public function __construct(RowAService $rowAService,RowBService $rowBService,RowCService $rowCService,Rowa $rowA,Rowb $rowB,Rowc $rowC)
     {
+        $this->rowAService=$rowAService;
+        $this->rowBService=$rowBService;
+        $this->rowCService=$rowCService;
+
         $this->rowA=$rowA;
+        $this->rowB=$rowB;
+        $this->rowC=$rowC;
     }
 
     public function index($order_id, $type)
     {
         $order = Order::find($order_id);
         if ($type == 3) {//100元专区   说明是A盘
-            $res = $this->mainRowA($order_id, $order->user_id, $order->order_num, 100, 1);
-            if ($res) {
-                $date=$this->RowInfo($res);
-                return $this->rowA->index($date['prev_id'],$date['row_id'],1,$date['user_id'],$date['current_level']);
-            }
-            return false;
+            return $this->mainRow($order_id, $order->user_id, $order->order_num, 100, 1,2.5);
         }
         if ($type == 4) {//300元专区   说明是B盘
-
+            return $this->mainRow($order_id, $order->user_id, $order->order_num, 300, 2,6.5);
         }
         if ($type == 5) {//2000元专区  说明是C盘
-
+            return $this->mainRow($order_id, $order->user_id, $order->order_num, 2000, 3,42.5);
         }
     }
 
-    public function RowInfo($row_id)
+    public function RowInfo($row_id,$type)
     {
-        $rowA=Rowa::find($row_id);
-        $date['prev_id']=$rowA->prev_id;
+        if($type==1){
+            $row=Rowa::find($row_id);
+        }
+        if($type==2){
+            $row=Rowb::find($row_id);
+        }
+        if($type==3){
+            $row=Rowc::find($row_id);
+        }
+        $date['prev_id']=$row->prev_id;
         $date['row_id']=$row_id;
-        $date['current_level']=$rowA->current_level ;
-        $date['user_id']=$rowA->user_id;
+        $date['current_level']=$row->current_level ;
+        $date['user_id']=$row->user_id;
         return $date;
     }
 
-    public function mainRowA($order_id, $user_id, $num, $money, $type)
+    public function mainRow($order_id, $user_id, $num, $money, $type,$pointFee)
     {
+        if($type==1){
+            $mod=$this->rowA;
+        }
+        if($type==2){
+            $mod=$this->rowB;
+        }
+        if($type==3){
+            $mod=$this->rowC;
+        }
         for ($j = 0; $j < $num; $j++) {
             $date['order_id'] = $order_id;
             $date['user_id'] = $user_id;
@@ -65,38 +90,51 @@ class RowService
             $date['current_level'] = 1;
             $date['current_generate'] = 1;
             $date['create_at'] = time();
-            $res = Rowa::insertGetId($date);
+            $res = $mod->insertGetId($date);
             if ($res) {
-                $prevId = Rowa::where('id', '<', $res)->max('id');
+                $prevId = $mod->where('id', '<', $res)->max('id');
                 if ($prevId) {
-                    $level = Rowa::where(['id' => $prevId])->value('level');//上级的层数
-                    $selfLevel = $this->getLevel($level);
+                    $level = $mod->where(['id' => $prevId])->value('level');//上级的层数
+                    $selfLevel = $this->getLevel($mod,$level);
                     $date['update_at'] = time();
                     $date['level'] = $selfLevel;
-                    $res1 = Rowa::where(['id' => $res])->update($date);
+                    $res1 = $mod->where(['id' => $res])->update($date);
                     if ($res1) {
                         $remark = $money . '元商品区';
                         $res2 = $this->rowOrder($res, $user_id, $remark, $money, $type);
                         if ($res2) {
-                            $res3 = $this->getTwentyScore($user_id, $money, 2.5);//向上20代返钱
-                        }else{
-                            return false;
+                            $res3 = $this->getTwentyScore($user_id, $money, $pointFee);//向上20代返钱
+                            if($res3){
+                                return $this->loopUpDisk($res,$type,$order_id);
+                            }
                         }
-                    } else {
-                        return false;
                     }
                 }
-            } else {
-                return false;
             }
+            return false;
         }
-        return $res;
     }
 
-    public function getLevel($level)//获取层数
+    public function loopUpDisk($row_id,$type,$order_id)//开始进盘
+    {
+        if($type==1){
+            $date=$this->RowInfo($row_id,1);
+            return $this->rowAService->index($date['prev_id'],$date['row_id'],1,$date['user_id'],$date['current_level'],$order_id);
+        }
+        if($type==2){
+            $date=$this->RowInfo($row_id,2);
+            return $this->rowBService->index($date['prev_id'],$date['row_id'],2,$date['user_id'],$date['current_level'],$order_id);
+        }
+        if($type==3){
+            $date=$this->RowInfo($row_id,3);
+            return $this->rowCService->index($date['prev_id'],$date['row_id'],3,$date['user_id'],$date['current_level'],$order_id);
+        }
+    }
+
+    public function getLevel($mod,$level)//获取层数
     {
         $layer = bcpow(2, $level);
-        $count = Rowa::where(['level' => $level])->count();//这里需要优化
+        $count = $mod->where(['level' => $level])->count();//这里需要优化
         if ($count < $layer) {
             return $level;
         }
