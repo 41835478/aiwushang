@@ -41,7 +41,7 @@ class UserController  extends BaseController
     	$arr=User::get();
      	$count=count($this->wuxianq($arr,$uid));
   
-    	$pp=self::wuxian($uid);
+    	//$pp=self::wuxian($uid);
     	//var_dump($pp);die;
     	//dd(count($pp));die;
         return view('home.user.index',compact('users','pusers','count'));
@@ -68,7 +68,7 @@ class UserController  extends BaseController
  			foreach ($user as $key => $value) {
  				var_dump($value['id']);
  				$tmp = self::wuxian($value['id']);
- 				var_dump($value['id']);
+ 				
 
 				if(empty($tmp)){
 					$allId=array_merge($allId,$tmp);
