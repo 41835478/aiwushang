@@ -19,9 +19,10 @@ class Example
      *
      * @return void
      */
-    public function __construct()
+    public $id;
+    public function __construct($id)
     {
-        //
+        $this->id=$id;
     }
 
     /**

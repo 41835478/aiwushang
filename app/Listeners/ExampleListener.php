@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\Example;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Log;
 
 class ExampleListener
 {
@@ -26,6 +27,6 @@ class ExampleListener
      */
     public function handle(Example $event)
     {
-        //
+        Log::info('测试',['id'=>$event->id]);
     }
 }
