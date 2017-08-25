@@ -88,7 +88,7 @@ class RowAService
                 if($res2->promote_fee>=$feeConfig['promoteFee']){
                     $up_row_id=$this->getRowId($to_row->id,$res2->aim_level,$num=1);
                     $date['promote_fee']=$res2->promote_fee->$feeConfig['promoteFee'];
-                    $res3=$this->setPromoteRecode($to_row->id,1,$to_row->user_id,$to_row->current_level,$date);
+                    $res3=$this->setPromoteRecode($to_row->id,1,$to_row->user_id,$to_row->current_level+1,$date);
                     if($res3){
                         $data['promote_fee']=$feeConfig['promoteFee'];
                         $data['update_at']=time();
@@ -149,8 +149,8 @@ class RowAService
                                     return false;
                                 }
                             }
-                            return $this->loopPoint();
                         }
+                        return $this->loopPoint();//公排大循环
                     }
                     return true;
                 }
@@ -205,7 +205,10 @@ class RowAService
         }
         $res1=Promoterecode::where($where)->increment('promote_fee',$feeConfig['deductFee']);
         if($res1) {
-            return $this->mainFunc($to_row->user_id, $from_row->user_id, $from_row->current_level, $feeConfig['redFee']);
+            if($feeConfig['redFee']){
+                return $this->mainFunc($to_row->user_id, $from_row->user_id, $from_row->current_level, $feeConfig['redFee']);
+            }
+            return true;
         }
         return false;
     }
