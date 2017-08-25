@@ -597,6 +597,7 @@ DB::transaction(function(){
     public function logout(Request $request){
         $request->session()->flush();
         return redirect('shop/index');
+    }
        
 
 }
