@@ -2,12 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\Test;
+use App\Events\Example;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Log;
 
-class TestListener
+class ExampleListener
 {
     /**
      * Create the event listener.
@@ -22,12 +21,11 @@ class TestListener
     /**
      * Handle the event.
      *
-     * @param  Test  $event
+     * @param  Example  $event
      * @return void
      */
-    public function handle(Test $event)
+    public function handle(Example $event)
     {
-        $id = $event->id;
-//        Log::info('保存文章到缓存成功！',['id'=>$event->id]);
+        //
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class Test
+class Example
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,10 +19,9 @@ class Test
      *
      * @return void
      */
-    public $id;
-    public function __construct($id)
+    public function __construct()
     {
-        $this->id=$id;
+        //
     }
 
     /**
