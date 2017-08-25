@@ -9,6 +9,8 @@ use App\Http\Model\Pointsrecode;
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Withdraw;
 use App\Http\Model\Payment;
+use App\Http\Model\Roworder;
+use App\Http\Model\Address;
 use App\Http\Controllers\Home\BaseController;
 //use App\Http\Services\FunctionService;
 use Storage;
@@ -32,55 +34,32 @@ class UserController  extends BaseController
     	$uid=$this->checkUser();
     	$t = new User;
     	$users=$t->getuserinfo($uid);
-   	
     	#查询上级
-    
-       	$pusers=$t->getuserinfo($users['pid']);
-       	
+        $pusers=$t->getuserinfo($users['pid']);
     	#查询团队
-    	$arr=User::get();
-     	$count=count($this->wuxianq($arr,$uid));
-  
-    	//$pp=self::wuxian($uid);
-    	//var_dump($pp);die;
-    	//dd(count($pp));die;
+     	$team=self::wuxian($uid);
+    	$count=count($team);
+
+    	//dd($team);
         return view('home.user.index',compact('users','pusers','count'));
     }
 
    #查询团队
-    	public function wuxianq($id,$arr=array()){
-    		$count = count($arr);
-    		$a = User::where('id',$id)->first();
-    		$b = User::where('pid',$a['id'])->first();
-    		if($b){
-    			$arr[$count] = $b['id'];
-    			return $this->wuxian($b['id'],$arr);
-    		}
-    		return $arr;
-    	}
-
-
  	public static function wuxian($i){
- 		$allId = [];
-
- 		if($user = User::where('pid',$i) -> get()){
-				
+ 		$users = [];
+ 		($user = User::where(['pid'=>$i]) -> get()) && $user = $user -> toArray();
+ 		if(count($user) > 0){
+ 			$users = array_merge($users,$user);
  			foreach ($user as $key => $value) {
- 				var_dump($value['id']);
  				$tmp = self::wuxian($value['id']);
- 				
-
-				if(empty($tmp)){
-					$allId=array_merge($allId,$tmp);
-
+ 				if(count($tmp) > 0 && $tmp != false){
+ 					$users = array_merge($users,$tmp);
+ 				}else{
+ 					continue;
  				}
  			}
-
- 			return $allId;
-
-
+ 			return $users;
  		}else{
-
  			return false;
  		}
  	}
@@ -164,7 +143,7 @@ DB::transaction(function(){
     			$data['create_at']=time();
     			$data['update_at']=time();
     			Incomerecode::insert($data);
-	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+	   				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
 
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
@@ -222,7 +201,7 @@ DB::transaction(function(){
     			User::where('id',$users['id'])->increment('consume_points', $datax['points']);
 
 
-	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+	   				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
 
 	
 #事物结束
@@ -343,7 +322,7 @@ DB::transaction(function(){
     			$data['sign']=1;
     			$data['points']=$post['num'] * 0.95;
     			Pointsrecode::insert($data);
-	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+	   			return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
 				
 });
     	}elseif($post['id']==2){
@@ -359,7 +338,7 @@ DB::transaction(function(){
     			$data['sign']=1;
     			$data['points']=$post['num'] * 0.95;
     			Pointsrecode::insert($data);
-    				return $this->ajaxMessage(true,['message'=>'操作成功']);
+    			return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
 
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
@@ -413,8 +392,10 @@ DB::transaction(function(){
 *排位订单
 */	
 	public function ranking_orders(){
-
-		return view('home.user.ranking_orders');
+		#查询用户信息 
+    	$uid=$this->checkUser();
+		$roworders=Roworder::where('user_id',$uid)->get();
+		return view('home.user.ranking_orders',compact('roworders'));
 	}
 
 /**
@@ -422,7 +403,12 @@ DB::transaction(function(){
 */
 	#我的团队
 	public function myteam(){
-		return view('home.user.myteam');
+		#查询用户信息 
+    	$uid=$this->checkUser();
+    	#查询团队
+     	$team=self::wuxian($uid);
+    	$count=count($team);
+		return view('home.user.myteam',compact('team','count'));
 	}
 
 /**
@@ -518,7 +504,7 @@ DB::transaction(function(){
 			$data['update_at']=$data['create_at'];
 			$re=Payment::insert($data);
 			if($re){
-				return $this->ajaxMessage(true,'绑定成功');
+				return $this->ajaxMessage(true,'绑定成功',['flag'=>1]);
 			}
 
 		}
@@ -527,22 +513,90 @@ DB::transaction(function(){
 	}
 		#删除解绑
 	public function bindingdel(Request $request){
-	
- 		
 		$post=$request->input();
 		$res=Payment::where('id',$post['yinhang'])->delete();
 		if($res){
-			return $this->ajaxMessage(true,'绑定成功');
+			return $this->ajaxMessage(true,'绑定成功',['flag'=>1]);
 		}
+
+	}
+/****
+*管理收货地址
+*
+**/	#地址列表
+	public function shippingaddress(){
+		$uid=$this->checkUser();
+		$address=Address::where('user_id',$uid)->get();
+
+		return view('home.user.shippingaddress',compact('address'));
+
+	}
+	#管理收货地址
+	public function manageaddress(){
+		$uid=$this->checkUser();
+		$address=Address::where('user_id',$uid)->get();
+
+		return view('home.user.manageaddress',compact('address'));
+	}
+	#设为默认地址
+	public function addressdefault(Request $request){
+		$uid=$this->checkUser();
+		$post=$request->input();
+		if($post['type']==1){
+			Address::where('user_id',$uid)->update(['default'=>0]);
+			Address::where('id',$post['id'])->update(['default'=>1]);
+		}elseif(($post['type']==2)){
+			Address::where('id',$post['id'])->delete();
+		}
+	}
+	#添加收货地址页面
+	public function toaddress(){
+		return view('home.user.toaddress');
+	}
+	#添加收货地址
+	public function editaddress(Request $request){
+		$uid=$this->checkUser();
+		$post=$request->input();
+
+		$count=Address::where('user_id',$uid)->count();
+		if($count > 5){
+			return $this->ajaxMessage(false,'最多绑定5个收货地址');
+		}
+
+		#定义数组
+		$data=[];
+		if($post['di']==1){
+			Address::where('user_id',$uid)->update(['default'=>0]);
+
+			$data['default']=1;
+		}
+		$data=[];
+		$data['user_id']=$uid;
+		$data['name']=$post['name'];
+		$data['phone']=$post['phone'];
+
+		$address = $post['demo2'];
+        $arr = explode(",",$address); 
+        $data['province'] = $arr[0];
+        $data['city'] = $arr[1];
+        $data['area'] = $arr[2];
+        $data['address']=$post['demo'];
+        $data['create_at']=time();
+        $data['update_at']=$data['create_at'];
+        $res=Address::insert($data);
+        if($res){
+        	return $this->ajaxMessage(true,'绑定成功',['flag'=>1]);
+        }
+
 
 	}
 
 
 
-
     #注销
-    public function logout(){
-
-    }
+    public function logout(Request $request){
+        $request->session()->flush();
+        return redirect('shop/index');
+       
 
 }

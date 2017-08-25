@@ -24,27 +24,33 @@
 <div class="content" style="padding-top:48px;padding-bottom:0">
 	<div class="bonus">
 		<h2>
-			<em>30</em>
+			<em>{{$count}}</em>
 		</h2>
 		<p>团队人数</p>
 	</div>
 	<div class="bonus_box">
 		<ul class="teamList">
+		@foreach($team as $k=>$v)
 			<li class="teamItem">
-				<span>1</span>
-				<img src="images/rank01.png" alt=""/>
+				<span>{{$k+1}}</span>
+				<img src="{{$v['pic']}}" alt=""/>
 				<div class="team_con">
-					<p>Asdes</p>
-					<span>18574198899</span>
+					<p>{{$v['name']}}</p>
+					<span>{{$v['phone']}}</span>
 				</div>
 				<div class="team_identity">
 					<p class="team_shenfen">
 						<i class="iconfont icon-dengji"></i>
-						<span>批发商</span>
+						<span>@if($v['level'] ==0) 游客
+								@elseif($v['level']==1)批发商
+								
+								@endif
+						</span>
 					</p>
-					<p class="team_time">2017-08-10</p>
+					<p class="team_time">{{date('Y-m-d' ,$v['create_at'])}}</p>
 				</div>
 			</li>
+			@endforeach
 		</ul>
 	</div>
 </div>

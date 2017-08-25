@@ -142,7 +142,11 @@ window.onload=function(){
                 'dataType':'json',
                 success:function(data){
                 	 if(data.status){                    	
-                            window.location.href="{{url('users/index')}}";
+                            alert(data.message); 
+                             if(data.data.flag==1)  {
+                                window.location.href="{{url('users/index')}}";
+                             }                 
+                            
                         }else{
                         	alert(data.message);
                         	window.location.reload();

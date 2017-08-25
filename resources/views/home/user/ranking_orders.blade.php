@@ -44,33 +44,56 @@
 <div class="content" style="padding-bottom:0">
 	<div class="bonus_box">
 		<ul class="bonusList">
+
+		@foreach($roworders as $v)
+			@if($v['type'] ==1)
 			<li class="div_clearFloat bonusItem">
-				<img src="images/order100.png" alt=""/>
+
+				<img src="{{asset('home/images/order100.png')}}" alt=""/>
 				<div class="bonus_con">
-					<p>100元商品区</p>
-					<span>2017-08-10   12:46  </span>
+					<p >100元商品区</p>
+					<span> {{date('Y-m-d H:i',$v['create_at'])}}</span>
 				</div>
-				<h3>已出局</h3>
-				<p>+￥1000.00</p>
+					@if($v['status'] ==1)
+					<h3 class="colorExchange">未出局</h3>
+					@elseif($v['status']==2)
+					<h3 >已出局</h3>
+					@endif
+				<p>+￥{{$v['money']}}</p>
 			</li>
-			<li class="div_clearFloat bonusItem">
-				<img src="images/order300.png" alt=""/>
+			@elseif($v['type']==2 )
+				<li class="div_clearFloat bonusItem">
+
+				<img src="{{asset('home/images/order2000.png')}}" alt=""/>
 				<div class="bonus_con">
-					<p>100元商品区</p>
-					<span>2017-08-10   12:46  </span>
+					<p >300元商品区</p>
+					<span> {{date('Y-m-d H:i',$v['create_at'])}}</span>
 				</div>
-				<h3 class="colorExchange">未出局</h3>
-				<p>+￥1000.00</p>
+					@if($v['status'] ==1)
+					<h3 class="colorExchange">未出局</h3>
+					@elseif($v['status']==2)
+					<h3 >已出局</h3>
+					@endif
+				<p>+￥{{$v['money']}}</p>
 			</li>
-			<li class="div_clearFloat bonusItem">
-				<img src="images/order2000.png" alt=""/>
+			@elseif($v['type']==3 )
+					<li class="div_clearFloat bonusItem">
+
+				<img src="{{asset('home/images/order300.png')}}" alt=""/>
 				<div class="bonus_con">
-					<p>100元商品区</p>
-					<span>2017-08-10   12:46  </span>
+					<p >2000元商品区</p>
+					<span> {{date('Y-m-d H:i',$v['create_at'])}}</span>
 				</div>
-				<h3>已出局</h3>
-				<p>+￥1000.00</p>
+					@if($v['status'] ==1)
+					<h3 class="colorExchange">未出局</h3>
+					@elseif($v['status']==2)
+					<h3 >已出局</h3>
+					@endif
+				<p>+￥{{$v['money']}}</p>
 			</li>
+			@endif
+		@endforeach
+			
 		</ul>
 	</div>
 </div>

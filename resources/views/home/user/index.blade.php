@@ -108,7 +108,7 @@
 				</a>
 			</li>
 			<li class="centerItem">
-				<a href="{{url('users/ranking_orders')}}" class="a_jump">
+				<a href="{{url('users/myteam')}}" class="a_jump">
 					<img src="{{asset('home/images/person06.png')}}" alt=""/>
 					<span>我的团队</span>
 					<i class="iconfont icon-you"></i>
@@ -124,7 +124,7 @@
 				</a>
 			</li>
 			<li class="centerItem">
-				<a href="shippingAddress.html" class="a_jump">
+				<a href="{{url('users/shippingaddress')}}" class="a_jump">
 					<img src="{{asset('home/images/person08.png')}}" alt=""/>
 					<span>收货地址</span>
 					<i class="iconfont icon-you"></i>
@@ -140,7 +140,7 @@
 				</a>
 			</li>
 			<li class="centerItem">
-				<a href="{{url('users/ranking_orders')}}" class="a_jump">
+				<a href="{{url('info/account_settings')}}" class="a_jump">
 					<img src="{{asset('home/images/person10.png')}}" alt=""/>
 					<span>账号设置</span>
 					<i class="iconfont icon-you"></i>
@@ -149,7 +149,7 @@
 		</ul>
 		<ul style="margin-bottom:0" class="centerList centerList1">
 			<li class="centerItem">
-				<a href="login.html" class="a_jump">
+				<a href="{{url('users/logout')}}" class="a_jump">
 					<img src="{{asset('home/images/person13.png')}}" alt=""/>
 					<span>退出</span>
 					<i class="iconfont icon-you"></i>

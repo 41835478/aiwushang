@@ -109,9 +109,7 @@ window.onload=function(){
             	alert('请输入开户支行');
             	return false;
             }
-         
-
-            var data={
+           var data={
                	'bankusername':bankusername,
                	'bankname':bankname,
                	'bankaddress':bankaddress,
@@ -131,7 +129,11 @@ window.onload=function(){
                 'dataType':'json',
                 success:function(data){
                 	 if(data.status){                    	
-                            window.location.href="{{url('users/index')}}";
+                            alert(data.message); 
+                             if(data.data.flag==1)  {
+                                window.location.href="{{url('users/index')}}";
+                             }                 
+                            
                         }else{
                         	alert(data.message);
                         	window.location.reload();

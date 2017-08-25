@@ -30,8 +30,20 @@
 	Route::get('users/addbank','UserController@addbank');//添加银行卡页面
 	Route::get('users/bindingaliplay','UserController@bindingaliplay');//绑定支付宝页面
 	Route::post('users/bindingdel','UserController@bindingdel');//解除 删除绑定
-		
 	Route::post('users/editbinding','UserController@editbinding');//提交
+
+	Route::get('users/shippingaddress','UserController@shippingaddress');//收货地址
+	Route::get('users/manageaddress','UserController@manageaddress');//管理收货地址
+	Route::post('users/addressdefault','UserController@addressdefault');//设为默认收货地址
+	Route::get('users/toaddress','UserController@toaddress');//添加收货地址页面
+	Route::post('users/editaddress','UserController@editaddress');//添加收货地址页面	
+
+	Route::get('users/logout','UserController@logout');//退出	
+
+
+
+
+
 
 	
 ?>
