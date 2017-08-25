@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//后台路由
+////后台路由
 Route::get('captcha/{tmp}','Admin\CaptchaController@captcha');//验证码
 Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
     //后台首页开始
@@ -41,9 +41,9 @@ require_once base_path('routes/admin/login.php');//后台登录退出
 //前台路由
 Route::get('test/index','Home\TestController@index');//测试控制器
 
-//Route::group(['namespace'=>'Home'],function(){
+
 Route::group(['namespace'=>'Home','middleware'=>'home.auth'],function(){
-    require_once base_path('routes/home/user.php'); 
+    require_once base_path('routes/home/user.php');
 });
 require_once base_path('routes/home/login.php');//前台注册、登录
 require_once base_path('routes/home/shop.php');//商城首页路由

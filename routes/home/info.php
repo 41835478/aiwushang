@@ -13,4 +13,3 @@ Route::group(['namespace'=>'Home'],function(){
     Route::get('info/sysInfo','InfoController@sysInfo');//公告详情
 
 });
-?>

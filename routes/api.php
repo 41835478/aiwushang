@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-    require base_path('routes/api/users/index.php');
-    require base_path('routes/api/orders/index.php');
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//    require base_path('routes/api/users/index.php');
+//    require base_path('routes/api/orders/index.php');
+//});

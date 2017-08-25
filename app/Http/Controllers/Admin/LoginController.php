@@ -24,11 +24,13 @@ class LoginController extends Controller
     
     public function index()//加载登录视图
     {
+//        dd(json_decode('{"status":false,"message":"\u767b\u5f55\u5931\u8d25","data":""}',true));
         return view('admin.login.index');
     }
 
-    public function login(LoginRequest $request)//后台登录处理
+    public function login(Request $request)//后台登录处理
     {
+        dd($request->all());
         $date=$request->all();
         $first=Admin::select(['pwd','id','pic','mobile'])->where(['mobile'=>$date['mobile']])->first();
         if($first){
@@ -43,16 +45,16 @@ class LoginController extends Controller
                         session(['info'=>$info]);
                         return redirect()->route('admin.index');
                     }else{
-                        return back()->with('error','登录失败');
+                        return back()->withErrors('登录失败');
                     }
                 }else{
-                    return back()->with('error','验证码输入有误');
+                    return back()->withErrors('验证码输入有误');
                 }
             }else{
-                return back()->with('error','管理员登录账号或密码错误');
+                return back()->withErrors('管理员登录账号或密码错误');
             }
         }else{
-            return back()->with('error','管理员登录账号或密码错误');
+            return back()->withErrors('管理员登录账号或密码错误');
         }
     }
 

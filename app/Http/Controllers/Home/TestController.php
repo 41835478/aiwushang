@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Home;
 
+use App\Events\Test;
 use App\Http\Model\Rowa;
 use App\Http\Services\DirectService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class TestController extends Controller
+class TestingController extends Controller
 {
     protected $direct;
 
@@ -18,19 +19,8 @@ class TestController extends Controller
 
     public function index()//测试分销
     {
-        $i = 1;
-        $a=2;
-        $num=48;
-        while ($i)
-        {
-            $a=$a*2;
-            if($a<=$num){
-                $i++;
-            }else{
-                break;
-            }
-        }
-        echo $i;
+
+//        event(new Test(1));
 //        dd($this->direct->index(5,1));
     }
 }
