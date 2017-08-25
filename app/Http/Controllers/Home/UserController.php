@@ -5,13 +5,27 @@ namespace App\Http\Controllers\Home;
 use Illuminate\Http\Request;
 
 use App\Http\Model\User;
+use App\Http\Model\Pointsrecode;
 use App\Http\Model\Incomerecode;
+use App\Http\Model\Withdraw;
+use App\Http\Model\Payment;
 use App\Http\Controllers\Home\BaseController;
+//use App\Http\Services\FunctionService;
 use Storage;
 use DB;
+use Cache;
 use Exception;
 class UserController  extends BaseController
 {
+
+	#二维码
+	public function qrcode(){
+
+		 return view('home.user.qrcode');
+	}
+
+
+
     public function index()//加载注册页面
     {
     	#查询用户信息 
@@ -24,10 +38,13 @@ class UserController  extends BaseController
        	$pusers=$t->getuserinfo($users['pid']);
        	
     	#查询团队
-    	$pp=$this->wuxian($uid);
-    	
-    	//var_dump($pp);die;//compact()
-        return view('home.user.index',compact('users','pusers'));
+    	$arr=User::get();
+     	$count=count($this->ifind($arr,$uid));
+  
+    
+    	//dd($pp);
+    	//dd(count($pp));die;
+        return view('home.user.index',compact('users','pusers','count'));
     }
 
    #查询团队
@@ -41,6 +58,24 @@ class UserController  extends BaseController
     		}
     		return $arr;
     	}
+ 
+		public function ifind($arr,$id){
+				
+				static $data=array();
+				foreach($arr as $k=>$v){
+					if($v['id']==$id){
+						$data[]=$v;
+						}
+					if($v['pid']==$id){
+						$data[]=$v;
+						}
+					}
+
+				return $data;
+			}
+
+
+
 /***
 *账户信息
 *
@@ -71,6 +106,86 @@ class UserController  extends BaseController
     	$users=$t->getuserinfo($uid);
     	return view('home.user.withdrawals',compact('users')); 	
     }
+    #转账提交
+    public function editaccount(Request $request){
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+
+    	$post=$request->input();
+    	if($post['id']=='' || $post['num']=='' ){
+    		return $this->ajaxMessage(false,'参数错误');
+    	}
+    	if($post['num'] < 50){
+    		return $this->ajaxMessage(false,'数量最低为50');
+    	}
+
+    	if($post['id'] ==1 ){
+    		#转账逻辑处理
+    		$puser=User::where('phone',$post['phone'])->first();
+    		if($puser){
+    			if($post['num'] > $users['account']){
+    				return $this->ajaxMessage(false,'账户余额不足');
+    			}
+
+    			if(	User::where('id',$uid)->decrement('account', $post['num'])  &&
+    			 User::where('phone',$post['phone'])->increment('account', $post['num'] * 0.95)){
+    			$data=[];
+    			$data['user_id']=$puser['id'];
+    			$data['type']=2;
+    			$data['flag']=2;
+    			$data['recode_info']='转账';
+    			$data['status']=2;
+    			$data['money']=$post['num'] * 0.95;
+    			$data['create_at']=time();
+    			$data['update_at']=time();
+    			Incomerecode::insert($data);
+
+	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+
+				}else{
+					return $this->ajaxMessage(false,'参数错误');
+				}
+
+
+    		}else{
+    			return $this->ajaxMessage(false,'该用户不存在');
+    		}
+    		
+
+
+    	}elseif ($post['id']==2) {
+    		#提现逻辑处理
+
+    		if($post['num'] > $users['account']){
+    				return $this->ajaxMessage(false,'账户余额不足');
+    			}
+
+    			if(	User::where('id',$uid)->decrement('account', $post['num']) ){
+    			$data=[];
+    			$data['user_id']=$users['id'];
+    			$data['mobile']=$users['phone'];
+    			$data['name']=$users['name'];
+    			$data['fee']=$post['num'] * 0.05;
+    			$data['arrival_money']=$post['num'] * 0.95;
+    			$data['cash_way']=$post['type'];
+    			$data['create_at']=time();
+    			$data['update_at']=time();
+    			Withdraw::insert($data);
+
+	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+
+				}else{
+					return $this->ajaxMessage(false,'参数错误');
+				}
+    	}
+
+
+    }
+
+
+
+
 /***
 *积分信息
 *
@@ -82,21 +197,129 @@ class UserController  extends BaseController
     }
     #复投积分
     public function recastIntegral(){
-    	return view('home.user.recastIntegral');
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	$points=$users['repeat_points'];
+    	$sintegral=Pointsrecode::where('user_id',$uid)->where('flag',1)->where('sign',1)->get();
+    	$zintegral=Pointsrecode::where('user_id',$uid)->where('flag',1)->where('sign',2)->get();
+
+    	//$points=Pointsrecode::where('user_id',$uid)->sum('points');
+    	return view('home.user.recastIntegral',compact('sintegral','zintegral','points'));
     }
     #消费积分
     public function consumption(){
-    	return view('home.user.consumption');
+     	$uid=$this->checkUser();
+     	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	$points=$users['consume_points'];
+    	$sintegral=Pointsrecode::where('user_id',$uid)->where('flag',2)->where('sign',1)->get();
+    	$zintegral=Pointsrecode::where('user_id',$uid)->where('flag',2)->where('sign',2)->get();
+
+    	//$points=Pointsrecode::where('user_id',$uid)->sum('points');   	
+    	return view('home.user.consumption',compact('sintegral','zintegral','points'));
     }
 	#循环积分
     public function looppoints(){
-    	return view('home.user.looppoints');
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	$points=$users['loop_points'];
+    	$sintegral=Pointsrecode::where('user_id',$uid)->where('flag',3)->where('sign',1)->get();
+    	$zintegral=Pointsrecode::where('user_id',$uid)->where('flag',3)->where('sign',2)->get();
+
+    	//$points=Pointsrecode::where('user_id',$uid)->sum('points');
+    	return view('home.user.looppoints',compact('sintegral','zintegral','points'));
     }
 
     #积分转账
-    public function turnmyintegral(){
+    public function turnmyintegral(Request $request,$id){
+    	$id=$id;
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+
+    	if($id==1){
+    		$points=$users['repeat_points'];
+    	}elseif($id ==2){
+    		$points=$users['consume_points'];
+    	}
     	
+    	return view('home.user.turnmyintegral',compact('points','id'));
     }
+    #积分转账提交
+    public function editintegral(Request $request){
+		 	
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+
+    	$post=$request->input();
+		
+    	if($post['id'] ==''){
+    		 return $this->ajaxMessage(false,'参数错误');
+    	}
+		
+		
+    	if($pusers=User::where('phone',$post['phone'])->first()){
+
+		}else{
+			return $this->ajaxMessage(false,'该用户不存在');
+    	
+    	}
+
+    	#id 1 复投 2消费积分
+    	if($post['num'] < 50){
+    		return $this->ajaxMessage(false,'一次转出积分最少为50积分');
+    		
+    	}
+    	if($post['id']==1){
+    		$integralnum=$users['repeat_points'];
+    	}elseif($post['id'] ==2){
+    		$integralnum=$users['consume_points'];
+    	}
+    	if($post['num'] > $integralnum){
+    		return $this->ajaxMessage(false,'该用户积分不足');
+    	}
+    	#减少积分，给对方增加积分
+    	if($post['id'] == 1){
+    		if(	User::where('id',$uid)->decrement('repeat_points', $post['num'])  &&
+    			 User::where('phone',$post['phone'])->increment('repeat_points', $post['num'] * 0.95)){
+    			$data=[];
+    			$data['user_id']=$pusers['id'];
+    			$data['flag']=$post['id'];
+    			$data['points_info']='转账';
+    			$data['sign']=1;
+    			$data['points']=$post['num'] * 0.95;
+    			Pointsrecode::insert($data);
+
+	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
+
+				}else{
+					return $this->ajaxMessage(false,'参数错误');
+				}
+    	}elseif($post['id']==2){
+    		if(	User::where('id',$uid)->decrement('consume_points', $post['num'])  &&
+    			User::where('phone',$post['phone'])->increment('consume_points', $post['num'] * 0.95)){
+    			$data=[];
+    			$data['user_id']=$pusers['id'];
+    			$data['flag']=$post['id'];
+    			$data['points_info']='转账';
+    			$data['sign']=1;
+    			$data['points']=$post['num'] * 0.95;
+    			Pointsrecode::insert($data);
+    				return $this->ajaxMessage(true,['message'=>'操作成功']);
+
+				}else{
+					return $this->ajaxMessage(false,'参数错误');
+				}
+    	}
+    	
+
+
+
+    }
+
  /**
  *奖金信息
  *
@@ -105,23 +328,37 @@ class UserController  extends BaseController
  	public function mybonus(){
  		return view('home.user.mybonus');
  	}
- 	#见点奖金
- 	public function bonus_jiandian(){
- 		return view('home.user.bonus_jiandian');
- 	}
- 	#分销奖金
- 	public function bonus_distribution(){
- 		return view('home.user.bonus_distribution');
+	#见点奖金
+ 	public function bonus_jiandian(Request $request ,$id){
+ 		$uid=$this->checkUser();
+ 		$t = new User;
+    	$users=$t->getuserinfo($uid);
+ 		# 1 见点 2分销 3推荐 4升级
+ 		
+ 		if($id ==''){
+			return back()->withErrors('参数错误');
+ 		}
+
+ 		if($id==1){
+ 			$type=3;
+ 		}elseif($id==2){
+ 			$type=1;
+ 		}elseif($id==3){
+ 			$type=4;
+ 		}elseif($id==4){
+ 			$type=5;
+ 		}
+		$bonus=Incomerecode::where('type',$type)->where('user_id',$uid)->get();
+		foreach ($bonus as $key => $value) {
+			$bonus[$key]['pic']=$users['pic'];
+			$bonus[$key]['name']=$users['name'];
+		}
+		$zbonus=Incomerecode::where('type',$type)->where('user_id',$uid)->sum('money'); 		
+		return view('home.user.bonus_jiandian',compact('bonus','id','zbonus'));
  	}
 
- 	#推荐奖金
- 	public function bonus_recommend(){
- 		
- 	}
- 	#升级奖金
- 	public function bonus_upgrade(){
- 		
- 	}
+
+ 	
 /**
 *排位订单
 */	
@@ -147,39 +384,107 @@ class UserController  extends BaseController
 		return view('home.user.activememberorders');
 	}
 
-/**
-*账户绑定
+
+
+
+
+/****
+**账户绑定
 */
+	public function accountbinding(){
+		$uid=$this->checkUser();
+ 		$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	#查询支付宝
+    	$zhifu=Payment::where('user_id',$uid)->where('type',2)->first();
+    
+    		$zhifu= substr_replace($zhifu['number'],'****',3,4);
+    	
+    	#查询微信
+    	$weixin=Payment::where('user_id',$uid)->where('type',1)->first();
+    	#查询银行卡
+    	$yinhang=Payment::where('user_id',$uid)->where('type',3)->get();
+
+
+		return view('home.user.accountbinding',compact('zhifu','yinhang','weixin'));
+	}
+	#添加银行卡
+	public function addbank(){
+
+		return view('home.user.addbank');
+	}
 	#绑定支付宝
-
-
-
-
-
-
-
-
-
-
-/**
-*我的账户
-*/
-	#我的账户
-	public function accountsettings(){
-		return view('home.user.accountsettings');
+	public function bindingaliplay(){
+		return view('home.user.bindingaliplay');
 	}
-	#修改登录密码
-	public function modify_login(){
-		return view('home.user.modify_login');
-	}
-	#修改支付密码
-	public function modify_pay(){
-		return view('home.user.modify_pay');
-	}
-	#修改信息提交
-	public function userinfo(){
 
-		//return view('home.user.userinfo');
+	public function editbinding(Request $request){
+		$uid=$this->checkUser();
+ 		$t = new User;
+    	$users=$t->getuserinfo($uid);
+		$post=$request->input();
+
+		if($post['type']==1){
+
+
+
+		}elseif ($post['type']==2){
+
+			if($post['code']==Cache::get('registerCode')){
+				if($users['pwd']==md5($post['password'])){
+						$data=[];
+						$data['type']=2;
+						$data['user_id']=$users['id'];
+						$data['bankname']=$post['bankname'];
+						$data['number']=$post['number'];
+						$data['phone']=$post['phone'];
+						$data['create_at']=time();
+						$data['update_at']=$data['create_at'];
+						$res=Payment::insert($data);
+						if($res){
+							return $this->ajaxMessage(true,'绑定成功',['flag'=>1]);
+						}
+
+				}else{
+					return $this->ajaxMessage(false,'登录密码错误');
+				}	
+			}else{
+				return $this->ajaxMessage(false,'验证码错误');
+			}
+			#添加银行卡
+		}elseif($post['type']==3){
+			$count=Payment::where('user_id',$uid)->where('type',3)->count();
+			if($count >= 3){
+				return $this->ajaxMessage(false,'每人最多可以绑定三张银行卡');
+			}
+			$data=[];
+			$data['user_id']=$users['id'];
+			$data['type']=3;
+			$data['bankname']=$post['bankname'];
+			$data['bankusername']=$post['bankusername'];
+			$data['number']=$post['number'];
+			$data['bankaddress']=$post['bankaddress'];
+			$data['create_at']=time();
+			$data['update_at']=$data['create_at'];
+			$re=Payment::insert($data);
+			if($re){
+				return $this->ajaxMessage(true,'绑定成功');
+			}
+
+		}
+		
+
+	}
+		#删除解绑
+	public function bindingdel(Request $request){
+	
+ 		
+		$post=$request->input();
+		$res=Payment::where('id',$post['yinhang'])->delete();
+		if($res){
+			return $this->ajaxMessage(true,'绑定成功');
+		}
+
 	}
 
 

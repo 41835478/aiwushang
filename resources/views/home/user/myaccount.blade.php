@@ -16,7 +16,7 @@
 <div class="myAccount_top">
 	<div class="header">
 		<h3>我的账户</h3>
-		<a href="personalCenter.html" class="iconfont icon-fanhui"></a>
+		<a href="javascript:" onclick="self.location=document.referrer;" class="iconfont icon-fanhui"></a>
 	</div>
 	<div class="account_msg">
 		<img class="account_star1" src="images/account01.png" alt="">

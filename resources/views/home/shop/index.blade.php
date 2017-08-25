@@ -39,16 +39,6 @@
                 </a>
             </div>
             @endforeach
-            {{--<div class="swiper-slide">--}}
-                {{--<a class="a_jump" href="javascript:void(0)">--}}
-                    {{--<img class="content-banner" src="{{asset('home/images/banner2.jpg')}}" />--}}
-                {{--</a>--}}
-            {{--</div>--}}
-            {{--<div class="swiper-slide">--}}
-                {{--<a class="a_jump" href="javascript:void(0)">--}}
-                    {{--<img class="content-banner" src="{{asset('home/images/banner3.jpg')}}" />--}}
-                {{--</a>--}}
-            {{--</div>--}}
         </div>
         <!-- 如果需要分页器 -->
         <div class="swiper-pagination lf_page"></div>

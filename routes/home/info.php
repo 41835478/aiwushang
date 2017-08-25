@@ -12,4 +12,10 @@ Route::group(['namespace'=>'Home'],function(){
     Route::get('info/sysList','InfoController@sysList');//系统公告
     Route::get('info/sysInfo','InfoController@sysInfo');//公告详情
 
+    /*我的账户*/
+    Route::get('info/account_settings','InfoController@accountsettings');//账户设置
+    Route::get('info/modify_login','InfoController@modify_login');//修改登录密码
+    Route::get('info/modify_pay','InfoController@modify_pay');//修改支付密码
+    Route::post('info/user_info','InfoController@user_info');//修改信息提交
+
 });

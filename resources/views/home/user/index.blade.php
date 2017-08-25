@@ -14,7 +14,7 @@
 <body>
 <div class="center_head">
 	<div class="div_clearFloat center_top">
-		<img src="{{asset('home/images/portrait.png')}}" alt=""/>
+		<img src="{{$users['pic']}}" alt=""/>
 		<div class="center_edit">
 			<div class="div_clearFloat center_personalData">
 				<p>{{$users['name']}} </p>
@@ -24,7 +24,10 @@
 				</span>
 				<i onclick="javascript:window.location.href='editData.html'" class="iconfont icon-shape"></i>
 			</div>
-			<p>推荐人：{{$pusers['name']}}  {{$pusers['phone']}}</p>
+			<p>推荐人：@if($pusers =='') 无
+						@elseif($pusers !=''){{$pusers['name']}}  {{$pusers['phone']}}
+						@endif
+			</p>
 		</div>
 	</div>
 	<div class="div_clearFloat center_bot">
@@ -33,7 +36,7 @@
 			<span>账户余额(元)</span>
 		</div>
 		<div class="center_money">
-			<p>30</p>
+			<p>{{$count}}</p>
 			<span>我的团队(人)</span>
 		</div>
 	</div>
@@ -80,7 +83,7 @@
 				</a>
 			</li>
 			<li class="centerItem">
-				<a href="myBonus.html" class="a_jump">
+				<a href="{{url('users/mybonus')}}" class="a_jump">
 					<img src="{{asset('home/images/person03.png')}}" alt=""/>
 					<span>我的奖金</span>
 					<i class="iconfont icon-you"></i>
@@ -89,7 +92,7 @@
 		</ul>
 		<ul class="centerList centerList1">
 			<li class="centerItem">
-				<a href="ranking_orders.html" class="a_jump">
+				<a href="{{url('users/ranking_orders')}}" class="a_jump">
 					<img src="{{asset('home/images/person04.png')}}" alt=""/>
 					<span>排位订单</span>
 					<i class="iconfont icon-you"></i>
@@ -98,14 +101,14 @@
 		</ul>
 		<ul class="centerList centerList2">
 			<li class="centerItem">
-				<a href="activeMemberorders.html" class="a_jump">
+				<a href="{{url('users/ranking_orders')}}" class="a_jump">
 					<img src="{{asset('home/images/person05.png')}}" alt=""/>
 					<span>激活会员订单</span>
 					<i class="iconfont icon-you"></i>
 				</a>
 			</li>
 			<li class="centerItem">
-				<a href="myTeam.html" class="a_jump">
+				<a href="{{url('users/ranking_orders')}}" class="a_jump">
 					<img src="{{asset('home/images/person06.png')}}" alt=""/>
 					<span>我的团队</span>
 					<i class="iconfont icon-you"></i>
@@ -114,7 +117,7 @@
 		</ul>
 		<ul class="centerList centerList2">
 			<li class="centerItem">
-				<a href="Account_binding.html" class="a_jump">
+				<a href="{{url('users/accountbinding')}}" class="a_jump">
 					<img src="{{asset('home/images/person07.png')}}" alt=""/>
 					<span>账户绑定</span>
 					<i class="iconfont icon-you"></i>
@@ -137,7 +140,7 @@
 				</a>
 			</li>
 			<li class="centerItem">
-				<a href="accountSettings.html" class="a_jump">
+				<a href="{{url('users/ranking_orders')}}" class="a_jump">
 					<img src="{{asset('home/images/person10.png')}}" alt=""/>
 					<span>账号设置</span>
 					<i class="iconfont icon-you"></i>
@@ -163,7 +166,7 @@
 <script>
 	$(".person_b").on("click",function(){
         addBox("body");
-        outBox("需要消费成为会员才能查看二维码","QRcode.html");
+        outBox("需要消费成为会员才能查看二维码","{{url('users/qrcode')}}");
      })
 </script>
 </body>

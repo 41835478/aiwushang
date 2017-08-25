@@ -34,16 +34,13 @@
 		height: 123px;
 		border-bottom: 1px #f5f5f5 solid;
 	}
-	.present_ban p {
-	    font-size: 40px;
-	    color: #666666;
-	    line-height: 0px;
-	    float: left;
-	    margin-top: 49px;
-	}
 	.present_cont{
 		background: white;
 	}
+	.present_ban input[type=number]{
+		margin-left: 0;
+	}
+
 	.present_foot input[type=submit] {
     width: 100%;
     height: 50px;
@@ -61,44 +58,56 @@
 </head>
 <body>
 <div class="public_head">
-	<h3>余额转账</h3>
+	<h3>积分转账</h3>
 	<a href="javascript:history.go(-1);" class="iconfont icon-fanhui"></a>
 </div>
 <!-- 内容区 -->
+<form method = 'post'  action = "{{url('users/editintegral')}}">
 <div class="content">
 	<div class="cancell_ban">
 		<div class="cancell_bano">
-			<p>好友账号</p>
+			<p>好友手机号</p>
 			<input type="text" name="phone" class="phone" />
 		</div>
 	</div>
 	<div class="present_ban">
-		<em class="cancell_po">转账金额</em>
+		<em class="cancell_po">转账积分数量</em>
 	    <div class="present_bann">
-			<p>￥</p>
 			<input type="number" name="num" class="num" />
 		</div>
 	</div>
 	<div class="present_cont">
 		<div class="present_conto">
-			<p>可用余额<span>￥{{$users['account']}}</span></p>
+			<p>可用积分<span>{{$points}}</span></p>
 		</div>
 	</div>
 	<div class="cancell_cont">
 		<div class="cancell_conto">
-			<p>注：转账最低金额为50元</p>
+			<p>注：转账最低数量为50个，转账收取5%手续费</p>
 		</div>
 	</div>
 	<div class="present_foot">
-	<input type="hidden" name="id" value="1" class="id" >
-		<input type="button"  value="确认转账"  onclick="javascript:{this.disabled=true;document.form1.submit();}" class="present_btn true">
+		<input type="hidden" name="id" value="{{$id}}" class="id" >
+		
+		<input type="submit"   value="确认转账"  id="btn" class="present_btn true"  >
 	</div>
 </div>
+ </form>
 </body>
 
-
-
 <script type="text/javascript">
+
+
+
+window.onload=function(){
+    document.getElementById('btn1').onclick=function(){
+        this.disabled=true;
+        setTimeout(function (){
+            document.getElementById('btn1').disabled=false;
+        },5000);
+    }
+     
+}
 	  $('.true').click(function(){
             var phone=$('.phone').val();
             var num=$('.num').val();
@@ -121,7 +130,7 @@
                 'id':id,
                
             }
-            var url="{{url('users/editaccount')}}";
+            var url="{{url('users/editintegral')}}";
             sendAjax(data,url)
         })
         function sendAjax(data,url){
