@@ -11,62 +11,112 @@ namespace App\Http\Services;
 
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Order;
+use App\Http\Model\Orderinfo;
 use App\Http\Model\Rowa;
+use App\Http\Model\Roworder;
 use App\Http\Model\User;
 use DB;
 use Exception;
 
 class RowService
 {
-    public function index($order_id,$type)
+    protected $rowA;
+
+    public function __construct(RowAService $rowA)
     {
-        $order=Order::find($order_id);
-        if($type==3){//100元专区   说明是A盘
+        $this->rowA=$rowA;
+    }
 
-            $this->mainRowA($order_id,$order->user_id);
+    public function index($order_id, $type)
+    {
+        $order = Order::find($order_id);
+        if ($type == 3) {//100元专区   说明是A盘
+            $res = $this->mainRowA($order_id, $order->user_id, $order->order_num, 100, 1);
+            if ($res) {
+                $date=$this->RowInfo($res);
+                return $this->rowA->index($date['prev_id'],$date['row_id'],1,$date['user_id'],$date['current_level']);
+            }
+            return false;
         }
-        if($type==4){//300元专区   说明是B盘
+        if ($type == 4) {//300元专区   说明是B盘
 
         }
-        if($type==5){//2000元专区  说明是C盘
+        if ($type == 5) {//2000元专区  说明是C盘
 
         }
     }
 
-    public function mainRowA($order_id,$user_id)
+    public function RowInfo($row_id)
     {
-        $date['order_id']=$order_id;
-        $date['user_id']=$user_id;
-        $date['status']=1;
-        $date['current_level']=1;
-        $date['current_generate']=1;
-        $date['create_at']=time();
-        $res=Rowa::insertGetId($date);
-        if($res){
-            $prevId = Rowa::where('id', '<', $res)->max('id');
-            if($prevId){
-                $level=Rowa::where(['id'=>$prevId])->value('level');//上级的层数
-                $selfLevel=$this->getLevel($level);
-                $date['update_at']=time();
-                $date['level']=$selfLevel;
-                $res1=Rowa::where(['id'=>$res])->update($date);
-                if(!$res1){
-                    return false;
+        $rowA=Rowa::find($row_id);
+        $date['prev_id']=$rowA->prev_id;
+        $date['row_id']=$row_id;
+        $date['current_level']=$rowA->current_level ;
+        $date['user_id']=$rowA->user_id;
+        return $date;
+    }
+
+    public function mainRowA($order_id, $user_id, $num, $money, $type)
+    {
+        for ($j = 0; $j < $num; $j++) {
+            $date['order_id'] = $order_id;
+            $date['user_id'] = $user_id;
+            $date['status'] = 1;
+            $date['current_level'] = 1;
+            $date['current_generate'] = 1;
+            $date['create_at'] = time();
+            $res = Rowa::insertGetId($date);
+            if ($res) {
+                $prevId = Rowa::where('id', '<', $res)->max('id');
+                if ($prevId) {
+                    $level = Rowa::where(['id' => $prevId])->value('level');//上级的层数
+                    $selfLevel = $this->getLevel($level);
+                    $date['update_at'] = time();
+                    $date['level'] = $selfLevel;
+                    $res1 = Rowa::where(['id' => $res])->update($date);
+                    if ($res1) {
+                        $remark = $money . '元商品区';
+                        $res2 = $this->rowOrder($res, $user_id, $remark, $money, $type);
+                        if ($res2) {
+                            $res3 = $this->getTwentyScore($user_id, $money, 2.5);//向上20代返钱
+                        }else{
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
                 }
+            } else {
+                return false;
             }
-            return true;
         }
-        return false;
+        return $res;
     }
 
     public function getLevel($level)//获取层数
     {
-        $layer=bcpow(2,$level);
-        $count=Rowa::where(['level'=>$level])->count();//这里需要优化
-        if($count<$layer){
+        $layer = bcpow(2, $level);
+        $count = Rowa::where(['level' => $level])->count();//这里需要优化
+        if ($count < $layer) {
             return $level;
         }
-        return $level+1;
+        return $level + 1;
+    }
+
+    public function rowOrder($row_id, $user_id, $remark, $money, $type)//向排位订单中插入数据
+    {
+        $date['user_id'] = $user_id;
+        $date['row_id'] = $row_id;
+        $date['remark'] = $remark;
+        $date['status'] = 1;
+        $date['money'] = $money;
+        $date['type'] = $type;
+        $date['create_at'] = time();
+        $res = Roworder::insert($date);
+        if ($res) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -76,63 +126,63 @@ class RowService
      * @param $award    不同盘给上20代的见点奖
      * @return bool
      */
-    public function getTwentyScore($user_id,$num=1,$money,$award)//得到上二十代用户
+    public function getTwentyScore($user_id, $money, $award, $num = 1)//得到上二十代用户
     {
-        $pid=User::where(['id'=>$user_id])->value('pid');
-        if($pid){
-            if($num<=20){
-                $res=$this->twentyBonus($user_id,$pid,$money,$award);
-                if($res){
+        $pid = User::where(['id' => $user_id])->value('pid');
+        if ($pid) {
+            if ($num <= 20) {
+                $res = $this->twentyBonus($user_id, $pid, $money, $award);
+                if ($res) {
                     $num++;
-                    return $this->getTwentyScore($pid,$num,$money,$award);
+                    return $this->getTwentyScore($pid, $money, $award, $num);
                 }
             }
         }
         return true;
     }
 
-    public function twentyBonus($user_id,$pid,$money,$award)//二十代奖金
+    public function twentyBonus($user_id, $pid, $money, $award)//二十代奖金
     {
         DB::beginTransaction();
-        try{
-            $res=User::where(['id'=>$pid])->increment('account',$award);
-            if($res){
-                $res1=User::where(['id'=>$pid])->increment('bonus',$award);
-                if($res1){
-                    $from_login_name=User::where(['id'=>$user_id])->value('login_name');
-                    $to_login_name=User::where(['id'=>$pid])->value('login_name');
-                    $info=$from_login_name.'购买了'.$money.'元专区的商品'.$to_login_name.'获得推荐奖'.$award.'元';
-                    $res2=$this->incomeRecode($pid,$info,$award,1,4,$user_id);
-                    if($res2){
+        try {
+            $res = User::where(['id' => $pid])->increment('account', $award);
+            if ($res) {
+                $res1 = User::where(['id' => $pid])->increment('bonus', $award);
+                if ($res1) {
+                    $from_login_name = User::where(['id' => $user_id])->value('login_name');
+                    $to_login_name = User::where(['id' => $pid])->value('login_name');
+                    $info = $from_login_name . '购买了' . $money . '元专区的商品' . $to_login_name . '获得推荐奖' . $award . '元';
+                    $res2 = $this->incomeRecode($pid, $info, $award, 1, 4, $user_id);
+                    if ($res2) {
                         DB::commit();
                         return true;
-                    }else{
+                    } else {
                         throw new Exception();
                     }
-                }else{
+                } else {
                     throw new Exception();
                 }
-            }else{
+            } else {
                 throw new Exception();
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             return false;
         }
     }
 
-    public function incomeRecode($to_user_id,$info,$money,$flag,$type,$from_user_id)//incomerecode表记录信息
+    public function incomeRecode($to_user_id, $info, $money, $flag, $type, $from_user_id)//incomerecode表记录信息
     {
-        $date['user_id']=$to_user_id;
-        $date['recode_info']=$info;
-        $date['flag']=$flag;
-        $date['money']=$money;
-        $date['status']=1;
-        $date['type']=$type;
-        $date['from_id']=$from_user_id;
-        $date['create_at']=time();
-        $res=Incomerecode::insert($date);
-        if($res){
+        $date['user_id'] = $to_user_id;
+        $date['recode_info'] = $info;
+        $date['flag'] = $flag;
+        $date['money'] = $money;
+        $date['status'] = 1;
+        $date['type'] = $type;
+        $date['from_id'] = $from_user_id;
+        $date['create_at'] = time();
+        $res = Incomerecode::insert($date);
+        if ($res) {
             return true;
         }
         return false;

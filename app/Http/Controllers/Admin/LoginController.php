@@ -24,6 +24,7 @@ class LoginController extends Controller
     
     public function index()//加载登录视图
     {
+//        dd(json_decode('{"status":false,"message":"\u767b\u5f55\u5931\u8d25","data":""}',true));
         return view('admin.login.index');
     }
 

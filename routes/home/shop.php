@@ -3,6 +3,7 @@ Route::group(['namespace'=>'Home'],function(){
     Route::get('shop/index','ShopController@index');//商城首页
     Route::get('shop/goodsDetail','ShopController@goodsDetail');//商品详情
 
+    Route::get('shop','ShopController@index');//商城首页
     Route::get('/shop/cart','ShopController@cart');     //购物车---------需登录
     Route::get('/shop/addCart','ShopController@addCart');   //加入购物车------需登录
     Route::get('/shop/cartEdit','ShopController@cartEdit'); //购物车修改 ------需登录
@@ -12,4 +13,3 @@ Route::group(['namespace'=>'Home'],function(){
 
     Route::get('shop/','ShopController@index');//商城首页
 });
-?>
