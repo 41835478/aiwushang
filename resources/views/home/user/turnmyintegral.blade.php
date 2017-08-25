@@ -89,7 +89,7 @@
 	<div class="present_foot">
 		<input type="hidden" name="id" value="{{$id}}" class="id" >
 		
-		<input type="submit"   value="确认转账"  id="btn" class="present_btn true"  >
+		<input type="submit"   value="确认转账"  id="btn1" class="present_btn true"  >
 	</div>
 </div>
  </form>

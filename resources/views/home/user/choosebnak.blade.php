@@ -21,40 +21,37 @@
 <link rel="stylesheet" href="{{asset('home/css/fly.css')}}">
 <script type="text/javascript" src="{{asset('home/js/swiper.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('home/js/jquery-3.1.1.min.js')}}"></script>
-
-
-
-
-
 <style>
+	body{
+		background: #f5f5f5;
+	}
 	.public_head i{
-		color: white;
-
-
+		color: black;
+		font-size: 15px;
+	}
+	.public_head{
+		background: white;
+	}
+	.public_head a{
+		color: black;
+	}
+	.public_head h3{
+		color: black;
 	}
 
-	.present_foot input[type=submit] {
-    width: 100%;
-    height: 50px;
-    border: 0;
-    background: none;
-    font-size: 17px;
-    text-align: center;
-    line-height: 50px;
-    color: white;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
+
+
 </style>
 </head>
 <body>
 <div class="public_head">
-	<h3>提现申请</h3>
+	<h3>选择银行卡</h3>
 	<a href="javascript:history.go(-1);" class="iconfont icon-fanhui"></a>
-    <i onclick="javascript:window.location.href='Cash_register.html'" class="iconfont icon-tixianjilu"></i> 
+
+    <i onclick="window.location.href='/users/addbank'"  class="iconfont icon-jia"> </i>
 </div>
 <!-- 内容区 -->
+
 <div class="content">
 	<div class="present_ban">
 	    <div class="present_bann">
@@ -69,47 +66,35 @@
 			<p>可用余额<span>￥{{$users['account']}}</span></p>
 		</div>
 	</div>
-	<div class="present_main">
-		<div class="present_maino">
-			<p>提现方式</p>
-			<i class="iconfont icon-xiala"></i>
-		</div>
-	</div>
-	<div class="present_toggle">
-		<div class="present_cent">
-			<div class="present_centt present_cen">
-				<i class="iconfont icon-weixin"></i>
-				<p>微信</p>
-				<i class="present_i iconfont icon-not_selected icon-xuanzhong1"  data-id="1"></i>
-			</div>	
-		</div>
-		<div class="present_cent">
-			<div class="present_centt present_cen">
-				<i class="iconfont icon-zhifubao"></i>
-				<p>支付宝</p>
-				<i class="present_i iconfont icon-not_selected"  data-id="2"></i>
-			</div>	
-		</div>
-	<!-- 	<div class="present_cent">
-			<div class="present_centt present_cen">
-				<i class="iconfont icon-yinhangqia"></i>
-				<p>银行卡</p>
-				<i class="present_i iconfont icon-not_selected"  data-id="3"></i>
-			</div>	
-		</div> -->
 
-		<div  class="present_cent">
-    <a href="{{url('users/choosebnak')}}" >
-      <div class="present_centt">
-        <i class="iconfont icon-yinhangqia"></i>
-        <p>银行卡</p>
-        <i class="present_i iconfont icon-iconfontright icon-not_selected" data-id="3"></i>
-      </div> 
-      </a> 
-    </div>
 
+	<div class="present_boxx"></div>
+	@foreach($yinhang as $k=>$v)
+	<div class="choose_cent">
+		<div class="choose_centt">
+			<i class="iconfont icon-zhongguonongyeyinhang"></i>
+			<p>{{$v['bankname']}}<span>({{$v['number']}} )</span></p>
+			
+			<i class="present_i iconfont "  data-id="{{$v['number']}}"></i>
+		</div>	
 	</div>
+	@endforeach
+	<!-- <div class="choose_cent">
+		<div class="choose_centt">
+			<i class="iconfont icon-zhongguoyinhang"></i>
+			<p>中国银行<span>( ****4456 )</span></p>
+			<i class="present_i iconfont"></i>
+		</div>	
+	</div>
+	<div class="choose_cent">
+		<div class="choose_centt">
+			<i class="iconfont icon-zhongguonongyeyinhang"></i>
+			<p>中国农业银行<span>( ****4456 )</span></p>
+			<i class="present_i iconfont"></i>
+		</div>	
+	</div>	 -->
 	<div class="present_foot">
+
 	<input type="hidden" name="id" value="2" class="id" >
 		<input  type="button" value="确认提现"   id="btn1" class="present_btn true">
 	</div>
@@ -128,9 +113,9 @@ window.onload=function(){
      
 }
 
-	$(".present_cen").on("click", function (){
-      $(".present_cen").find('.present_i').removeClass('icon-xuanzhong1');
-      $(this).find('.present_i').addClass("icon-xuanzhong1");
+	$(".choose_centt").on("click", function (){
+      $(".choose_centt").find('.present_i').removeClass('icon-duihao');
+      $(this).find('.present_i').addClass("icon-duihao");
       var box = $(this);
       var index = goIndex(box);
    });
@@ -142,18 +127,14 @@ window.onload=function(){
           }
        }
     };
-    $(".present_maino").on("click",function(){
-    	$(this).find("i").toggleClass("icon-shang")
-    	$(".present_toggle").slideToggle();
-    })
 </script>
-
 <script type="text/javascript">
 	  $('.true').click(function(){
          
             var num=$('.num').val();
             var id=$('.id').val();
-           	var type=$(".icon-xuanzhong1").attr("data-id");
+           	var number=$(".icon-duihao").attr("data-id");
+           	//alert(number);
          
             if(num==""){
             	alert('请输入数量');
@@ -162,7 +143,7 @@ window.onload=function(){
          
 
             var data={
-               	'type':type,
+               	'number':number,
                 'num':num,
                 'id':id,
                
@@ -192,5 +173,8 @@ window.onload=function(){
  
 
 </script>
+
+
+
 </body>
 </html>

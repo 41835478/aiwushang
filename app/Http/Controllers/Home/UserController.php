@@ -39,16 +39,16 @@ class UserController  extends BaseController
        	
     	#查询团队
     	$arr=User::get();
-     	$count=count($this->ifind($arr,$uid));
+     	$count=count($this->wuxianq($arr,$uid));
   
-    
-    	//dd($pp);
+    	$pp=self::wuxian($uid);
+    	//var_dump($pp);die;
     	//dd(count($pp));die;
         return view('home.user.index',compact('users','pusers','count'));
     }
 
    #查询团队
-    	public function wuxian($id,$arr=array()){
+    	public function wuxianq($id,$arr=array()){
     		$count = count($arr);
     		$a = User::where('id',$id)->first();
     		$b = User::where('pid',$a['id'])->first();
@@ -58,21 +58,33 @@ class UserController  extends BaseController
     		}
     		return $arr;
     	}
- 
-		public function ifind($arr,$id){
-				
-				static $data=array();
-				foreach($arr as $k=>$v){
-					if($v['id']==$id){
-						$data[]=$v;
-						}
-					if($v['pid']==$id){
-						$data[]=$v;
-						}
-					}
 
-				return $data;
-			}
+
+ 	public static function wuxian($i){
+ 		$allId = [];
+
+ 		if($user = User::where('pid',$i) -> get()){
+				
+ 			foreach ($user as $key => $value) {
+ 				var_dump($value['id']);
+ 				$tmp = self::wuxian($value['id']);
+ 				var_dump($value['id']);
+
+				if(empty($tmp)){
+					$allId=array_merge($allId,$tmp);
+
+ 				}
+ 			}
+
+ 			return $allId;
+
+
+ 		}else{
+
+ 			return false;
+ 		}
+ 	}
+	
 
 
 
@@ -98,6 +110,15 @@ class UserController  extends BaseController
     	$users=$t->getuserinfo($uid);
 
     	return view('home.user.turnaccount',compact('users'));
+    }
+    	#选择银行卡
+    public function choosebnak(){
+    	$uid=$this->checkUser();
+    	$t = new User;
+    	$users=$t->getuserinfo($uid);
+    	$yinhang=Payment::where('user_id',$uid)->where('type',3)->get();
+
+    	return view('home.user.choosebnak',compact('yinhang','users'));
     }
     #提现
     public function withdrawals(){
@@ -128,8 +149,11 @@ class UserController  extends BaseController
     				return $this->ajaxMessage(false,'账户余额不足');
     			}
 
+#事物开始
+DB::transaction(function(){
+
     			if(	User::where('id',$uid)->decrement('account', $post['num'])  &&
-    			 User::where('phone',$post['phone'])->increment('account', $post['num'] * 0.95)){
+    					User::where('phone',$post['phone'])->increment('account', $post['num'] * 0.95)){
     			$data=[];
     			$data['user_id']=$puser['id'];
     			$data['type']=2;
@@ -140,19 +164,18 @@ class UserController  extends BaseController
     			$data['create_at']=time();
     			$data['update_at']=time();
     			Incomerecode::insert($data);
-
 	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
 
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
 				}
+#事物结束
+});
 
 
     		}else{
     			return $this->ajaxMessage(false,'该用户不存在');
     		}
-    		
-
 
     	}elseif ($post['id']==2) {
     		#提现逻辑处理
@@ -161,23 +184,49 @@ class UserController  extends BaseController
     				return $this->ajaxMessage(false,'账户余额不足');
     			}
 
-    			if(	User::where('id',$uid)->decrement('account', $post['num']) ){
+    			#事物开始
+DB::transaction(function(){
+    			User::where('id',$uid)->decrement('account', $post['num']);
+    				#添加到提现表 百分70
     			$data=[];
     			$data['user_id']=$users['id'];
     			$data['mobile']=$users['phone'];
     			$data['name']=$users['name'];
-    			$data['fee']=$post['num'] * 0.05;
-    			$data['arrival_money']=$post['num'] * 0.95;
+    			$data['money']=$post['num'];
+    			$data['arrival_money']=$post['num'] * 0.70;
     			$data['cash_way']=$post['type'];
     			$data['create_at']=time();
     			$data['update_at']=time();
+    			if($post['number']){
+    				$data['number']=$post['number'];
+    			}
     			Withdraw::insert($data);
+    			#添加复投积分 20%
+    			$dataf=[];
+    			$dataf['user_id']=$users['id'];
+    			$dataf['flag']=1;
+    			$dataf['points_info']='提现获得';
+    			$dataf['sign']=1;
+    			$dataf['points']=$post['num'] * 0.20;
+    			Pointsrecode::insert($dataf);
+    			User::where('id',$users['id'])->increment('repeat_points', $dataf['points']);
+
+    			#添加到消费积分 10%
+    			$datax=[];
+    			$datax['user_id']=$users['id'];
+    			$datax['flag']=2;
+    			$datax['points_info']='提现获得';
+    			$datax['sign']=1;
+    			$datax['points']=$post['num'] * 0.10;
+    			Pointsrecode::insert($datax);
+    			User::where('id',$users['id'])->increment('consume_points', $datax['points']);
+
 
 	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
 
-				}else{
-					return $this->ajaxMessage(false,'参数错误');
-				}
+	
+#事物结束
+});
     	}
 
 
@@ -283,8 +332,10 @@ class UserController  extends BaseController
     	}
     	#减少积分，给对方增加积分
     	if($post['id'] == 1){
-    		if(	User::where('id',$uid)->decrement('repeat_points', $post['num'])  &&
-    			 User::where('phone',$post['phone'])->increment('repeat_points', $post['num'] * 0.95)){
+#事物开始
+DB::transaction(function(){
+    			User::where('id',$uid)->decrement('repeat_points', $post['num']) ; 
+    			User::where('phone',$post['phone'])->increment('repeat_points', $post['num'] * 0.95);
     			$data=[];
     			$data['user_id']=$pusers['id'];
     			$data['flag']=$post['id'];
@@ -292,13 +343,13 @@ class UserController  extends BaseController
     			$data['sign']=1;
     			$data['points']=$post['num'] * 0.95;
     			Pointsrecode::insert($data);
-
 	   				return $this->ajaxMessage(true,['message'=>'操作成功']);
-
-				}else{
-					return $this->ajaxMessage(false,'参数错误');
-				}
+				
+});
     	}elseif($post['id']==2){
+
+#事物开始
+DB::transaction(function(){
     		if(	User::where('id',$uid)->decrement('consume_points', $post['num'])  &&
     			User::where('phone',$post['phone'])->increment('consume_points', $post['num'] * 0.95)){
     			$data=[];
@@ -313,11 +364,10 @@ class UserController  extends BaseController
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
 				}
+});
+
     	}
     	
-
-
-
     }
 
  /**

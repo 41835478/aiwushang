@@ -4,7 +4,9 @@
 	Route::get('users/myaccount','UserController@myaccount');//账户信息
 	Route::get('users/turnaccount','UserController@turnaccount');//余额转账
 	Route::get('users/withdrawals','UserController@withdrawals');//账户体现
+	Route::get('users/choosebnak','UserController@choosebnak');//选择银行卡
 	Route::post('users/editaccount','UserController@editaccount');//余额提交
+
 
 	Route::get('users/qrcode','UserController@qrcode');//账户体现
 

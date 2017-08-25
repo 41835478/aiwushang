@@ -59,7 +59,7 @@
 <body>
 <div class="public_head">
 	<h3>账户绑定</h3>
-	<a href="personalCenter.html" class="iconfont icon-fanhui"></a>
+	<a href="javascript:history.go(-1);" class="iconfont icon-fanhui"></a>
 </div>
 <!-- 内容区 -->
 <div class="content">
