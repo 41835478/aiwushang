@@ -45,16 +45,16 @@ class LoginController extends Controller
                         session(['info'=>$info]);
                         return redirect()->route('admin.index');
                     }else{
-                        return back()->withErrors('登录失败');
+                        return back()->with('error','登录失败');
                     }
                 }else{
-                    return back()->withErrors('验证码输入有误');
+                    return back()->with('error','验证码输入有误');
                 }
             }else{
-                return back()->withErrors('管理员登录账号或密码错误');
+                return back()->with('error','管理员登录账号或密码错误');
             }
         }else{
-            return back()->withErrors('管理员登录账号或密码错误');
+            return back()->with('error','管理员登录账号或密码错误');
         }
     }
 
