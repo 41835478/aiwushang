@@ -19,7 +19,7 @@
 <link rel="stylesheet" type="text/css" href="{{asset('home/font/iconfont.css')}}"/>
 <link rel="stylesheet" href="{{asset('home/css/common.css')}}"/>
 <link rel="stylesheet" href="{{asset('home/css/fly.css')}}">
-<script type="text/javascript" src="js/swiper.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('home/js/swiper.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('home/js/jquery-3.1.1.min.js')}}"></script>
 
 
@@ -29,7 +29,23 @@
 <style>
 	.public_head i{
 		color: white;
+
+
 	}
+
+	.present_foot input[type=submit] {
+    width: 100%;
+    height: 50px;
+    border: 0;
+    background: none;
+    font-size: 17px;
+    text-align: center;
+    line-height: 50px;
+    color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
 </style>
 </head>
 <body>
@@ -43,7 +59,7 @@
 	<div class="present_ban">
 	    <div class="present_bann">
 			<p>￥</p>
-			<input type="number" placeholder="请输入提现金额" onfocus="this.placeholder = ''" onblur="if(this.placeholder == ''){this.placeholder = '请输入提现金额'}">
+			<input type="number" placeholder="请输入提现金额" name="num" class="num">
 		</div>
 		<em>注：最低提现额度为50元，预留20%进入复投积分，预留10%进入消费积分</em>
 	</div>
@@ -64,29 +80,54 @@
 			<div class="present_centt present_cen">
 				<i class="iconfont icon-weixin"></i>
 				<p>微信</p>
-				<i class="present_i iconfont icon-not_selected icon-xuanzhong1"></i>
+				<i class="present_i iconfont icon-not_selected icon-xuanzhong1"  data-id="1"></i>
 			</div>	
 		</div>
 		<div class="present_cent">
 			<div class="present_centt present_cen">
 				<i class="iconfont icon-zhifubao"></i>
 				<p>支付宝</p>
-				<i class="present_i iconfont icon-not_selected"></i>
+				<i class="present_i iconfont icon-not_selected"  data-id="2"></i>
 			</div>	
 		</div>
-		<div onclick="javascript:window.location.href='Choose_bnak.html'" class="present_cent">
-			<div class="present_centt">
+	<!-- 	<div class="present_cent">
+			<div class="present_centt present_cen">
 				<i class="iconfont icon-yinhangqia"></i>
 				<p>银行卡</p>
-				<i class="present_i iconfont icon-iconfontright"></i>
+				<i class="present_i iconfont icon-not_selected"  data-id="3"></i>
 			</div>	
-		</div>	
+		</div> -->
+
+		<div  class="present_cent">
+    <a href="{{url('users/choosebnak')}}" >
+      <div class="present_centt">
+        <i class="iconfont icon-yinhangqia"></i>
+        <p>银行卡</p>
+        <i class="present_i iconfont icon-iconfontright icon-not_selected" data-id="3"></i>
+      </div> 
+      </a> 
+    </div>
+
 	</div>
 	<div class="present_foot">
-		<input onclick="javascript:window.location.href='Cash_register.html'" type="button" value="确认提现" class="present_btn">
+	<input type="hidden" name="id" value="2" class="id" >
+		<input  type="button" value="确认提现"   id="btn1" class="present_btn true">
 	</div>
 </div>
 <script>
+
+
+
+window.onload=function(){
+    document.getElementById('btn1').onclick=function(){
+        this.disabled=true;
+        setTimeout(function (){
+            document.getElementById('btn1').disabled=false;
+        },5000);
+    }
+     
+}
+
 	$(".present_cen").on("click", function (){
       $(".present_cen").find('.present_i').removeClass('icon-xuanzhong1');
       $(this).find('.present_i').addClass("icon-xuanzhong1");
@@ -105,6 +146,51 @@
     	$(this).find("i").toggleClass("icon-shang")
     	$(".present_toggle").slideToggle();
     })
+</script>
+
+<script type="text/javascript">
+	  $('.true').click(function(){
+         
+            var num=$('.num').val();
+            var id=$('.id').val();
+           	var type=$(".icon-xuanzhong1").attr("data-id");
+         
+            if(num==""){
+            	alert('请输入数量');
+            	return false;
+            }
+         
+
+            var data={
+               	'type':type,
+                'num':num,
+                'id':id,
+               
+            }
+            var url="{{url('users/editaccount')}}";
+            sendAjax(data,url)
+        })
+        function sendAjax(data,url){
+            $.ajax({
+                'url':url,
+                'data':data,
+                'async':true,
+                'type':'post',
+                'dataType':'json',
+                success:function(data){
+                	 if(data.status){                    	
+                            window.location.href="{{url('users/index')}}";
+                        }else{
+                        	alert(data.message);
+                        	window.location.reload();
+                        }                  
+                },
+             
+            })
+        }
+
+ 
+
 </script>
 </body>
 </html>

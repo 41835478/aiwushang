@@ -21,116 +21,105 @@
 <link rel="stylesheet" href="{{asset('home/css/fly.css')}}">
 <script type="text/javascript" src="{{asset('home/js/swiper.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('home/js/jquery-3.1.1.min.js')}}"></script>
+
 <style>
-	.public_head i{
-		color: white;
-	}
 	body{
 		background: #f5f5f5;
 	}
-	.present_ban{
-		margin-top: 7px;
-		background: white;
-		height: 123px;
-		border-bottom: 1px #f5f5f5 solid;
-	}
-	.present_cont{
+	.public_head{
 		background: white;
 	}
-	.present_ban input[type=number]{
-		margin-left: 0;
+	.public_head h3{
+		color: black;
 	}
-
-	.present_foot input[type=submit] {
-    width: 100%;
-    height: 50px;
-    border: 0;
-    background: none;
-    font-size: 17px;
-    text-align: center;
-    line-height: 50px;
-    color: white;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
+	.public_head a{
+		color: black;
+	}
+	.bank_main li p{
+		width: 85px;
+	}
 </style>
 </head>
 <body>
 <div class="public_head">
-	<h3>积分转账</h3>
+	<h3>添加银行卡</h3>
 	<a href="javascript:history.go(-1);" class="iconfont icon-fanhui"></a>
 </div>
 <!-- 内容区 -->
-<form method = 'post'  action = "{{url('users/editintegral')}}">
+
 <div class="content">
-	<div class="cancell_ban">
-		<div class="cancell_bano">
-			<p>好友手机号</p>
-			<input type="text" name="phone" class="phone" />
-		</div>
-	</div>
-	<div class="present_ban">
-		<em class="cancell_po">转账积分数量</em>
-	    <div class="present_bann">
-			<input type="number" name="num" class="num" />
-		</div>
-	</div>
-	<div class="present_cont">
-		<div class="present_conto">
-			<p>可用积分<span>{{$points}}</span></p>
-		</div>
-	</div>
-	<div class="cancell_cont">
-		<div class="cancell_conto">
-			<p>注：转账最低数量为50个，转账收取5%手续费</p>
-		</div>
-	</div>
-	<div class="present_foot">
-		<input type="hidden" name="id" value="{{$id}}" class="id" >
-		
-		<input type="submit"   value="确认转账"  id="btn1" class="present_btn true"  >
-	</div>
+	<div class="account_box"></div>
+	<ul class="bank_main">
+		<li>
+			<p>银行名称：</p>
+			<input type="text" placeholder="请输入银行名称" name="bankname" class="bankname"  onfocus="this.placeholder = ''" onblur="if(this.placeholder == ''){this.placeholder = '请输入银行名称'}">
+		</li>
+		<li>
+			<p>开户人：</p>
+			<input type="text" placeholder="请输入开户人姓名"   name="bankusername" class="bankusername"  onfocus="this.placeholder = ''" onblur="if(this.placeholder == ''){this.placeholder = '请输入开户人姓名'}">
+		</li>
+		<li>
+			<p>银行卡号：</p>
+			<input type="text" placeholder="请输入银行卡号"   name="number" class="number"  onfocus="this.placeholder = ''" onblur="if(this.placeholder == ''){this.placeholder = '请输入银行卡号'}">
+		</li>
+		<li>
+			<p>开户支行：</p>
+			<input type="text" placeholder="请输入开户支行"   name="bankaddress"  class="bankaddress"  onfocus="this.placeholder = ''" onblur="if(this.placeholder == ''){this.placeholder = '请输入开户支行'}">
+		</li>
+	</ul>
 </div>
- </form>
+<input type="hidden" value="3" name="type" class="type">
+<input type="button" value="确认绑定" id="btn1" class="account_btn true"/>
 </body>
 
+
+
 <script type="text/javascript">
-
-
-
 window.onload=function(){
     document.getElementById('btn1').onclick=function(){
         this.disabled=true;
         setTimeout(function (){
             document.getElementById('btn1').disabled=false;
-        },5000);
+        },3000);
     }
      
 }
+
 	  $('.true').click(function(){
-            var phone=$('.phone').val();
-            var num=$('.num').val();
-            var id=$('.id').val();
-            if(phone==""){
-                alert("请输入您的手机号码！");
-                return false;
-            }
-            if(!phone.match(/^1[34578]\d{9}$/)){
-                alert('手机号不符合规则！');
-                return false;
-            }
-            if(num==""){
-            	alert('请输入数量');
+         	var bankname=$('.bankname').val();
+         	var bankusername=$('.bankusername').val();
+         	var bankaddress=$('.bankaddress').val();
+            var number=$('.number').val();
+            var type=$('.type').val();
+          
+         
+            if(bankname==""){
+            	alert('请输入银行名称');
             	return false;
             }
+             if(bankusername==""){
+            	alert('请输入开户人姓名');
+            	return false;
+            }
+             if(number==""){
+            	alert('请输入银行卡号');
+            	return false;
+            }
+             if(bankaddress==""){
+            	alert('请输入开户支行');
+            	return false;
+            }
+         
+
             var data={
-                'phone':phone,
-                'num':num,
-                'id':id,
+               	'bankusername':bankusername,
+               	'bankname':bankname,
+               	'bankaddress':bankaddress,
+                'number':number,
+                'type':type,
                
             }
-            var url="{{url('users/editintegral')}}";
+            var url="{{url('users/editbinding')}}";
             sendAjax(data,url)
         })
         function sendAjax(data,url){
@@ -146,9 +135,7 @@ window.onload=function(){
                         }else{
                         	alert(data.message);
                         	window.location.reload();
-                        }
-
-                  
+                        }                  
                 },
              
             })

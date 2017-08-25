@@ -150,7 +150,7 @@
                 'phone':phone,
                 'pwd':pwd,
             };
-            var url="{{url('login/login')}}";
+            var url="{{url('login/homeLogin')}}";
             sendAjax(data,url)
         })
 

@@ -22,101 +22,128 @@
 <script type="text/javascript" src="{{asset('home/js/swiper.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('home/js/jquery-3.1.1.min.js')}}"></script>
 <style>
-	.public_head i{
-		color: white;
-	}
 	body{
 		background: #f5f5f5;
 	}
-	.present_ban{
-		margin-top: 7px;
-		background: white;
-		height: 123px;
-		border-bottom: 1px #f5f5f5 solid;
+	.public_head i{
+		color: black;
+		font-size: 15px;
 	}
-	.present_ban p {
-	    font-size: 40px;
-	    color: #666666;
-	    line-height: 0px;
-	    float: left;
-	    margin-top: 49px;
-	}
-	.present_cont{
+	.public_head{
 		background: white;
 	}
-	.present_foot input[type=submit] {
-    width: 100%;
-    height: 50px;
-    border: 0;
-    background: none;
-    font-size: 17px;
-    text-align: center;
-    line-height: 50px;
-    color: white;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
+	.public_head a{
+		color: black;
+	}
+	.public_head h3{
+		color: black;
+	}
+
+
+
 </style>
 </head>
 <body>
 <div class="public_head">
-	<h3>余额转账</h3>
+	<h3>选择银行卡</h3>
 	<a href="javascript:history.go(-1);" class="iconfont icon-fanhui"></a>
+
+    <i onclick="window.location.href='/users/addbank'"  class="iconfont icon-jia"> </i>
 </div>
 <!-- 内容区 -->
+
 <div class="content">
-	<div class="cancell_ban">
-		<div class="cancell_bano">
-			<p>好友账号</p>
-			<input type="text" name="phone" class="phone" />
-		</div>
-	</div>
 	<div class="present_ban">
-		<em class="cancell_po">转账金额</em>
 	    <div class="present_bann">
 			<p>￥</p>
-			<input type="number" name="num" class="num" />
+			<input type="number" placeholder="请输入提现金额" name="num" class="num">
 		</div>
+		<em>注：最低提现额度为50元，预留20%进入复投积分，预留10%进入消费积分</em>
 	</div>
+	<div class="present_boxx"></div>
 	<div class="present_cont">
 		<div class="present_conto">
 			<p>可用余额<span>￥{{$users['account']}}</span></p>
 		</div>
 	</div>
-	<div class="cancell_cont">
-		<div class="cancell_conto">
-			<p>注：转账最低金额为50元</p>
-		</div>
+
+
+	<div class="present_boxx"></div>
+	@foreach($yinhang as $k=>$v)
+	<div class="choose_cent">
+		<div class="choose_centt">
+			<i class="iconfont icon-zhongguonongyeyinhang"></i>
+			<p>{{$v['bankname']}}<span>({{$v['number']}} )</span></p>
+			
+			<i class="present_i iconfont "  data-id="{{$v['number']}}"></i>
+		</div>	
 	</div>
+	@endforeach
+	<!-- <div class="choose_cent">
+		<div class="choose_centt">
+			<i class="iconfont icon-zhongguoyinhang"></i>
+			<p>中国银行<span>( ****4456 )</span></p>
+			<i class="present_i iconfont"></i>
+		</div>	
+	</div>
+	<div class="choose_cent">
+		<div class="choose_centt">
+			<i class="iconfont icon-zhongguonongyeyinhang"></i>
+			<p>中国农业银行<span>( ****4456 )</span></p>
+			<i class="present_i iconfont"></i>
+		</div>	
+	</div>	 -->
 	<div class="present_foot">
-	<input type="hidden" name="id" value="1" class="id" >
-		<input type="button"  value="确认转账"  onclick="javascript:{this.disabled=true;document.form1.submit();}" class="present_btn true">
+
+	<input type="hidden" name="id" value="2" class="id" >
+		<input  type="button" value="确认提现"   id="btn1" class="present_btn true">
 	</div>
 </div>
-</body>
+<script>
 
 
 
+window.onload=function(){
+    document.getElementById('btn1').onclick=function(){
+        this.disabled=true;
+        setTimeout(function (){
+            document.getElementById('btn1').disabled=false;
+        },5000);
+    }
+     
+}
+
+	$(".choose_centt").on("click", function (){
+      $(".choose_centt").find('.present_i').removeClass('icon-duihao');
+      $(this).find('.present_i').addClass("icon-duihao");
+      var box = $(this);
+      var index = goIndex(box);
+   });
+   function goIndex(it) {
+      var big = it.parent();
+      for (var i = 0; i < big.children().length; i++) {
+          if (big.children().eq(i)[0] == it[0]) {
+              return i;
+          }
+       }
+    };
+</script>
 <script type="text/javascript">
 	  $('.true').click(function(){
-            var phone=$('.phone').val();
+         
             var num=$('.num').val();
             var id=$('.id').val();
-            if(phone==""){
-                alert("请输入您的手机号码！");
-                return false;
-            }
-            if(!phone.match(/^1[34578]\d{9}$/)){
-                alert('手机号不符合规则！');
-                return false;
-            }
+           	var number=$(".icon-duihao").attr("data-id");
+           	//alert(number);
+         
             if(num==""){
             	alert('请输入数量');
             	return false;
             }
+         
+
             var data={
-                'phone':phone,
+               	'number':number,
                 'num':num,
                 'id':id,
                
@@ -137,9 +164,7 @@
                         }else{
                         	alert(data.message);
                         	window.location.reload();
-                        }
-
-                  
+                        }                  
                 },
              
             })
@@ -148,4 +173,8 @@
  
 
 </script>
+
+
+
+</body>
 </html>

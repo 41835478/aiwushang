@@ -19,4 +19,3 @@ Route::group(['namespace'=>'Home'],function(){
     Route::post('info/user_info','InfoController@user_info');//修改信息提交
 
 });
-?>
