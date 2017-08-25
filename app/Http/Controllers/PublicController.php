@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Model\Goodsclass;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PublicController extends Controller
 {
@@ -86,4 +87,5 @@ class PublicController extends Controller
         }
         return $res;
     }
+
 }

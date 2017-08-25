@@ -122,7 +122,7 @@
 		}
 	});
 	$('#submitOrderBtn').on('click',function(){
-		window.location.href='/home/payment';
+		window.location.href='/shop/payment';
 	})
 </script>
 </body>

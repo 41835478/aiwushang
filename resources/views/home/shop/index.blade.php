@@ -58,7 +58,7 @@
                 <img src="{{asset('home/images/indexNav02.png')}}" alt=""/>
                 <span>排行榜单</span>
             </a>
-            <a href="saleZone.html" class="a_jump">
+            <a href="/shop/goodsList?sales_push=1" class="a_jump">
                 <img src="{{asset('home/images/indexNav11.png')}}" alt=""/>
                 <span>促销专区</span>
             </a>
@@ -66,11 +66,11 @@
                 <img src="{{asset('home/images/indexNav09.png')}}" alt=""/>
                 <span>大转盘</span>
             </a>
-            <a href="BaihuoMall.html" class="a_jump">
+            <a href="/shop/BaihuoMall?type=1" class="a_jump">
                 <img src="{{asset('home/images/indexNav06.png')}}" alt=""/>
                 <span>爱无尚商城</span>
             </a>
-            <a href="cooperationPlatform.html" class="a_jump">
+            <a href="/shop/BaihuoMall?type=2" class="a_jump">
                 <img src="{{asset('home/images/indexNav07.png')}}" alt=""/>
                 <span>合作平台</span>
             </a>
