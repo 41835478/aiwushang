@@ -28,9 +28,8 @@ class LoginController extends Controller
         return view('admin.login.index');
     }
 
-    public function login(Request $request)//后台登录处理
+    public function login(LoginRequest $request)//后台登录处理
     {
-        dd($request->all());
         $date=$request->all();
         $first=Admin::select(['pwd','id','pic','mobile'])->where(['mobile'=>$date['mobile']])->first();
         if($first){
