@@ -39,7 +39,7 @@ require_once base_path('routes/admin/login.php');//后台登录退出
 
 
 //前台路由
-Route::get('test/index','Home\TestController@index');//测试控制器
+Route::get('test/index','Home\TestCellController@index');//测试控制器
 
 
 Route::group(['namespace'=>'Home','middleware'=>'home.auth'],function(){
