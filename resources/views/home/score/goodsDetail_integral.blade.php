@@ -14,17 +14,19 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta name="description" content="" />
 <meta name="Keywords" content="" />
-<link rel="stylesheet" href="css/swiper.min.css"/>
-<link rel="stylesheet" type="text/css" href="font/iconfont.css"/>
-<link rel="stylesheet" href="css/common.css"/>
-<link rel="stylesheet" href="css/index.css"/>
-<script type="text/javascript" src="js/swiper.min.js"></script>
-<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="js/zepto.js"></script>
+<link rel="stylesheet" href="/home/css/swiper.min.css"/>
+<link rel="stylesheet" type="text/css" href="/home/font/iconfont.css"/>
+<link rel="stylesheet" href="/home/css/common.css"/>
+<link rel="stylesheet" href="/home/css/index.css"/>
+<script type="text/javascript" src="/home/js/swiper.min.js"></script>
+<script type="text/javascript" src="/home/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="/home/js/zepto.js"></script>
 <style>
 	body{background-color:#fff;}
 	.footer{padding:0;width:100%;height:50px;}		
     .grayBtn{background-color: #999}
+    .integralGoods_descript_con img{
+        width:100%;}
 </style>
 </head>
 <body>
@@ -36,36 +38,42 @@
 	<!-- banner -->
 	 <div class="swiper-container index-banner">
         <div class="swiper-wrapper">
+            @foreach($goods->small_pic as $g)
             <div class="swiper-slide">
             	<a class="a_jump" href="javascript:void(0)">
-            		<img class="content-banner" src="images/integralDetail.png" />
+            		<img class="content-banner" src="/{{$g}}" />
         		</a>
         	</div>
-            <div class="swiper-slide">
+            @endforeach
+            {{--<div class="swiper-slide">
             	<a class="a_jump" href="javascript:void(0)">
-            		<img class="content-banner" src="images/integralDetail.png" />
+            		<img class="content-banner" src="/home/images/integralDetail.png" />
         		</a>
         	</div>
         	<div class="swiper-slide">
             	<a class="a_jump" href="javascript:void(0)">
-            		<img class="content-banner" src="images/integralDetail.png" />
+            		<img class="content-banner" src="/home/images/integralDetail.png" />
         		</a>
-        	</div>
+        	</div>--}}
         </div>
         <!-- 如果需要分页器 -->
         <div class="swiper-pagination lf_page"></div>
     </div>
     <div class="integralDetal">
         <div class="integralGoods">
-            <p>小米 5000mAh 移动电源</p>
+            <p>{{$goods->name}}</p>
             <p>
-                <em>5900</em><span>积分</span>
+                <em>{{$goods->money}}</em><span>积分</span>
             </p>
         </div>
-        <div onclick="javascript:window.location.href='shippingAddress.html'" class="div_clearFloat integralAddress">
+        <div onclick="javascript:window.location.href='/users/toaddress'" class="div_clearFloat integralAddress">
             <p>配送至：</p>
             <div class="integral-address">
-                <p>请选择收货地址</p>
+                @if(empty($address))
+                <p onClick="location.href='/users/toaddress'">请选择收货地址</p>
+                    @else
+                    <p>{{$address->province}}-{{$address->city}}-{{$address->area}}-{{$address->address}}</p>
+                @endif
             </div>
             <!-- 传入地址-赋值 -->
             <!-- <div class="integral-address">
@@ -84,13 +92,14 @@
         <div class="integralGoods_descript">
             <h2>详情描述</h2>
             <div class="integralGoods_descript_con">
-                <h3>商品详情：</h3>
+                {!! $goods->content !!}
+               {{-- <h3>商品详情：</h3>
                 <p>5000mAh 小米移动电源就是薄 仅9.9mm薄,可以放入衬衫兜的移动电源,ATL 锂离子聚合物电芯,铝合金金属外壳。</p>
                 <h3>兑换流程：</h3>
                 <p>1、用户确认符合活动条件后,点击[马上兑换],并填写配送信息。</p>
                 <p>2、确认信息无误,提交兑换。</p>
                 <h3>注意事项：</h3>
-                <p>兑换时请仔细核对收货信息,商品一经兑换,不支持收货地址和(或)收件人信息修改。</p>
+                <p>兑换时请仔细核对收货信息,商品一经兑换,不支持收货地址和(或)收件人信息修改。</p>--}}
             </div>
         </div>
     </div>
@@ -99,8 +108,8 @@
     <!-- 积分不足 button class="grayBtn" -->
 	<button type="button" class="edit_save">兑换</button>
 </footer>
-<script type="text/javascript" src="js/handlebars-1.0.0.beta.6.js"></script>
-<script type="text/javascript" src="js/index.js"></script> 
+<script type="text/javascript" src="/home/js/handlebars-1.0.0.beta.6.js"></script>
+<script type="text/javascript" src="/home/js/index.js"></script> 
 <script type="text/javascript">
     //$('.grayBtn').text('积分不足');
     $(".edit_save").on("touchend",function(){
@@ -108,10 +117,23 @@
         outBox("兑换成功后，请静待收货。如有疑问，请咨询客服。", 'javascript: changeBox();');
     });
     function changeBox() {
-        void(0);
-        $('#out-boxbg').remove();
-        addBox1("body");
-        outBox1("兑换记录可以在个人中心-消费积分-支出明细中查看。",'integralMall.html');
+        var num = "{{$goods->id}}";
+        $.ajax({
+            url:'/score/exchange',
+            data:{'id':num},
+            method:'post',
+            success:function(res){
+                if(res.status==1){
+                    $('#out-boxbg').remove();
+                    addBox1("body");
+                    outBox1("兑换记录可以在个人中心-消费积分-支出明细中查看。",'/score/index');
+                }
+            },
+            error:function(){
+                alert('网络错误，请刷新重试！');
+            }
+        })
+
     }
     //生成半透明遮罩
     function addBox1(out,zi) {
