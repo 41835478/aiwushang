@@ -30,7 +30,14 @@
 	</div>
 	<div class="bonus_box">
 		<ul class="teamList">
-		@foreach($team as $k=>$v)
+	@if($team =='') 
+		<li class="teamItem">
+				<div class="team_con">
+					<p>您还未有团队</p>
+				</div>
+			</li>
+	@else
+	@foreach($team as $k=>$v)
 			<li class="teamItem">
 				<span>{{$k+1}}</span>
 				<img src="{{$v['pic']}}" alt=""/>
@@ -51,6 +58,9 @@
 				</div>
 			</li>
 			@endforeach
+
+	@endif
+		
 		</ul>
 	</div>
 </div>

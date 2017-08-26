@@ -407,7 +407,9 @@ DB::transaction(function(){
     	$uid=$this->checkUser();
     	#查询团队
      	$team=self::wuxian($uid);
+
     	$count=count($team);
+     
 		return view('home.user.myteam',compact('team','count'));
 	}
 
