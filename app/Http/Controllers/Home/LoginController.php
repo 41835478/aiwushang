@@ -10,9 +10,9 @@ use Cache;
 
 class LoginController extends BaseController
 {
-    public function index()//加载注册页面
+    public function index($pid=0)//加载注册页面
     {
-        return view('home.register.index');
+        return view('home.register.index',['pid'=>$pid]);
     }
 
     public function agreement()//注册页面中的用户注册协议
@@ -24,6 +24,14 @@ class LoginController extends BaseController
     {
         $date=$request->except(['_token','pwd_confirmation','code']);
         $code=$request->only('code')['code'];
+        if($request->has('pid')){
+            $find=User::find($request->input('pid'));
+            if($find){
+                $date['pid']=$request->input('pid');
+            }else{
+                return $this->ajaxMessage(false,'非法注册');
+            }
+        }
         if(Cache::has('registerCode')){
             if($code==Cache::get('registerCode')){
                 $date['pwd']=md5($date['pwd']);

@@ -58,7 +58,7 @@ class RowCService
     {
         $from_row=Rowc::where(['id'=>$now_row_id])->first(['id','user_id','current_level']);
         $to_row=Rowc::where(['id'=>$aim_row_id])->first(['id','user_id','current_level','current_generate']);
-        return $this->updateDynasty($from_row,$to_row);
+        return $this->updateDynasty($from_row,$to_row,$order_id);
     }
 
     public function updateDynasty($from_row,$to_row,$order_id)//升级循环判断

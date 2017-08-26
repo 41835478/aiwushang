@@ -93,10 +93,9 @@
         <div class="list_div">
             <img class="iconfont icon-mima" src="{{asset('home/images/login_icon03.png')}}" alt="">
             <input class="yz_input input code" type="text" name="code" placeholder="输入验证码">
-
             <input class="register_yzBtn" type="button" value="获取验证码">
         </div>
-
+        <input type="hidden" value="{{$pid}}" class="registerPid">
         <button class="register_btn" type="button">注册</button>
     </div>
     <div class="login_zh">
@@ -188,9 +187,11 @@
                 alert('验证码不能为空');
                 return false;
             }
+            var pid=$('.registerPid').val();
             var data={
                 'phone':phone,
                 'pwd':pwd,
+                'pid':pid,
                 'pwd_confirmation':repwd,
                 'paypwd':paypwd,
                 'code':code,
