@@ -100,17 +100,20 @@ class RowEventListener
                 if ($prevId) {
                     $level = $mod->where(['id' => $prevId])->value('level');//上级的层数
                     $selfLevel = $this->getLevel($mod,$level);
-                    $date['update_at'] = time();
-                    $date['level'] = $selfLevel;
-                    $res1 = $mod->where(['id' => $res])->update($date);
-                    if ($res1) {
-                        $remark = $money . '元商品区';
-                        $res2 = $this->rowOrder($res, $user_id, $remark, $money, $type);
-                        if ($res2) {
-                            $res3 = $this->getTwentyScore($user_id, $money, $pointFee);//向上20代返钱
-                            if($res3){
-                                $this->loopUpDisk($res,$type,$order_id);
-                            }
+                    $date['prev_id']=$prevId;
+                }else{
+                    $selfLevel=1;
+                }
+                $date['update_at'] = time();
+                $date['level'] = $selfLevel;
+                $res1 = $mod->where(['id' => $res])->update($date);
+                if ($res1) {
+                    $remark = $money . '元商品区';
+                    $res2 = $this->rowOrder($res, $user_id, $remark, $money, $type);
+                    if ($res2) {
+                        $res3 = $this->getTwentyScore($user_id, $money, $pointFee);//向上20代返钱
+                        if($res3){
+                            $this->loopUpDisk($res,$type,$order_id);
                         }
                     }
                 }

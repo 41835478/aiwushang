@@ -31,6 +31,7 @@ Route::group(['namespace' => 'Admin','middleware'=>'admin'], function () {
     require_once base_path('routes/admin/Data.php');
 
     require_once base_path('routes/admin/withdraw.php');//提现管理
+    require_once base_path('routes/admin/direct.php');//算法管理
 
 });
 require base_path('routes/admin/user.php');//后台管理员管理
