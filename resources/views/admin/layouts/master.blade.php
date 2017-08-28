@@ -99,45 +99,6 @@
                          
                     </ul>
                 </li>
-
-
-         <!--        <li>
-                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">表单</span><span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem" href="form_basic.html">基本表单</a>
-                        </li>
-                        <li><a class="J_menuItem" href="form_validate.html">表单验证</a>
-                        </li>
-                        <li><a class="J_menuItem" href="form_advanced.html">高级插件</a>
-                        </li>
-                        <li><a class="J_menuItem" href="form_wizard.html">表单向导</a>
-                        </li>
-                        <li>
-                            <a href="#">文件上传 <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <li><a class="J_menuItem" href="form_webuploader.html">百度WebUploader</a>
-                                </li>
-                                <li><a class="J_menuItem" href="form_file_upload.html">DropzoneJS</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">编辑器 <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <li><a class="J_menuItem" href="form_editors.html">富文本编辑器</a>
-                                </li>
-                                <li><a class="J_menuItem" href="form_simditor.html">simditor</a>
-                                </li>
-                                <li><a class="J_menuItem" href="form_markdown.html">MarkDown编辑器</a>
-                                </li>
-                                <li><a class="J_menuItem" href="code_editor.html">代码编辑器</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><a class="J_menuItem" href="layerdate.html">日期选择器layerDate</a>
-                        </li>
-                    </ul>
-                </li> -->
            
                 <li class="line dk"></li>
                 <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
@@ -163,7 +124,8 @@
                         </li>
                     </ul>
                 </li>
-                 <li class="line dk"></li>
+
+                <li class="line dk"></li>
                 <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
                     <span class="ng-scope">分类</span>
                 </li>
@@ -179,10 +141,25 @@
                     <ul class="nav nav-second-level">
                         <li><a class="J_menuItem" href="{{url('withdraw/cashList')}}">提现列表</a>
                         </li>
-                        {{--<li><a class="J_menuItem" href="mail_detail.html">查看邮件</a>--}}
-                        {{--</li>--}}
-                        {{--<li><a class="J_menuItem" href="mail_compose.html">写信</a>--}}
-                        {{--</li>--}}
+                    </ul>
+                </li>
+
+                <li class="line dk"></li>
+                <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                    <span class="ng-scope">分类</span>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">分销管理</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem" href="{{url('direct/index')}}">分销列表</a>
+                    </ul>
+
+                </li>
+                <li>
+                    <a href="javascript:;"><i class="fa fa-envelope"></i> <span class="nav-label">公排管理 </span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem" href="{{url('withdraw/cashList')}}">提现列表</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
