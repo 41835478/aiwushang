@@ -9,6 +9,7 @@
 namespace App\Http\Services;
 
 
+use App\Events\RowEvent;
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Order;
 use App\Http\Model\Pointsrecode;
@@ -18,22 +19,25 @@ use Exception;
 
 class DirectService
 {
-    protected $row;
-
-    public function __construct(RowService $row)
-    {
-        $this->row=$row;
-    }
+//    protected $row;
+//
+//    public function __construct(RowService $row)
+//    {
+//        $this->row=$row;
+//    }
 
     //$order_id 订单id   $type 1、爱无尚商城 2、合作平台 3、100元专区 4、300元专区 5、2000元专区
-    public function index($order_id,$type)
-    {
-        if($type==1||$type==2){//要进行分佣
-            return $this->main($order_id);
-        }elseif($type==3||$type==4||$type==5){//要进行排位
-            return $this->row->index($order_id,$type);
-        }
-    }
+//    public function index($order_id,$type)
+//    {
+//        if($type==1||$type==2){//要进行分佣
+//            return $this->main($order_id);
+//        }elseif($type==3||$type==4||$type==5){//要进行排位
+//            $this->row->index($order_id,$type);
+////            $row=new RowService();
+////            $row->index($order_id,$type);
+////            event(new RowEvent($order_id,$type));
+//        }
+//    }
 
     public function main($order_id)//分佣主函数
     {

@@ -16,8 +16,17 @@ class EventServiceProvider extends ServiceProvider
 //        'App\Events\Event' => [
 //            'App\Listeners\EventListener',
 //        ],
-        'App\Events\Example' => [
-            'App\Listeners\ExampleListener',
+        'App\Events\RowAEvent' => [
+            'App\Listeners\RowAEventListener',
+        ],
+        'App\Events\RowBEvent' => [
+            'App\Listeners\RowBEventListener',
+        ],
+        'App\Events\RowCEvent' => [
+            'App\Listeners\RowCEventListener',
+        ],
+        'App\Events\RowEvent' => [
+            'App\Listeners\RowEventListener',
         ],
     ];
 

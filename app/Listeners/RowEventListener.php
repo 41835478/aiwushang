@@ -1,61 +1,61 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2017/8/23
- * Time: 11:46
- */
 
-namespace App\Http\Services;
+namespace App\Listeners;
 
+use App\Events\RowEvent;
+use App\Http\Model\Rowa;
+use App\Http\Model\Rowb;
+use App\Http\Model\Rowc;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Events\RowAEvent;
 use App\Events\RowBEvent;
 use App\Events\RowCEvent;
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Order;
-use App\Http\Model\Orderinfo;
-use App\Http\Model\Rowa;
-use App\Http\Model\Rowb;
-use App\Http\Model\Rowc;
 use App\Http\Model\Roworder;
 use App\Http\Model\User;
 use DB;
 use Exception;
 
-class RowService
+class RowEventListener
 {
-//    protected $rowAService;
-//    protected $rowBService;
-//    protected $rowCService;
-
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
     protected $rowA;
     protected $rowB;
     protected $rowC;
     public function __construct(Rowa $rowA,Rowb $rowB,Rowc $rowC)
     {
-//        $this->rowAService=$rowAService;
-//        $this->rowBService=$rowBService;
-//        $this->rowCService=$rowCService;
-
         $this->rowA=$rowA;
         $this->rowB=$rowB;
         $this->rowC=$rowC;
     }
 
-    public function index($order_id, $type)
+    /**
+     * Handle the event.
+     *
+     * @param  RowEvent  $event
+     * @return void
+     */
+    public function handle(RowEvent $event)
     {
+        $order_id=$event->order_id;
+        $type=$event->type;
         $order = Order::find($order_id);
         if ($type == 3) {//100元专区   说明是A盘
-            return $this->mainRow($order_id, $order->user_id, $order->order_num, 100, 1,2.5);
+            $this->mainRow($order_id, $order->user_id, $order->order_num, 100, 1,2.5);
         }
         if ($type == 4) {//300元专区   说明是B盘
-            return $this->mainRow($order_id, $order->user_id, $order->order_num, 300, 2,6.5);
+            $this->mainRow($order_id, $order->user_id, $order->order_num, 300, 2,6.5);
         }
         if ($type == 5) {//2000元专区  说明是C盘
-            return $this->mainRow($order_id, $order->user_id, $order->order_num, 2000, 3,42.5);
+            $this->mainRow($order_id, $order->user_id, $order->order_num, 2000, 3,42.5);
         }
-        return false;
     }
 
     public function RowInfo($row_id,$type)
@@ -109,7 +109,7 @@ class RowService
                         if ($res2) {
                             $res3 = $this->getTwentyScore($user_id, $money, $pointFee);//向上20代返钱
                             if($res3){
-                                return $this->loopUpDisk($res,$type,$order_id);
+                                $this->loopUpDisk($res,$type,$order_id);
                             }
                         }
                     }
@@ -124,25 +124,19 @@ class RowService
         if($type==1){
             $date=$this->RowInfo($row_id,1);
             $date['type']=1;
-            $date['order_id']=$order_id;
-            return $date;
-//            event(new RowAEvent($date,$order_id));
+            event(new RowAEvent($date,$order_id));
 //            return $this->rowAService->index($date['prev_id'],$date['row_id'],1,$date['user_id'],$date['current_level'],$order_id);
         }
         if($type==2){
             $date=$this->RowInfo($row_id,2);
             $date['type']=2;
-            $date['order_id']=$order_id;
-            return $date;
-//            event(new RowBEvent($date,$order_id));
+            event(new RowBEvent($date,$order_id));
 //            return $this->rowBService->index($date['prev_id'],$date['row_id'],2,$date['user_id'],$date['current_level'],$order_id);
         }
         if($type==3){
             $date=$this->RowInfo($row_id,3);
             $date['type']=3;
-            $date['order_id']=$order_id;
-            return $date;
-//            event(new RowCEvent($date,$order_id));
+            event(new RowCEvent($date,$order_id));
 //            return $this->rowCService->index($date['prev_id'],$date['row_id'],3,$date['user_id'],$date['current_level'],$order_id);
         }
     }
@@ -241,5 +235,4 @@ class RowService
         }
         return false;
     }
-
 }

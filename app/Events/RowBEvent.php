@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class Example
+class RowBEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,10 +19,12 @@ class Example
      *
      * @return void
      */
-    public $id;
-    public function __construct($id)
+    public $date;
+    public $order_id;
+    public function __construct($date,$order_id)
     {
-        $this->id=$id;
+        $this->date=$date;
+        $this->order_id=$order_id;
     }
 
     /**

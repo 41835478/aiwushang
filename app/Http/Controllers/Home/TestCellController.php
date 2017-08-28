@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers\Home;
 
-use App\Events\Example;
-use Illuminate\Http\Request;
+use App\Http\Services\DirectService;
+//use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use DB;
+//use DB;
+//use Hash;
 
 class TestCellController extends Controller
 {
+    protected $directService;
+
+    public function __construct(DirectService $directService)
+    {
+        $this->directService=$directService;
+    }
+
     public function index()
     {
-        $date=DB::table('address')->where(['user_id'=>1,'default'=>1])->first();
-        foreach($date as $k=>$v){
-            dd($v);
-        }
+        dd($this->directService->main(1));
 //        event(new Example(1));
     }
 }

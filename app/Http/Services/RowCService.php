@@ -74,14 +74,14 @@ class RowCService
                     if($up_row_id){
                         $main1=$this->mainFunc2($up_row_id,$to_row->user_id,$feeConfig['promoteFee'],$res2->aim_level);
                         if($main1){
-                            $res3=$this->startPromote($to_row->id,$res2->aim_level,$to_row->current_generate+1);
+                            $res3=$this->startPromote($to_row->id,$res2->aim_level,$to_row->current_generate+1,$where);
                             if($res3){
                                 return $this->getSelfPrevInfo($to_row->id,$up_row_id,$order_id);
                             }
                         }
                         return false;
                     }else{
-                        return $this->startPromote($to_row->id,$res2->aim_level,$to_row->current_generate+1);
+                        return $this->startPromote($to_row->id,$res2->aim_level,$to_row->current_generate+1,$where);
                     }
                 }
                 return true;
@@ -93,13 +93,13 @@ class RowCService
             if($main){
                 $res2=Promoterecode::where($where)->first(['promote_fee','aim_level']);
                 if($res2->promote_fee>=$feeConfig['promoteFee']){
-                    $date['promote_fee']=$res2->promote_fee->$feeConfig['promoteFee'];
+                    $date['promote_fee']=$res2->promote_fee-$feeConfig['promoteFee'];
                     $res3=$this->setPromoteRecode($to_row->id,1,$to_row->user_id,$to_row->current_level+1,$date);
                     if($res3){
                         $data['promote_fee']=$feeConfig['promoteFee'];
-                        $data['status']=2;
+//                        $data['status']=2;
                         $data['update_at']=time();
-                        $res4=Promoterecode::where($where)->update($data);
+                        $res4=Promoterecode::where($where)->where('status',1)->update($data);
                         if(!$res4){
                             return false;
                         }
@@ -112,14 +112,14 @@ class RowCService
                         if($up_row_id){
                             $main1=$this->mainFunc2($up_row_id,$to_row->user_id,$feeConfig['promoteFee'],$res2->aim_level);
                             if($main1){
-                                $res3=$this->startPromote($to_row->id,$res2->aim_level,$current_generate);
+                                $res3=$this->startPromote($to_row->id,$res2->aim_level,$current_generate,$where);
                                 if($res3){
                                     return $this->getSelfPrevInfo($to_row->id,$up_row_id,$order_id);
                                 }
                             }
                             return false;
                         }else{
-                            return $this->startPromote($to_row->id,$res2->aim_level,$current_generate);
+                            return $this->startPromote($to_row->id,$res2->aim_level,$current_generate,$where);
                         }
                     }
                     return false;
@@ -224,7 +224,7 @@ class RowCService
         return false;
     }
 
-    public function startPromote($rowId,$aim_level,$generate)//升级改变升级表和排单表
+    public function startPromote($rowId,$aim_level,$generate,$where)//升级改变升级表和排单表
     {
         DB::beginTransaction();
         try{
@@ -235,7 +235,7 @@ class RowCService
             if($res){
                 $date['status']=2;
                 $date['update_at']=time();
-                $promote=Promoterecode::where(['row_id'=>$rowId])->update($date);
+                $promote=Promoterecode::where($where)->where('status',1)->update($date);
                 if($promote){
                     DB::commit();
                     return true;

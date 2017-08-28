@@ -1,25 +1,30 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2017/8/25
- * Time: 14:25
- */
 
-namespace App\Http\Services;
+namespace App\Listeners;
 
+use App\Events\RowAEvent;
+use App\Events\RowEvent;
+use App\Http\Services\CreateOrderService;
+use App\Http\Services\RowService;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Looppoint;
 use App\Http\Model\Promoterecode;
-use App\Http\Model\Rowb;
+use App\Http\Model\Rowa;
 use App\Http\Model\Roworder;
 use App\Http\Model\User;
 use DB;
 use Exception;
 
-class RowBService
+class RowAEventListener
 {
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
     protected $createOrder;
     protected $rowService;
 
@@ -29,17 +34,22 @@ class RowBService
         $this->rowService=$rowService;
     }
 
-    //$row_id:上级盘位id  $now_row_id:当前盘位id  $flag:当前是那个盘  $user_id:当前用户id  $current_level:当前点位的等级
-    public function index($row_id,$now_row_id,$flag,$user_id,$current_level,$order_id)
+    /**
+     * Handle the event.
+     *
+     * @param  RowAEvent  $event
+     * @return void
+     */
+    public function handle(RowAEvent $event) //$row_id:上级盘位id  $now_row_id:当前盘位id  $flag:当前是那个盘  $user_id:当前用户id  $current_level:当前点位的等级
     {
-        $res=$this->setPromoteRecode($now_row_id,$flag,$user_id,$current_level);
+        $date=$event->date;
+        $order_id=$event->order_id;
+        $res=$this->setPromoteRecode($date['row_id'],$date['type'],$date['user_id'],$date['current_level'],$event->order_id);
         if($res){
-            if($row_id){
-                return $this->getSelfPrevInfo($now_row_id,$row_id,$order_id);
+            if($date['prev_id']){
+                $this->getSelfPrevInfo($date['row_id'],$date['prev_id'],$order_id);
             }
-            return true;
         }
-        return false;
     }
 
     public function getRowId($rowId,$aim_level,$num=1)//得到对应要向上面第几代缴费的排位点id
@@ -57,16 +67,16 @@ class RowBService
 
     public function getSelfPrevInfo($now_row_id,$aim_row_id,$order_id)
     {
-        $from_row=Rowb::where(['id'=>$now_row_id])->first(['id','user_id','current_level']);
-        $to_row=Rowb::where(['id'=>$aim_row_id])->first(['id','user_id','current_level','current_generate']);
+        $from_row=Rowa::where(['id'=>$now_row_id])->first(['id','user_id','current_level']);
+        $to_row=Rowa::where(['id'=>$aim_row_id])->first(['id','user_id','current_level','current_generate']);
         return $this->updateDynasty($from_row,$to_row,$order_id);
     }
 
     public function updateDynasty($from_row,$to_row,$order_id)//升级循环判断
     {
         $feeConfig=$this->feeConfig($to_row->current_generate,$to_row->current_level);
-        $where=array('row_id'=>$to_row->id,'current_level'=>$to_row->current_level,'user_id'=>$to_row->user_id,'flag'=>2);
-        if($to_row->current_generate<=2){
+        $where=array('row_id'=>$to_row->id,'current_level'=>$to_row->current_level,'user_id'=>$to_row->user_id,'flag'=>1);
+        if($to_row->current_generate<=3){
             $main=$this->commonDynasty($to_row,$from_row,$feeConfig,$where);
             if($main){
                 $res2=Promoterecode::where($where)->first(['promote_fee','aim_level']);
@@ -89,7 +99,7 @@ class RowBService
             }
             return false;
         }
-        if($to_row->current_generate==3){
+        if($to_row->current_generate==4){
             $main=$this->commonDynasty($to_row,$from_row,$feeConfig,$where);
             if($main){
                 $res2=Promoterecode::where($where)->first(['promote_fee','aim_level']);
@@ -105,7 +115,7 @@ class RowBService
                             return false;
                         }
                         $up_row_id=$this->getRowId($to_row->id,$res2->aim_level,$num=1);
-                        if($res2->aim_level==10){
+                        if($res2->aim_level==12){
                             $current_generate=$to_row->current_generate+1;
                         }else{
                             $current_generate=$to_row->current_generate;
@@ -129,8 +139,8 @@ class RowBService
             }
             return false;
         }
-        if($to_row->current_generate>=4){
-            $where=array('row_id'=>$to_row->id,'current_generate'=>$to_row->current_generate,'type'=>2,'user_id'=>$to_row->user_id);
+        if($to_row->current_generate>=5){
+            $where=array('row_id'=>$to_row->id,'current_generate'=>$to_row->current_generate,'type'=>1,'user_id'=>$to_row->user_id);
             $point=Looppoint::where($where)->first(['money']);
             if(!$point){
                 $res=$this->writeLoopPoint($to_row->id,$to_row->user_id,$to_row->current_generate,$feeConfig['deductFee']);
@@ -150,13 +160,13 @@ class RowBService
                             return false;
                         }
                         $point_money=Looppoint::where($where)->value('point_money');
-                        if($to_row->current_generate==10){
+                        if($to_row->current_generate==12){
                             if($point_money==$feeConfig['pointFee']){//说明该出局了
                                 return $this->outDisc($to_row->id,$to_row->user_id);
                             }
                         }else{
                             if($point_money==$feeConfig['pointFee']){//说明该生代了
-                                $res4=Rowb::where(['id'=>$to_row->id])->increment('current_generate',1);
+                                $res4=Rowa::where(['id'=>$to_row->id])->increment('current_generate',1);
                                 if(!$res4){
                                     return false;
                                 }
@@ -171,7 +181,7 @@ class RowBService
         }
     }
 
-    public function outDisc($row_id,$user_id)//10代要出局了
+    public function outDisc($row_id,$user_id)//12代要出局了
     {
         $date['status']=2;
         $date['update_at']=time();
@@ -179,7 +189,7 @@ class RowBService
         if($rowOrder){
             $data['status']=2;
             $data['update_at']=time();
-            $row=Rowb::where(['row_id'=>$row_id,'user_id'=>$user_id])->update($data);
+            $row=Rowa::where(['row_id'=>$row_id,'user_id'=>$user_id])->update($data);
             if($row){
                 return true;
             }
@@ -189,11 +199,17 @@ class RowBService
 
     public function loopPoint($order_id)//开始三个盘进行循环
     {
+        $order_id=$this->createOrder->createOrder($order_id,4);
+        event(new RowEvent($order_id,1));
+
         $order_id=$this->createOrder->createOrder($order_id,5);
-        return $this->rowService->index($order_id,2);//这里是不是需要三个进程
+        event(new RowEvent($order_id,2));
+
+        $order_id=$this->createOrder->createOrder($order_id,6);
+        event(new RowEvent($order_id,3));
     }
 
-    public function writeLoopPoint($row_id,$user_id,$current_generate,$money)//在B盘4-8代内向表中写入数据
+    public function writeLoopPoint($row_id,$user_id,$current_generate,$money)//在A盘5-8代内向表中写入数据
     {
         $date['user_id']=$user_id;
         $date['row_id']=$row_id;
@@ -209,8 +225,8 @@ class RowBService
     {
         $find=Promoterecode::where($where)->first();
         if(!$find){
-            $rowA=RowB::find($to_row->id);
-            $res=$this->setPromoteRecode($to_row->id,2,$rowA->user_id,$rowA->current_level);
+            $rowA=Rowa::find($to_row->id);
+            $res=$this->setPromoteRecode($to_row->id,1,$rowA->user_id,$rowA->current_level);
             if(!$res){
                 return false;
             }
@@ -229,7 +245,7 @@ class RowBService
     {
         DB::beginTransaction();
         try{
-            $rowA=Rowb::find($rowId);
+            $rowA=Rowa::find($rowId);
             $rowA->current_level=$aim_level;
             $rowA->current_generate=$generate;
             $res=$rowA->save();
@@ -296,7 +312,7 @@ class RowBService
 
     public function mainFunc2($to_row_id,$from_id,$money,$current_level)//向上级交升级费
     {
-        $rowA=Rowb::find($to_row_id);
+        $rowA=Rowa::find($to_row_id);
         $to_login_name=User::where(['id'=>$rowA->user_id])->value('login_name');
         $from_login_name=User::where(['id'=>$from_id])->value('login_name');
         $info=$from_login_name.'向上'.$current_level.'级'.$to_login_name.'交升级费'.$money;
@@ -349,59 +365,69 @@ class RowBService
     {
         $date=array();
         if($dynasty==1){
-            $date['promoteFee']=390;
-            $date['deductFee']=130;
+            $date['promoteFee']=100;
+            $date['deductFee']=50;
             $date['redFee']=0;
         }
         if($dynasty==2){
-            $date['promoteFee']=3000;
-            $date['deductFee']=333.34;
-            $date['redFee']=510;
+            $date['promoteFee']=300;
+            $date['deductFee']=75;
+            $date['redFee']=25;
         }
         if($dynasty==3){
-            if(in_array($level,[3,4,5])){
-                $date['promoteFee']=6000;
-            }
-            if(in_array($level,[6,7,8,9])){
-                $date['promoteFee']=8000;
-            }
-            $date['deductFee']=1851.86;
-            $date['redFee']=1148.14;
+            $date['promoteFee']=2000;
+            $date['deductFee']=250;
+            $date['redFee']=50;
         }
         if($dynasty==4){
-            $date['deductFee']=2400;
-            $date['redFee']=3600;
-            $date['pointFee']=194400;
+            if(in_array($level,[4,5,6,7])){
+                $date['promoteFee']=3000;
+            }
+            if(in_array($level,[8,9,10,11])){
+                $date['promoteFee']=4000;
+            }
+            $date['deductFee']=1750;
+            $date['redFee']=500;
         }
         if($dynasty==5){
-            $date['deductFee']=2400;
-            $date['redFee']=3600;
-            $date['pointFee']=583200;
+            $date['deductFee']=600;
+            $date['redFee']=2400;
+            $date['pointFee']=19200;
         }
         if($dynasty==6){
-            $date['deductFee']=2400;
-            $date['redFee']=3600;
-            $date['pointFee']=1749600;
+            $date['deductFee']=600;
+            $date['redFee']=2400;
+            $date['pointFee']=38400;
         }
         if($dynasty==7){
-            $date['deductFee']=7200;
-            $date['redFee']=800;
-            $date['pointFee']=15746400;
+            $date['deductFee']=600;
+            $date['redFee']=2400;
+            $date['pointFee']=76800;
         }
         if($dynasty==8){
-            $date['deductFee']=7200;
-            $date['redFee']=800;
-            $date['pointFee']=47239200;
+            $date['deductFee']=600;
+            $date['redFee']=2400;
+            $date['pointFee']=153600;
         }
         if($dynasty==9){
-            $date['deductFee']=7200;
-            $date['redFee']=800;
-            $date['pointFee']=141717600;
+            $date['deductFee']=2400;
+            $date['redFee']=2400;
+            $date['pointFee']=1228800;
         }
         if($dynasty==10){
-            $date['deductFee']=7200;
-            $date['redFee']=800;
-            $date['pointFee']=425152800;
+            $date['deductFee']=2400;
+            $date['redFee']=2400;
+            $date['pointFee']=2457600;
+        }
+        if($dynasty==11){
+            $date['deductFee']=2400;
+            $date['redFee']=2400;
+            $date['pointFee']=4915200;
+        }
+        if($dynasty==12){
+            $date['deductFee']=2400;
+            $date['redFee']=2400;
+            $date['pointFee']=9830400;
         }
         return $date;
     }

@@ -1,13 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2017/8/25
- * Time: 14:25
- */
 
-namespace App\Http\Services;
+namespace App\Listeners;
 
+use App\Events\RowBEvent;
+use App\Events\RowEvent;
+use App\Http\Services\CreateOrderService;
+use App\Http\Services\RowService;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Looppoint;
@@ -18,8 +18,13 @@ use App\Http\Model\User;
 use DB;
 use Exception;
 
-class RowBService
+class RowBEventListener
 {
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
     protected $createOrder;
     protected $rowService;
 
@@ -29,17 +34,22 @@ class RowBService
         $this->rowService=$rowService;
     }
 
-    //$row_id:上级盘位id  $now_row_id:当前盘位id  $flag:当前是那个盘  $user_id:当前用户id  $current_level:当前点位的等级
-    public function index($row_id,$now_row_id,$flag,$user_id,$current_level,$order_id)
+    /**
+     * Handle the event.
+     *
+     * @param  RowBEvent  $event
+     * @return void
+     */
+    public function handle(RowBEvent $event)
     {
-        $res=$this->setPromoteRecode($now_row_id,$flag,$user_id,$current_level);
+        $date=$event->date;
+        $order_id=$event->order_id;
+        $res=$this->setPromoteRecode($date['row_id'],$date['type'],$date['user_id'],$date['current_level'],$event->order_id);
         if($res){
-            if($row_id){
-                return $this->getSelfPrevInfo($now_row_id,$row_id,$order_id);
+            if($date['prev_id']){
+                $this->getSelfPrevInfo($date['row_id'],$date['prev_id'],$order_id);
             }
-            return true;
         }
-        return false;
     }
 
     public function getRowId($rowId,$aim_level,$num=1)//得到对应要向上面第几代缴费的排位点id
@@ -189,8 +199,14 @@ class RowBService
 
     public function loopPoint($order_id)//开始三个盘进行循环
     {
+        $order_id=$this->createOrder->createOrder($order_id,4);
+        event(new RowEvent($order_id,1));
+
         $order_id=$this->createOrder->createOrder($order_id,5);
-        return $this->rowService->index($order_id,2);//这里是不是需要三个进程
+        event(new RowEvent($order_id,2));
+
+        $order_id=$this->createOrder->createOrder($order_id,6);
+        event(new RowEvent($order_id,3));
     }
 
     public function writeLoopPoint($row_id,$user_id,$current_generate,$money)//在B盘4-8代内向表中写入数据
