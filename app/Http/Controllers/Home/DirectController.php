@@ -26,15 +26,13 @@ class DirectController extends Controller
     {
         $order_id=$request->input('order_id');
         $type=$request->input('type');
-        $order_id=12;
-        $type=3;
         if($type==1||$type==2){//要进行分佣
             $this->directService->main(1);
         }elseif($type==3||$type==4||$type==5){//要进行排位
             $res=$this->row->index($order_id,$type);
-            if($res){
-                dd($this->rowAService->index($res));
-            }
+//            if($res){
+//                dd($this->rowAService->index($res));
+//            }
 //            event(new RowEvent($order_id,$type));
         }
     }

@@ -14,7 +14,6 @@ use App\Events\RowBEvent;
 use App\Events\RowCEvent;
 use App\Http\Model\Incomerecode;
 use App\Http\Model\Order;
-use App\Http\Model\Orderinfo;
 use App\Http\Model\Rowa;
 use App\Http\Model\Rowb;
 use App\Http\Model\Rowc;
@@ -25,19 +24,12 @@ use Exception;
 
 class RowService
 {
-//    protected $rowAService;
-//    protected $rowBService;
-//    protected $rowCService;
-
     protected $rowA;
     protected $rowB;
     protected $rowC;
+
     public function __construct(Rowa $rowA,Rowb $rowB,Rowc $rowC)
     {
-//        $this->rowAService=$rowAService;
-//        $this->rowBService=$rowBService;
-//        $this->rowCService=$rowCService;
-
         $this->rowA=$rowA;
         $this->rowB=$rowB;
         $this->rowC=$rowC;
@@ -47,13 +39,13 @@ class RowService
     {
         $order = Order::find($order_id);
         if ($type == 3) {//100元专区   说明是A盘
-            return $this->mainRow($order_id, $order->user_id, $order->order_num, 100, 1,2.5);
+            $this->mainRow($order_id, $order->user_id, $order->order_num, 100, 1,2.5);
         }
         if ($type == 4) {//300元专区   说明是B盘
-            return $this->mainRow($order_id, $order->user_id, $order->order_num, 300, 2,6.5);
+            $this->mainRow($order_id, $order->user_id, $order->order_num, 300, 2,6.5);
         }
         if ($type == 5) {//2000元专区  说明是C盘
-            return $this->mainRow($order_id, $order->user_id, $order->order_num, 2000, 3,42.5);
+            $this->mainRow($order_id, $order->user_id, $order->order_num, 2000, 3,42.5);
         }
         return false;
     }
@@ -113,7 +105,7 @@ class RowService
                     if ($res2) {
                         $res3 = $this->getTwentyScore($user_id, $money, $pointFee);//向上20代返钱
                         if($res3){
-                            return $this->loopUpDisk($res,$type,$order_id);
+                            $this->loopUpDisk($res,$type,$order_id);
                         }
                     }
                 }
