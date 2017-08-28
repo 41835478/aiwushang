@@ -34,6 +34,18 @@
 	.public_head a{
 		color: black;
 	}
+.bank_main li input[type=password] {
+    display: block;
+    width: 54%;
+    height: 55px;
+    border: 0;
+    font-size: 15px;
+    color: #333;
+    line-height: 55px;
+    background: none;
+    float: left;
+}
+ 
 </style>
 </head>
 <body>
@@ -55,7 +67,7 @@
 		</li>
 		<li>
 			<p>手机号码：</p>
-			<input type="text" placeholder="请输入您的手机号码" name="phone" class="phone" onfocus="this.placeholder = ''" onblur="if(this.placeholder == ''){this.placeholder = '请输入您的手机号码'}">
+			<input type="text" placeholder="请输入您的手机号码" name="phone"  value="{{$phone}}"  readonly class="phone" onfocus="this.placeholder = ''" onblur="if(this.placeholder == ''){this.placeholder = '请输入您的手机号码'}">
 		</li>
 		<li>
 			<p>登录密码：</p>

@@ -76,7 +76,8 @@
 		<li>
 			<i class="iconfont icon-zhifubao1"></i>
 			<p class="account_po">绑定支付宝</p>
-			<p onclick="window.location.href='Unbundling_Alipay.html'" class="account_pt account_acitve">解绑</p>
+		<!-- 	<input type="hidden" name="jie" value="jie" class="jie"> -->
+			<p  class="account_pt account_acitve true" >解绑</p>
 			<p class="account_pn">{{$zhifu}}</p>			
 		</li>
 		@endif
@@ -162,7 +163,7 @@ $(".account_ka_out").longPress(function (e) {
 
 
  		  var yinhang=$('.yin').val();
-           alert(yinhang);
+          // alert(yinhang);
             var data={
                 'yinhang':yinhang,
                
@@ -194,6 +195,37 @@ $(".account_ka_out").longPress(function (e) {
             })
         }
 
+ $('.true').click(function(){
+            var jie='jie';
+          
+	          var data={
+                'jie':jie,               
+            }
+            var url="{{url('users/bindingdel')}}";
+         
+            $.ajax({
+                'url':url,
+                'data':data,
+                'async':true,
+                'type':'post',
+                'dataType':'json',
+                success:function(data){
+                	 if(data.status){                    	
+                            alert(data.message); 
+                             if(data.data.flag==1)  {
+                                window.location.href="{{url('users/index')}}";
+                             }                 
+                            
+                        }else{
+                        	alert(data.message);
+                        	window.location.reload();
+                        }
+
+                  
+                },
+             
+            })
+        })
 
 
 </script>

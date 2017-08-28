@@ -24,6 +24,8 @@
 	Route::get('users/ranking_orders','UserController@ranking_orders');//公排订单
 	Route::get('users/myteam','UserController@myteam');//公排订单
 	Route::get('users/activememberorders','UserController@activememberorders');//激活会员订单页面
+	Route::post('users/editactivememberorders','UserController@editactivememberorders');//激活会员订单
+	
 
 
 	Route::get('users/accountbinding','UserController@accountbinding');//账户绑定页面
@@ -37,6 +39,12 @@
 	Route::post('users/addressdefault','UserController@addressdefault');//设为默认收货地址
 	Route::get('users/toaddress','UserController@toaddress');//添加收货地址页面
 	Route::post('users/editaddress','UserController@editaddress');//添加收货地址页面	
+
+
+	Route::any('users/userorder/{type}','UserController@userorder');//用户订单
+	Route::any('users/userorderin/{id}','UserController@userorderin');//用户订单详情
+	Route::post('users/edituserorder','UserController@edituserorder');//用户订单修改
+	
 
 	Route::get('users/logout','UserController@logout');//退出	
 

@@ -14,7 +14,13 @@
 <body>
 <div class="center_head">
 	<div class="div_clearFloat center_top">
+		@if($users['pic']=='')
+			
+			<img src="{{asset('home/images/rank05.png')}}" alt=""/>
+		@else
 		<img src="{{$users['pic']}}" alt=""/>
+		@endif
+		
 		<div class="center_edit">
 			<div class="div_clearFloat center_personalData">
 				<p>{{$users['name']}} </p>
@@ -49,19 +55,19 @@
 				<span>我的订单</span>
 			</div>
 			<div class="div_displayFlex center_navCon">
-				<a href="myOrder.html?type=1" class="a_jump">
+				<a href="{{url('users/userorder',['type'=>1])}}" class="a_jump">
 					<img src="{{asset('home/images/center01.png')}}" alt=""/>
 					<span>待付款</span>
 				</a>
-				<a href="myOrder.html?type=2" class="a_jump">
+				<a href="/users/userorder?type=1" class="a_jump">
 					<img src="{{asset('home/images/center02.png')}}" alt=""/>
 					<span>待发货</span>
 				</a>
-				<a href="myOrder.html?type=3" class="a_jump">
+				<a href="{{url('users/userorder',['type'=>3])}}" class="a_jump">
 					<img src="{{asset('home/images/center03.png')}}" alt=""/>
 					<span>待收货</span>
 				</a>
-				<a href="myOrder.html?type=4" class="a_jump">
+				<a href="{{url('users/userorder',['type'=>4])}}" class="a_jump">
 					<img src="{{asset('home/images/center04.png')}}" alt=""/>
 					<span>已完成</span>
 				</a>
@@ -101,7 +107,7 @@
 		</ul>
 		<ul class="centerList centerList2">
 			<li class="centerItem">
-				<a href="{{url('users/ranking_orders')}}" class="a_jump">
+				<a href="{{url('users/activememberorders')}}" class="a_jump">
 					<img src="{{asset('home/images/person05.png')}}" alt=""/>
 					<span>激活会员订单</span>
 					<i class="iconfont icon-you"></i>

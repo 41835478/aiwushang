@@ -11,6 +11,9 @@ use App\Http\Model\Withdraw;
 use App\Http\Model\Payment;
 use App\Http\Model\Roworder;
 use App\Http\Model\Address;
+use App\Http\Model\Order;
+use App\Http\Model\Orderinfo;
+use App\Http\Model\Goods;
 use App\Http\Controllers\Home\BaseController;
 //use App\Http\Services\FunctionService;
 use Storage;
@@ -28,7 +31,7 @@ class UserController  extends BaseController
 
 
 
-    public function index()//加载注册页面
+    public function index()//页面
     {
     	#查询用户信息 
     	$uid=$this->checkUser();
@@ -129,7 +132,7 @@ class UserController  extends BaseController
     			}
 
 #事物开始
-DB::transaction(function(){
+
 
     			if(	User::where('id',$uid)->decrement('account', $post['num'])  &&
     					User::where('phone',$post['phone'])->increment('account', $post['num'] * 0.95)){
@@ -142,14 +145,19 @@ DB::transaction(function(){
     			$data['money']=$post['num'] * 0.95;
     			$data['create_at']=time();
     			$data['update_at']=time();
-    			Incomerecode::insert($data);
-	   				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+    			$res=Incomerecode::insert($data);
+                if($res){
+
+	   				    return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+                    }else{
+                        return $this->ajaxMessage(false,'参数错误');
+                    }
 
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
 				}
 #事物结束
-});
+
 
 
     		}else{
@@ -164,7 +172,7 @@ DB::transaction(function(){
     			}
 
     			#事物开始
-DB::transaction(function(){
+
     			User::where('id',$uid)->decrement('account', $post['num']);
     				#添加到提现表 百分70
     			$data=[];
@@ -198,14 +206,18 @@ DB::transaction(function(){
     			$datax['sign']=1;
     			$datax['points']=$post['num'] * 0.10;
     			Pointsrecode::insert($datax);
-    			User::where('id',$users['id'])->increment('consume_points', $datax['points']);
+    			$res=User::where('id',$users['id'])->increment('consume_points', $datax['points']);
+                if($res){
+                   return $this->ajaxMessage(true,'操作成功',['flag'=>1]); 
+               }else{
+                    return $this->ajaxMessage(false,'参数错误');
+               }
 
-
-	   				return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+	   				
 
 	
 #事物结束
-});
+
     	}
 
 
@@ -312,23 +324,26 @@ DB::transaction(function(){
     	#减少积分，给对方增加积分
     	if($post['id'] == 1){
 #事物开始
-DB::transaction(function(){
-    			User::where('id',$uid)->decrement('repeat_points', $post['num']) ; 
-    			User::where('phone',$post['phone'])->increment('repeat_points', $post['num'] * 0.95);
+
+    			$res=User::where('id',$uid)->decrement('repeat_points', $post['num']) ; 
+    			$ress=User::where('phone',$post['phone'])->increment('repeat_points', $post['num'] * 0.95);
     			$data=[];
     			$data['user_id']=$pusers['id'];
     			$data['flag']=$post['id'];
     			$data['points_info']='转账';
     			$data['sign']=1;
     			$data['points']=$post['num'] * 0.95;
-    			Pointsrecode::insert($data);
-	   			return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+    			$resss=Pointsrecode::insert($data);
+                if($resss){
+                    return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+                }
+	   			
 				
-});
+
     	}elseif($post['id']==2){
 
 #事物开始
-DB::transaction(function(){
+
     		if(	User::where('id',$uid)->decrement('consume_points', $post['num'])  &&
     			User::where('phone',$post['phone'])->increment('consume_points', $post['num'] * 0.95)){
     			$data=[];
@@ -337,13 +352,18 @@ DB::transaction(function(){
     			$data['points_info']='转账';
     			$data['sign']=1;
     			$data['points']=$post['num'] * 0.95;
-    			Pointsrecode::insert($data);
-    			return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+    			$res=Pointsrecode::insert($data);
+                if($res){
+                    return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+                }else{
+                    return $this->ajaxMessage(false,'参数错误');
+                }
+    			
 
 				}else{
 					return $this->ajaxMessage(false,'参数错误');
 				}
-});
+
 
     	}
     	
@@ -398,6 +418,59 @@ DB::transaction(function(){
 		return view('home.user.ranking_orders',compact('roworders'));
 	}
 
+    /**
+*激活会员订单
+*/
+
+    #激活订单
+    public function activememberorders(){
+        #查询用户信息 
+        $uid=$this->checkUser();
+        $t = new User;
+        $users=$t->getuserinfo($uid);
+
+        return view('home.user.activememberorders',compact('users'));
+    }
+    #激活会员订单
+    public function editactivememberorders(Request $request){
+        #查询用户信息 
+        $uid=$this->checkUser();
+        $t = new User;
+        $users=$t->getuserinfo($uid);
+        $post=$request->input();
+        if($post['type']==''){
+            return $this->ajaxMessage(false,'参数错误');
+        }
+        if($post['type']==1){
+            $money=100;
+        }elseif ($post['type']==2) {
+             $money=300;
+        }elseif ($post['type']==3) {
+              $money=2000;
+        }
+        if($money > $users['repeat_points']){
+            return $this->ajaxMessage(false,'您的复投币不足');
+        }
+  #事物开始
+       
+
+        $res= User::where('id',$uid)->decrement('repeat_points', $money);
+        #TODO 接入算法
+
+
+        if($res){
+            return $this->ajaxMessage(true,'提交成功',['flag'=>1]);      
+       }else{
+            return $this->ajaxMessage(false,'参数错误');
+       }
+     
+
+         
+    }
+
+
+
+
 /**
 *团队
 */
@@ -411,15 +484,6 @@ DB::transaction(function(){
     	$count=count($team);
      
 		return view('home.user.myteam',compact('team','count'));
-	}
-
-/**
-*激活会员订单
-*/
-	#激活订单
-	public function activememberorders(){
-
-		return view('home.user.activememberorders');
 	}
 
 
@@ -453,7 +517,12 @@ DB::transaction(function(){
 	}
 	#绑定支付宝
 	public function bindingaliplay(){
-		return view('home.user.bindingaliplay');
+        $uid=$this->checkUser();
+        $t = new User;
+        $users=$t->getuserinfo($uid);
+        $phone=substr_replace($users['phone'],'****',3,4);
+
+		return view('home.user.bindingaliplay',compact('phone'));
 	}
 
 	public function editbinding(Request $request){
@@ -516,9 +585,15 @@ DB::transaction(function(){
 		#删除解绑
 	public function bindingdel(Request $request){
 		$post=$request->input();
-		$res=Payment::where('id',$post['yinhang'])->delete();
+        if($post['jie']=='jie'){
+             $res=Payment::where('type',2)->delete();
+        }else{
+            $res=Payment::where('id',$post['yinhang'])->delete();
+        }
+
+		
 		if($res){
-			return $this->ajaxMessage(true,'绑定成功',['flag'=>1]);
+			return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
 		}
 
 	}
@@ -590,9 +665,104 @@ DB::transaction(function(){
         	return $this->ajaxMessage(true,'绑定成功',['flag'=>1]);
         }
 
-
 	}
 
+
+    /*****
+    *****用户订单
+    ****
+    */
+    public function userorder(Request $request,$type){
+        $uid=$this->checkUser();
+        #待付款
+        $order_a=self::userorderinfo(1, $uid);
+        #待发货
+        $order_b=self::userorderinfo(2, $uid);
+        #待收货
+        $order_c=self::userorderinfo(3, $uid);
+        #已收货
+        $order_d=self::userorderinfo(4, $uid);
+        return view('home.user.userorder',compact('order_d','order_a','order_b','order_c'));
+    }
+
+    static function userorderinfo($i,$uid){
+       
+       
+        $list=Order::where('user_id',$uid)->where('status',$i)->orderBy('id','desc')->get();
+
+        foreach ($list as $k => $v) {
+            $info=Orderinfo::select('order_id','price','num','name')->where('order_id',$v['id'])->get();
+                foreach ($info as $key => $value) {
+                    $goods=Goods::select('id','pic','name')->where('id',$value['goods_id'])->first();
+                    $info[$key]['name']=$goods['name'];
+                    $info[$key]['pic']=$goods['pic'];
+                }
+                $list[$k]->info = $info;
+        }
+        return $list;
+    }
+    #订单详情
+    public function userorderin(Request $request,$id){
+        $uid=$this->checkUser();
+            $list=Order::where('id',$id)->first();
+
+      
+            $info=Orderinfo::select('order_id','price','num','name')->where('order_id',$list['id'])->get();
+                foreach ($info as $key => $value) {
+                    $goods=Goods::select('id','pic','name')->where('id',$value['goods_id'])->first();
+                    $info[$key]['name']=$goods['name'];
+                    $info[$key]['pic']=$goods['pic'];
+                }
+                $list->info = $info;
+      
+        
+        return view('home.user.userorderin',compact('list'));
+   }
+    #订单操作
+    public function edituserorder(Request $request){
+        $uid=$this->checkUser();
+        $post=$request->input();
+
+        #1 取消订单，2提醒发货，3确认收货
+        if($post['type']==1){
+            $res=Order::where('id',$post['id'])->delete();
+            $ress=Orderinfo::where('order_id',$post['id'])->delete();
+            if($res && $ress){
+                return $this->ajaxMessage(true,'删除成功',['flag'=>1]);
+            }else{
+                return $this->ajaxMessage(false,'删除失败');
+            }
+
+        }elseif ($post['type']==2) {
+
+            $res=Order::where('id',$post['id'])->first();
+            if($res['update_at'] + 86400 > time() ){
+                 return $this->ajaxMessage(false,'自下单开始，一天之内提醒一次。最多三次');
+            }
+            if($res['tixin'] > 3){
+                 return $this->ajaxMessage(false,'已到达提醒次数');
+            }
+            $data=[];
+            $data['tixin']=$res['tixin'] +1;
+            $data['update_at']=time();
+            $ress=Order::where('id',$post['id'])->update($data);
+            if($ress){
+                 return $this->ajaxMessage(true,'提醒成功',['flag'=>1]);
+            }
+            # code...
+        }elseif ($post['type']==3) {
+            $data=[];
+            $data['status']=4;
+            $data['update_at']=time();
+            $ress=Order::where('id',$post['id'])->update($data);
+            if($ress){
+                 return $this->ajaxMessage(true,'操作成功',['flag'=>1]);
+            }
+        }
+
+
+
+    }
 
 
     #注销

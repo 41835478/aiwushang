@@ -40,9 +40,21 @@
 	@foreach($team as $k=>$v)
 			<li class="teamItem">
 				<span>{{$k+1}}</span>
-				<img src="{{$v['pic']}}" alt=""/>
+					@if($v['pic']=='')
+			
+						<img src="{{asset('home/images/rank05.png')}}" alt=""/>
+					@else
+					<img src="{{$v['pic']}}" alt=""/>
+					@endif
 				<div class="team_con">
-					<p>{{$v['name']}}</p>
+					
+					@if($v['name']=='')
+			
+						<p>{{$v['name']}}</p>
+					@else
+						<p>爱无尚{{$v['phone']}}用户</p>
+					@endif
+
 					<span>{{$v['phone']}}</span>
 				</div>
 				<div class="team_identity">
