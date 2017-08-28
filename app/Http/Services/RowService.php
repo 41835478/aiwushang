@@ -100,17 +100,20 @@ class RowService
                 if ($prevId) {
                     $level = $mod->where(['id' => $prevId])->value('level');//上级的层数
                     $selfLevel = $this->getLevel($mod,$level);
-                    $date['update_at'] = time();
-                    $date['level'] = $selfLevel;
-                    $res1 = $mod->where(['id' => $res])->update($date);
-                    if ($res1) {
-                        $remark = $money . '元商品区';
-                        $res2 = $this->rowOrder($res, $user_id, $remark, $money, $type);
-                        if ($res2) {
-                            $res3 = $this->getTwentyScore($user_id, $money, $pointFee);//向上20代返钱
-                            if($res3){
-                                return $this->loopUpDisk($res,$type,$order_id);
-                            }
+                    $date['prev_id']=$prevId;
+                }else{
+                    $selfLevel=1;
+                }
+                $date['update_at'] = time();
+                $date['level'] = $selfLevel;
+                $res1 = $mod->where(['id' => $res])->update($date);
+                if ($res1) {
+                    $remark = $money . '元商品区';
+                    $res2 = $this->rowOrder($res, $user_id, $remark, $money, $type);
+                    if ($res2) {
+                        $res3 = $this->getTwentyScore($user_id, $money, $pointFee);//向上20代返钱
+                        if($res3){
+                            return $this->loopUpDisk($res,$type,$order_id);
                         }
                     }
                 }
@@ -124,25 +127,25 @@ class RowService
         if($type==1){
             $date=$this->RowInfo($row_id,1);
             $date['type']=1;
-            $date['order_id']=$order_id;
-            return $date;
-//            event(new RowAEvent($date,$order_id));
+//            $date['order_id']=$order_id;
+//            return $date;
+            event(new RowAEvent($date,$order_id));
 //            return $this->rowAService->index($date['prev_id'],$date['row_id'],1,$date['user_id'],$date['current_level'],$order_id);
         }
         if($type==2){
             $date=$this->RowInfo($row_id,2);
             $date['type']=2;
-            $date['order_id']=$order_id;
-            return $date;
-//            event(new RowBEvent($date,$order_id));
+//            $date['order_id']=$order_id;
+//            return $date;
+            event(new RowBEvent($date,$order_id));
 //            return $this->rowBService->index($date['prev_id'],$date['row_id'],2,$date['user_id'],$date['current_level'],$order_id);
         }
         if($type==3){
             $date=$this->RowInfo($row_id,3);
             $date['type']=3;
-            $date['order_id']=$order_id;
-            return $date;
-//            event(new RowCEvent($date,$order_id));
+//            $date['order_id']=$order_id;
+//            return $date;
+            event(new RowCEvent($date,$order_id));
 //            return $this->rowCService->index($date['prev_id'],$date['row_id'],3,$date['user_id'],$date['current_level'],$order_id);
         }
     }

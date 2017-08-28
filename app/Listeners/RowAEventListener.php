@@ -5,7 +5,6 @@ namespace App\Listeners;
 use App\Events\RowAEvent;
 use App\Events\RowEvent;
 use App\Http\Services\CreateOrderService;
-use App\Http\Services\RowService;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -26,12 +25,10 @@ class RowAEventListener
      * @return void
      */
     protected $createOrder;
-    protected $rowService;
 
-    public function __construct(CreateOrderService $createOrder,RowService $rowService)
+    public function __construct(CreateOrderService $createOrder)
     {
         $this->createOrder=$createOrder;
-        $this->rowService=$rowService;
     }
 
     /**

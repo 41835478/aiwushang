@@ -29,8 +29,14 @@ class RowAService
     }
 
     //$row_id:上级盘位id  $now_row_id:当前盘位id  $flag:当前是那个盘  $user_id:当前用户id  $current_level:当前点位的等级
-    public function index($row_id,$now_row_id,$flag,$user_id,$current_level,$order_id)
+    public function index($date)
     {
+        $row_id=$date['prev_id'];
+        $now_row_id=$date['row_id'];
+        $flag=$date['type'];
+        $user_id=$date['user_id'];
+        $current_level=$date['current_level'];
+        $order_id=$date['order_id'];
         $res=$this->setPromoteRecode($now_row_id,$flag,$user_id,$current_level);
         if($res){
             if($row_id){
