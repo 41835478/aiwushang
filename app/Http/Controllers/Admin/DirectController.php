@@ -16,10 +16,19 @@ class DirectController extends Controller
         $this->incomeRecode=$incomeRecode;
     }
 
-    public function index()//分销列表
+    public function index(Request $request)//分销列表
     {
         $date=$this->incomeRecode->select(['id','user_id','recode_info','money','create_at','from_id'])
-            ->where(['flag'=>1,'type'=>1])->paginate(config('admin.pages'));
+            ->where(['flag'=>1,'type'=>1])->where(function($query) use ($request){
+                if($request->has('to_phone')){
+                    $to_id=$this->conditionJudge($request->input('to_phone'));
+                    $query->orWhere(['user_id'=>$to_id]);
+                }
+                if($request->has('from_phone')){
+                    $to_id=$this->conditionJudge($request->input('from_phone'));
+                    $query->orWhere(['from_id'=>$to_id]);
+                }
+            })->paginate(config('admin.pages'));
         foreach($date->items() as $k=>$v){
             $user=$this->getUserInfo($v['user_id']);
             $date->items()[$k]['to_login_name']=$user->login_name;
@@ -42,5 +51,10 @@ class DirectController extends Controller
     {
         $user=User::find($id);
         return $user;
+    }
+
+    public function conditionJudge($condition)//条件判断的到用户信息
+    {
+        return User::where(['phone'=>$condition])->value('id');
     }
 }

@@ -14,40 +14,20 @@
                 </div>
 
                 <div class="ibox-content">
-                    <form action="{{url('goods/goodsList')}}" method="get">
+                    <form action="{{url('sale/index')}}" method="get">
                         <div class="input-group">
-                            <span  style="float: right;margin-left: 10px">商品类型：
-                                <select name="goodsType" class="input-sm">
-                                    <option value="">--请选择--</option>
-                                    @foreach(config('admin.goodsType') as $k=>$v)
-                                        <option value="{{$k+1}}">{{$v}}</option>
-                                    @endforeach
-                                </select>
+                            <span  style="float: right;margin-left: 10px">来源用户手机号：
+                                <input name="from_phone" type="text" class="input-sm" placeholder="请输入来源用户手机号"/>
                             </span>
-                            <span  style="float: right;margin-left: 10px">商品名称：
-                                <input name="name" type="text" class="input-sm" placeholder="请输入商品名称"/>
+                            {{--<span  style="float: right;margin-left: 10px">来源用户名称：--}}
+                                {{--<input name="from_name" type="text" class="input-sm" placeholder="请输入来源用户名称"/>--}}
+                            {{--</span>--}}
+                            <span  style="float: right;margin-left: 10px">目标用户手机号：
+                                <input name="to_phone" type="text" class="input-sm" placeholder="请输入目标用户手机号"/>
                             </span>
-                            <span  style="float: right;margin-left: 10px">分类类型：
-                                <select id="threeLevel" name="classType" class="input-sm">
-                                    <option value="">--请选择--</option>
-                                    @foreach(config('admin.goodsClassType') as $k=>$v)
-                                        <option value="{{$k+1}}">{{$v}}</option>
-                                    @endforeach
-                                </select>
-                            </span>
-                            <span  style="float: right;margin-left: 10px">下级分类：
-                                <select id="select_opts" name="nextName" class="input-sm">
-                                    <option value="">--请选择--</option>
-                                </select>
-                            </span>
-                            <span  style="float: right;">一级分类：
-                                <select name="topName" class="input-sm" id="topLevel">
-                                    <option value="">--请选择--</option>
-                                    @foreach($goodsClass as $v)
-                                        <option value="{{$v->id}}">{{$v->name}}</option>
-                                    @endforeach
-                                </select>
-                            </span>
+                            {{--<span  style="float: right;">目标用户名称：--}}
+                                {{--<input name="to_name" type="text" class="input-sm" placeholder="请输入目标用户名称"/>--}}
+                            {{--</span>--}}
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-sm btn-primary">
                                     搜索

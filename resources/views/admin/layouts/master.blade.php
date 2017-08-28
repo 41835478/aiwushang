@@ -151,14 +151,14 @@
                 <li>
                     <a href="#"><i class="fa fa-picture-o"></i> <span class="nav-label">分销管理</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem" href="{{url('direct/index')}}">分销列表</a>
+                        <li><a class="J_menuItem" href="{{url('sale/index')}}">分销列表</a>
                     </ul>
 
                 </li>
                 <li>
                     <a href="javascript:;"><i class="fa fa-envelope"></i> <span class="nav-label">公排管理 </span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem" href="{{url('withdraw/cashList')}}">提现列表</a>
+                        <li><a class="J_menuItem" href="">提现列表</a>
                         </li>
                     </ul>
                 </li>
